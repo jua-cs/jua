@@ -5,10 +5,16 @@ plugins {
 group 'fr.ecp.student'
 version '0.0.0'
 
-sourceCompatibility = 1.8
+sourceCompatibility = 1.11
 
 repositories {
     mavenCentral()
+}
+
+apply plugin: 'application'
+
+application {
+    mainClassName = 'test.Main'
 }
 
 dependencies {
