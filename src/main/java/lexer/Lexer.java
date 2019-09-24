@@ -55,7 +55,13 @@ public class Lexer {
         token = new TokenOperator(Operator.PLUS, currentLine, currentPos);
         break;
       case '-':
-        token = new TokenOperator(Operator.MINUS, currentLine, currentPos);
+        // Handle comments
+        if (peekChar() == '-') {
+          nextLine();
+          return nextToken();
+        } else {
+          token = new TokenOperator(Operator.MINUS, currentLine, currentPos);
+        }
         break;
       case '*':
         token = new TokenOperator(Operator.ASTERISK, currentLine, currentPos);
@@ -138,6 +144,14 @@ public class Lexer {
     }
 
     return identifier;
+  }
+
+  public void nextLine() throws IOException {
+    while (ch != '\n') {
+      readChar();
+    }
+    readChar();
+    consumeWhitespace();
   }
 
   public String nextNumber() {
