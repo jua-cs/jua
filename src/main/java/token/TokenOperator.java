@@ -4,8 +4,8 @@ public class TokenOperator extends Token {
 
   private Operator operator;
 
-  TokenOperator(int line, int position, Operator operator) {
-    super(TokenType.OPERATOR, line, position, operator.toString());
+  public TokenOperator(Operator operator, int line, int position) {
+    super(TokenType.OPERATOR, operator.toString(), line, position);
     this.operator = operator;
   }
 

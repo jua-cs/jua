@@ -4,7 +4,7 @@ public class TokenDelimiter extends Token {
   private Delimiter delimiter;
 
   TokenDelimiter(int line, int position, Delimiter delimiter) {
-    super(TokenType.DELIMITER, line, position, delimiter.toString());
+    super(TokenType.DELIMITER, delimiter.toString(), line, position);
     this.delimiter = delimiter;
   }
 

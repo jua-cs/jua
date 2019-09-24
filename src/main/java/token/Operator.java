@@ -9,7 +9,8 @@ public enum Operator {
   PERCENT("%"),
   LT("<"),
   GT(">"),
-  POINT(".");
+  POINT("."),
+  EQUAL("=");
 
   private String name;
 

@@ -6,7 +6,7 @@ public abstract class Token {
   private int position;
   private String litteral;
 
-  Token(TokenType type, int line, int position, String litteral) {
+  Token(TokenType type, String litteral, int line, int position) {
     this.type = type;
     this.line = line;
     this.position = position;

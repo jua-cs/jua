@@ -1,5 +1,7 @@
 package lexer;
 
+import token.*;
+
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -38,11 +40,11 @@ public class Lexer {
   }
 
   public Token nextToken() throws IOException {
-    var token = new Token(currentLine, position, "");
-
+    Token token = null;
     char ch = readChar();
     switch (ch) {
       case '=':
+        token = new TokenOperator(Operator.EQUAL, currentLine, position);
       case '+':
       case '-':
       case '*':
@@ -62,13 +64,11 @@ public class Lexer {
       case '#':
       case ':':
       case '.':
-        token.setLitteral(String.valueOf((ch)));
-        break;
       default:
         if (Character.isLetter(ch)) {
           in.reset();
           String identifier = nextIdentifier();
-          token.setLitteral(identifier);
+          token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, position);
         }
     }
 
