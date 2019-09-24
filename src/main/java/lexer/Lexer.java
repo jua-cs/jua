@@ -1,9 +1,10 @@
 package lexer;
 
+import token.*;
+
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import token.*;
 
 public class Lexer {
 
@@ -43,13 +44,13 @@ public class Lexer {
   }
 
   public Token nextToken() {
-    Token token = null;
+    Token token;
 
     consumeWhitespace();
     // Store it now in the cas of a multi char token
     int currentPos = currentPosinLine;
 
-    System.out.printf("Char: %c, pos: %d\n", ch, currentPos);
+    System.out.printf("Char: '%c', pos: %d\n", ch, currentPos);
     switch (ch) {
       case 0:
         token = new EOFToken(currentLine, currentPos);
