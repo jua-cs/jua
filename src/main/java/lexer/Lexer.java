@@ -122,10 +122,11 @@ public class Lexer {
 
   public String nextNumber() {
     String number = "";
-
-    while (Character.isDigit(ch)) {
+    boolean dotSeen = false;
+    while (Character.isDigit(ch) || (!dotSeen && ch == '.')) {
       number += Character.toString(ch);
       readChar();
+      dotSeen = ch == '.';
     }
 
     return number;
