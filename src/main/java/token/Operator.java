@@ -8,7 +8,8 @@ public enum Operator {
   CARAT("^"),
   PERCENT("%"),
   LT("<"),
-  GT(">");
+  GT(">"),
+  POINT(".");
 
   private String name;
 
