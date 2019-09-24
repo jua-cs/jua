@@ -1,6 +1,7 @@
 package token;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 public abstract class Token {
   private TokenType type;
@@ -46,5 +47,31 @@ public abstract class Token {
   public Keyword getKeywordFromLiteral(String literal) {
     HashMap<String, Keyword> lookUpTable = Keyword.getLookUpTable();
     return lookUpTable.get(literal);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Token token = (Token) o;
+    return line == token.line
+        && position == token.position
+        && type == token.type
+        && Objects.equals(literal, token.literal);
+  }
+
+  @Override
+  public String toString() {
+    return "Token{"
+        + "type="
+        + type
+        + ", line="
+        + line
+        + ", position="
+        + position
+        + ", literal='"
+        + literal
+        + '\''
+        + '}';
   }
 }

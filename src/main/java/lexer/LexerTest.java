@@ -1,10 +1,13 @@
 package lexer;
 
-import org.junit.jupiter.api.Test;
-import token.Token;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.junit.jupiter.api.Test;
+import token.*;
 
 public class LexerTest {
 
@@ -22,9 +25,16 @@ public class LexerTest {
                   }
                   return null;
                 })
-            .limit(50);
+            .limit(3);
 
-    stream.forEach(System.out::println);
+    ArrayList<Token> list = stream.collect(Collectors.toCollection(ArrayList::new));
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(new TokenLiteral(Literal.IDENTIFIER, "x", 0, 0));
+    expected.add(new TokenOperator(Operator.EQUAL, 0, 2));
+    expected.add(new TokenLiteral(Literal.IDENTIFIER, "y", 0, 4));
+
+    assertEquals(expected, list);
   }
 
   @Test
@@ -46,14 +56,15 @@ public class LexerTest {
     Lexer lex = new Lexer(in);
     Stream<Token> stream =
         Stream.generate(
-            () -> {
-              try {
-                return lex.nextToken();
-              } catch (IOException e) {
-                e.printStackTrace();
-              }
-              return null;
-            }).limit(50);
+                () -> {
+                  try {
+                    return lex.nextToken();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
+                  return null;
+                })
+            .limit(50);
 
     stream.forEach(System.out::println);
   }
