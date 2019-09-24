@@ -8,7 +8,9 @@ public enum Delimiter {
   LPAREN("("),
   RPAREN(")"),
   LBRACE("{"),
-  RBRACE("}");
+  RBRACE("}"),
+  LBRACK("["),
+  RBRACK("]");
 
   private String repr;
 
