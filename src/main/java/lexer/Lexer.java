@@ -12,7 +12,7 @@ public class Lexer {
   private char ch;
   private int readPosition;
   private int currentLine;
-  private int currentPosinLine;
+  private int currentPosInLine;
 
   public Lexer(String in) {
     this.currentLine = 1;
@@ -30,13 +30,13 @@ public class Lexer {
   private void readChar() {
     ch = peekChar();
     readPosition++;
-    currentPosinLine++;
+    currentPosInLine++;
   }
 
   private void consumeWhitespace() {
     while (ch == ' ' || ch == '\t' || ch == '\n') {
       if (ch == '\n') {
-        currentPosinLine = 0;
+        currentPosInLine = 0;
         currentLine++;
       }
       readChar();
@@ -48,7 +48,7 @@ public class Lexer {
 
     consumeWhitespace();
     // Store it now in the cas of a multi char token
-    int currentPos = currentPosinLine;
+    int currentPos = currentPosInLine;
 
     System.out.printf("Char: '%c', pos: %d\n", ch, currentPos);
     switch (ch) {
@@ -164,35 +164,35 @@ public class Lexer {
   }
 
   public String nextIdentifier() {
-    String identifier = "";
+    StringBuilder identifier = new StringBuilder();
 
     while (Character.isLetter(ch)) {
-      identifier += Character.toString(ch);
+      identifier.append(ch);
       readChar();
     }
 
-    return identifier;
+    return identifier.toString();
   }
 
   public void nextLine() {
     while (ch != '\n') {
       readChar();
     }
-    currentPosinLine = 0;
+    currentPosInLine = 0;
     readChar();
     consumeWhitespace();
   }
 
   public String nextNumber() {
-    String number = "";
+    StringBuilder number = new StringBuilder();
     boolean dotSeen = false;
     while (Character.isDigit(ch) || (!dotSeen && ch == '.')) {
-      number += Character.toString(ch);
+      number.append(ch);
       readChar();
       dotSeen = ch == '.';
     }
 
-    return number;
+    return number.toString();
   }
 
   public ArrayList<Token> getNTokens(int n) {
