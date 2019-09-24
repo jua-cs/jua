@@ -30,7 +30,7 @@ public class Lexer {
     currentPosinLine++;
   }
 
-  private void consumeWhitespace() throws IOException {
+  private void consumeWhitespace() {
     while (ch == ' ' || ch == '\t' || ch == '\n') {
       if (ch == '\n') {
         currentPosinLine = 0;
@@ -40,7 +40,7 @@ public class Lexer {
     }
   }
 
-  public Token nextToken() throws IOException {
+  public Token nextToken() {
     Token token = null;
 
     consumeWhitespace();
@@ -49,7 +49,7 @@ public class Lexer {
 
     switch (ch) {
       case '=':
-        token = new TokenOperator(Operator.EQUAL, currentLine, currentPos);
+        token = new TokenOperator(Operator.ASSIGN, currentLine, currentPos);
         break;
       case '+':
         token = new TokenOperator(Operator.PLUS, currentLine, currentPos);
@@ -118,13 +118,19 @@ public class Lexer {
         if (Character.isLetter(ch)) {
           String identifier = nextIdentifier();
 
-          // return early to avoid readChar below
-          return new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPos);
-        } else if (Character.isDigit(ch)) {
-          String identifier = nextIdentifier();
+          Keyword keyword = Token.getKeywordFromLiteral(identifier);
+          if (keyword != null) {
+            return new TokenKeyword(keyword, currentLine, currentPosinLine);
+          }
 
           // return early to avoid readChar below
-          return new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPos);
+          return new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
+
+        } else if (Character.isDigit(ch)) {
+          String number = nextNumber();
+
+          // return early to avoid readChar below
+          return new TokenLiteral(Literal.NUMBER, number, currentLine, currentPosinLine);
         }
 
         token = new InvalidToken(currentLine, currentPos, "");

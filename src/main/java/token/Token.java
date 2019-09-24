@@ -44,7 +44,7 @@ public abstract class Token {
     return type;
   }
 
-  public Keyword getKeywordFromLiteral(String literal) {
+  public static Keyword getKeywordFromLiteral(String literal) {
     HashMap<String, Keyword> lookUpTable = Keyword.getLookUpTable();
     return lookUpTable.get(literal);
   }
