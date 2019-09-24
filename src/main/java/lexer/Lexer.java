@@ -1,11 +1,9 @@
 package lexer;
 
-import token.*;
-
 import java.io.BufferedInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.Buffer;
+import token.*;
 
 public class Lexer {
 
@@ -28,15 +26,15 @@ public class Lexer {
   }
 
   private void consumeWhitespace() throws IOException {
-      char ch = readChar();
-      while (ch == ' ' || ch == '\t' || ch == '\n') {
-          if (ch == '\n') {
-              position = 0;
-              currentLine++;
-          }
-          in.mark(readLimit);
+    char ch = readChar();
+    while (ch == ' ' || ch == '\t' || ch == '\n') {
+      if (ch == '\n') {
+        position = 0;
+        currentLine++;
       }
-      in.reset();
+      in.mark(readLimit);
+    }
+    in.reset();
   }
 
   public Token nextToken() throws IOException {
