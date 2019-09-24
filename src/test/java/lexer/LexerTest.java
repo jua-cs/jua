@@ -13,7 +13,7 @@ public class LexerTest {
     String in = "x = y\nbonjour = bonsoir";
     Lexer lex = new Lexer(in);
 
-    ArrayList<Token> list = lex.getNTokens(6);
+    ArrayList<Token> list = lex.getNTokens(7);
 
     ArrayList<Token> expected = new ArrayList<Token>();
     expected.add(new TokenLiteral(Literal.IDENTIFIER, "x", 0, 1));
@@ -22,6 +22,7 @@ public class LexerTest {
     expected.add(new TokenLiteral(Literal.IDENTIFIER, "bonjour", 1, 1));
     expected.add(new TokenOperator(Operator.ASSIGN, 1, 9));
     expected.add(new TokenLiteral(Literal.IDENTIFIER, "bonsoir", 1, 11));
+    expected.add(new EOFToken( 1, 18));
 
     assertEquals(expected, list);
   }

@@ -51,6 +51,9 @@ public class Lexer {
 
     System.out.printf("Char: %c, pos: %d\n", ch, currentPos);
     switch (ch) {
+      case 0:
+        token = new EOFToken(currentLine, currentPos);
+        break;
       case '=':
         if (peekChar() == '=') {
           token = new TokenOperator(Operator.EQUALS, currentLine, currentPos);
