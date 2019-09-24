@@ -152,7 +152,7 @@ public class Lexer {
     return identifier;
   }
 
-  public void nextLine() throws IOException {
+  public void nextLine() {
     while (ch != '\n') {
       readChar();
     }
