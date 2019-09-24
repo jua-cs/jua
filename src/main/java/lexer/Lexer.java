@@ -49,7 +49,12 @@ public class Lexer {
 
     switch (ch) {
       case '=':
-        token = new TokenOperator(Operator.ASSIGN, currentLine, currentPos);
+        if (peekChar() == '=') {
+          token = new TokenOperator(Operator.EQUALS, currentLine, currentPos);
+          readChar();
+        } else {
+          token = new TokenOperator(Operator.ASSIGN, currentLine, currentPos);
+        }
         break;
       case '+':
         token = new TokenOperator(Operator.PLUS, currentLine, currentPos);
@@ -70,10 +75,20 @@ public class Lexer {
         token = new TokenOperator(Operator.SLASH, currentLine, currentPos);
         break;
       case '<':
-        token = new TokenOperator(Operator.LT, currentLine, currentPos);
+        if (peekChar() == '=') {
+          token = new TokenOperator(Operator.LTE, currentLine, currentPos);
+          readChar();
+        } else {
+          token = new TokenOperator(Operator.LT, currentLine, currentPos);
+        }
         break;
       case '>':
-        token = new TokenOperator(Operator.GT, currentLine, currentPos);
+        if (peekChar() == '=') {
+          token = new TokenOperator(Operator.GTE, currentLine, currentPos);
+          readChar();
+        } else {
+          token = new TokenOperator(Operator.GT, currentLine, currentPos);
+        }
         break;
       case '(':
         token = new TokenDelimiter(Delimiter.LPAREN, currentLine, currentPos);
