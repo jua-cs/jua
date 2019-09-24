@@ -25,8 +25,20 @@ public class Lexer {
     return (char) nextByte;
   }
 
+  private void consumeWhitespace() throws IOException {
+      char ch = readChar();
+      while (ch == ' ' || ch == '\t' || ch == '\n') {
+          if (ch == '\n') {
+              position = 0;
+              currentLine++;
+          }
+          in.mark(readLimit);
+      }
+      in.reset();
+  }
+
   public Token nextToken() throws IOException {
-    var token = new Token(line, position, "");
+    var token = new Token(currentLine, position, "");
 
     char ch = readChar();
     switch (ch) {
@@ -60,8 +72,8 @@ public class Lexer {
         }
     }
 
-    in.mark(readLimit);
-    
+    consumeWhitespace();
+
     return token;
   }
 
