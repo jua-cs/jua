@@ -1,0 +1,39 @@
+image: "gradle:jdk11"
+
+before_script:
+  - export GRADLE_USER_HOME=`pwd`/.gradle
+
+stages:
+  - test
+  - build
+  - integration-test
+
+cache:
+  paths:
+    - .gradle/wrapper
+    - .gradle/caches
+    - build
+
+run-tests:
+  stage: test
+  script:
+    - gradle --build-cache clean test -i
+
+ensure-fmt:
+  stage: test
+  script:
+    - find src/ -name "*.java" | xargs java -jar tools/google-java-format-1.7-all-deps.jar --set-exit-if-changed
+
+build-jar:
+  stage: build
+  script:
+    - gradle assemble
+  artifacts:
+    paths:
+      - build/libs
+
+
+run-integration-tests:
+  stage: integration-test
+  script:
+    - echo "x = y" | java -jar build/libs/jua-0.0.0.jar

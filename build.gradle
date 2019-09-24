@@ -18,6 +18,12 @@ application {
     mainClassName = 'test.Main'
 }
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'test.Main'
+    }
+}
+
 dependencies {
     implementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
     runtimeOnly('org.junit.jupiter:junit-jupiter-engine:5.4.2')

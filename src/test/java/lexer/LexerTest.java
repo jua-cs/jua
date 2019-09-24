@@ -10,8 +10,7 @@ public class LexerTest {
 
   @Test
   void testVariableAssignment() {
-    String in = "x = y\nbonjour = bonsoir";
-    Lexer lex = new Lexer(in);
+    Lexer lex = new Lexer(new String("x = y\nbonjour = bonsoir"));
 
     ArrayList<Token> list = lex.getNTokens(7);
 
@@ -22,7 +21,7 @@ public class LexerTest {
     expected.add(new TokenLiteral(Literal.IDENTIFIER, "bonjour", 2, 1));
     expected.add(new TokenOperator(Operator.ASSIGN, 2, 9));
     expected.add(new TokenLiteral(Literal.IDENTIFIER, "bonsoir", 2, 11));
-    expected.add(new EOFToken( 2, 18));
+    expected.add(new EOFToken(2, 18));
 
     assertEquals(expected, list);
   }
@@ -81,7 +80,7 @@ public class LexerTest {
     expected.add(new TokenDelimiter(Delimiter.LPAREN, 9, 6));
     expected.add(new TokenLiteral(Literal.IDENTIFIER, "n", 9, 7));
     expected.add(new TokenDelimiter(Delimiter.RPAREN, 9, 8));
-    expected.add(new EOFToken( 10, 1));
+    expected.add(new EOFToken(10, 1));
 
     assertEquals(expected, list);
   }

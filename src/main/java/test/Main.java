@@ -1,10 +1,9 @@
 package test;
 
+import java.io.IOException;
 import lexer.Lexer;
 import token.Token;
 import token.TokenType;
-
-import java.io.IOException;
 
 public class Main {
 
