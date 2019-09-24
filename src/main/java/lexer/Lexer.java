@@ -7,42 +7,52 @@ import token.*;
 
 public class Lexer {
 
-  static int readLimit = 50000000;
-  private BufferedInputStream in;
+  private String in;
+  private char ch;
+  private int readPosition;
   private int currentLine;
-  private int position;
+  private int currentPosinLine;
 
-  public Lexer(InputStream in) {
-    this.in = new BufferedInputStream(in);
+  public Lexer(String in) {
+    this.in = in;
   }
 
-  private char readChar() throws IOException {
-    int nextByte = in.read();
-    if (nextByte == -1) {
+
+
+  private char peekChar() {
+    if (readPosition >= in.length()) {
       return 0;
     }
+    return in.charAt(readPosition);
+  }
 
-    return (char) nextByte;
+
+  private void readChar() {
+    ch = peekChar();
+    readPosition++;
+    currentPosinLine++;
   }
 
   private void consumeWhitespace() throws IOException {
-    char ch = readChar();
     while (ch == ' ' || ch == '\t' || ch == '\n') {
       if (ch == '\n') {
-        position = 0;
+        currentPosinLine = 0;
         currentLine++;
       }
-      in.mark(readLimit);
+      readChar();
     }
-    in.reset();
   }
 
   public Token nextToken() throws IOException {
     Token token = null;
-    char ch = readChar();
+
+    consumeWhitespace();
+
     switch (ch) {
       case '=':
-        token = new TokenOperator(Operator.EQUAL, currentLine, position);
+        token = new TokenOperator(Operator.EQUAL, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '+':
       case '-':
       case '*':
@@ -64,26 +74,21 @@ public class Lexer {
       case '.':
       default:
         if (Character.isLetter(ch)) {
-          in.reset();
           String identifier = nextIdentifier();
-          token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, position);
+          token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
         }
     }
-
-    consumeWhitespace();
 
     return token;
   }
 
-  public String nextIdentifier() throws IOException {
-    String identifier = new String();
-    char ch = readChar();
+  public String nextIdentifier() {
+    String identifier = "";
+
     while (Character.isLetter(ch)) {
-      in.mark(readLimit);
       identifier += Character.toString(ch);
-      ch = readChar();
+      readChar();
     }
-    in.reset();
 
     return identifier;
   }
