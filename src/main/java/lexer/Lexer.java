@@ -54,11 +54,29 @@ public class Lexer {
         readChar();
         break;
       case '+':
+        token = new TokenOperator(Operator.PLUS, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '-':
+        token = new TokenOperator(Operator.MINUS, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '*':
+        token = new TokenOperator(Operator.ASTERISK, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '/':
+        token = new TokenOperator(Operator.SLASH, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '<':
+        token = new TokenOperator(Operator.LT, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '>':
+        token = new TokenOperator(Operator.GT, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '(':
       case ')':
       case '[':
@@ -72,8 +90,16 @@ public class Lexer {
       case '#':
       case ':':
       case '.':
+        token = new InvalidToken(currentLine, currentPosinLine, "");
+        readChar();
+        break;
       default:
         if (Character.isLetter(ch)) {
+          String identifier = nextIdentifier();
+          token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
+        }
+
+        if (Character.isDigit(ch)) {
           String identifier = nextIdentifier();
           token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
         }
@@ -91,5 +117,16 @@ public class Lexer {
     }
 
     return identifier;
+  }
+
+  public String nextNumber() {
+    String number = "";
+
+    while (Character.isDigit(ch)) {
+      number += Character.toString(ch);
+      readChar();
+    }
+
+    return number;
   }
 }
