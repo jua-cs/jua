@@ -9,10 +9,14 @@ public enum Operator {
   SLASH("/"),
   CARAT("^"),
   PERCENT("%"),
+  DOT("."),
+  ASSIGN("="),
   LT("<"),
   GT(">"),
-  DOT("."),
-  EQUAL("=");
+  EQUALS("=="),
+  LTE("<="),
+  GTE(">="),
+  NOT_EQUAL("~=");
 
   private String repr;
 
