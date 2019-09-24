@@ -51,98 +51,83 @@ public class Lexer {
     switch (ch) {
       case '=':
         token = new TokenOperator(Operator.EQUAL, currentLine, currentPosinLine);
-        readChar();
         break;
       case '+':
         token = new TokenOperator(Operator.PLUS, currentLine, currentPosinLine);
-        readChar();
         break;
       case '-':
         token = new TokenOperator(Operator.MINUS, currentLine, currentPosinLine);
-        readChar();
         break;
       case '*':
         token = new TokenOperator(Operator.ASTERISK, currentLine, currentPosinLine);
-        readChar();
         break;
       case '/':
         token = new TokenOperator(Operator.SLASH, currentLine, currentPosinLine);
-        readChar();
         break;
       case '<':
         token = new TokenOperator(Operator.LT, currentLine, currentPosinLine);
-        readChar();
         break;
       case '>':
         token = new TokenOperator(Operator.GT, currentLine, currentPosinLine);
-        readChar();
         break;
       case '(':
         token = new TokenDelimiter(Delimiter.LPAREN, currentLine, currentPosinLine);
-        readChar();
         break;
       case ')':
         token = new TokenDelimiter(Delimiter.RPAREN, currentLine, currentPosinLine);
-        readChar();
         break;
       case '[':
         token = new TokenDelimiter(Delimiter.LBRACK, currentLine, currentPosinLine);
-        readChar();
         break;
       case ']':
         token = new TokenDelimiter(Delimiter.RBRACK, currentLine, currentPosinLine);
-        readChar();
         break;
       case '{':
         token = new TokenDelimiter(Delimiter.LBRACE, currentLine, currentPosinLine);
-        readChar();
         break;
       case '}':
         token = new TokenDelimiter(Delimiter.RBRACE, currentLine, currentPosinLine);
-        readChar();
         break;
       case ',':
         token = new TokenDelimiter(Delimiter.COMMA, currentLine, currentPosinLine);
-        readChar();
         break;
       case ';':
         token = new TokenDelimiter(Delimiter.SEMICOLON, currentLine, currentPosinLine);
-        readChar();
         break;
       case '%':
         token = new TokenOperator(Operator.PERCENT, currentLine, currentPosinLine);
-        readChar();
         break;
       case '^':
         token = new TokenOperator(Operator.CARAT, currentLine, currentPosinLine);
-        readChar();
         break;
       case '#':
         token = new TokenDelimiter(Delimiter.HASH, currentLine, currentPosinLine);
-        readChar();
         break;
       case ':':
         token = new TokenDelimiter(Delimiter.COLON, currentLine, currentPosinLine);
-        readChar();
         break;
       case '.':
         token = new TokenOperator(Operator.DOT, currentLine, currentPosinLine);
-        readChar();
         break;
       default:
         if (Character.isLetter(ch)) {
           String identifier = nextIdentifier();
-          token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
+          
+            // return early to avoid readChar below
+            return new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
         } else if (Character.isDigit(ch)) {
           String identifier = nextIdentifier();
-          token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
+
+            // return early to avoid readChar below
+          return new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
         }
 
         token = new InvalidToken(currentLine, currentPosinLine, "");
-        readChar();
     }
 
-    return token;
+      readChar();
+
+      return token;
   }
 
   public String nextIdentifier() {
