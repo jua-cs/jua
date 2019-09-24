@@ -1,5 +1,7 @@
 package token;
 
+import java.util.HashMap;
+
 public enum Operator {
   PLUS("+"),
   MINUS("-"),
@@ -12,14 +14,22 @@ public enum Operator {
   POINT("."),
   EQUAL("=");
 
-  private String name;
+  private String repr;
 
-  Operator(String name) {
-    this.name = name;
+  Operator(String repr) {
+    this.repr = repr;
   }
 
   @Override
   public String toString() {
-    return this.name;
+    return this.repr;
+  }
+
+  public static HashMap<String, Operator> getLookUpTable() {
+    HashMap<String, Operator> lookUpTable = new HashMap<>();
+    for (Operator e : Operator.values()) {
+      lookUpTable.put(e.toString(), e);
+    }
+    return lookUpTable;
   }
 }

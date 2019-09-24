@@ -1,5 +1,7 @@
 package token;
 
+import java.util.HashMap;
+
 public enum Keyword {
   DO("do"),
   END("end"),
@@ -20,14 +22,22 @@ public enum Keyword {
   FALSE("false"),
   TRUE("true");
 
-  private String name;
+  private String repr;
 
-  Keyword(String name) {
-    this.name = name;
+  Keyword(String repr) {
+    this.repr = repr;
   }
 
   @Override
   public String toString() {
-    return this.name;
+    return this.repr;
+  }
+
+  public static HashMap<String, Keyword> getLookUpTable() {
+    HashMap<String, Keyword> lookUpTable = new HashMap<>();
+    for (Keyword e : Keyword.values()) {
+      lookUpTable.put(e.toString(), e);
+    }
+    return lookUpTable;
   }
 }
