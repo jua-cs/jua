@@ -1,13 +1,14 @@
 package token;
 
 public class TokenKeyword extends Token {
-    private Keyword keyword;
+  private Keyword keyword;
 
-    TokenKeyword(int line, int position, Keyword keyword) {
-        super(TokenType.KEYWORD, line, position, keyword.toString());
-    }
+  TokenKeyword(int line, int position, Keyword keyword) {
+    super(TokenType.KEYWORD, line, position, keyword.toString());
+    this.keyword = keyword;
+  }
 
-    public Keyword getKeyword() {
-        return keyword;
-    }
+  public Keyword getKeyword() {
+    return keyword;
+  }
 }

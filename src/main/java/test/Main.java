@@ -1,8 +1,7 @@
 package test;
 
-import token.Keyword;
-
 import java.util.stream.Stream;
+import token.Keyword;
 
 public class Main {
 

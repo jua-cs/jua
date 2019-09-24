@@ -1,8 +1,9 @@
 package token;
 
 public enum TokenType {
-    ILLEGAL,
-    OPERATOR,
-    DELIMITER,
-    KEYWORD,
+  ILLEGAL,
+  OPERATOR,
+  DELIMITER,
+  KEYWORD,
+  LITTERAL,
 }
