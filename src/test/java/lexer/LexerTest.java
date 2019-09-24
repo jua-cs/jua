@@ -1,36 +1,27 @@
 package lexer;
 
-import lexer.Lexer;
-import org.junit.jupiter.api.Test;
-import token.Literal;
-import token.Token;
-import token.TokenLiteral;
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
+import java.util.ArrayList;
+import org.junit.jupiter.api.Test;
+import token.*;
 
 public class LexerTest {
 
   @Test
   void testVariableAssignment() {
-    String in = "x = y";
+    String in = "x = y\nbonjour = bonsoir";
     Lexer lex = new Lexer(in);
-    Stream<Token> stream =
-        Stream.generate(
-                () -> {
-                  return lex.nextToken();
-                })
-            .limit(3);
 
-    ArrayList<Token> list = stream.collect(Collectors.toCollection(ArrayList::new));
+    ArrayList<Token> list = lex.getNTokens(6);
 
     ArrayList<Token> expected = new ArrayList<Token>();
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "x", 0, 0));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "y", 0, 4));
+    expected.add(new TokenLiteral(Literal.IDENTIFIER, "x", 0, 1));
+    expected.add(new TokenOperator(Operator.ASSIGN, 0, 3));
+    expected.add(new TokenLiteral(Literal.IDENTIFIER, "y", 0, 5));
+    expected.add(new TokenLiteral(Literal.IDENTIFIER, "bonjour", 1, 1));
+    expected.add(new TokenOperator(Operator.ASSIGN, 1, 9));
+    expected.add(new TokenLiteral(Literal.IDENTIFIER, "bonsoir", 1, 11));
 
     assertEquals(expected, list);
   }
@@ -52,13 +43,8 @@ public class LexerTest {
             + "    print(fact(a))";
 
     Lexer lex = new Lexer(in);
-    Stream<Token> stream =
-        Stream.generate(
-                () -> {
-                  return lex.nextToken();
-                })
-            .limit(50);
+    ArrayList<Token> list = lex.getNTokens(3);
 
-    stream.forEach(System.out::println);
+    list.forEach(System.out::println);
   }
 }

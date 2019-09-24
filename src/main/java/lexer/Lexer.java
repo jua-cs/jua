@@ -1,6 +1,8 @@
 package lexer;
 
-import java.io.IOException;
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import token.*;
 
 public class Lexer {
@@ -13,7 +15,6 @@ public class Lexer {
 
   public Lexer(String in) {
     this.currentLine = 0;
-    this.currentPosinLine = -1;
     this.in = in;
     readChar();
   }
@@ -48,6 +49,7 @@ public class Lexer {
     // Store it now in the cas of a multi char token
     int currentPos = currentPosinLine;
 
+    System.out.printf("Char: %c, pos: %d\n", ch, currentPos);
     switch (ch) {
       case '=':
         if (peekChar() == '=') {
@@ -136,17 +138,17 @@ public class Lexer {
 
           Keyword keyword = Token.getKeywordFromLiteral(identifier);
           if (keyword != null) {
-            return new TokenKeyword(keyword, currentLine, currentPosinLine);
+            return new TokenKeyword(keyword, currentLine, currentPos);
           }
 
           // return early to avoid readChar below
-          return new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
+          return new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPos);
 
         } else if (Character.isDigit(ch)) {
           String number = nextNumber();
 
           // return early to avoid readChar below
-          return new TokenLiteral(Literal.NUMBER, number, currentLine, currentPosinLine);
+          return new TokenLiteral(Literal.NUMBER, number, currentLine, currentPos);
         }
 
         token = new InvalidToken(currentLine, currentPos, "");
@@ -186,5 +188,14 @@ public class Lexer {
     }
 
     return number;
+  }
+
+  public ArrayList<Token> getNTokens(int n) {
+    if (n <= 0) {
+      return null;
+    }
+
+    Stream<Token> stream = Stream.generate(this::nextToken).limit(n);
+    return stream.collect(Collectors.toCollection(ArrayList::new));
   }
 }
