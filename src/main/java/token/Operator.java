@@ -11,7 +11,7 @@ public enum Operator {
   PERCENT("%"),
   LT("<"),
   GT(">"),
-  POINT("."),
+  DOT("."),
   EQUAL("=");
 
   private String repr;

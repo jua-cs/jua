@@ -10,7 +10,9 @@ public enum Delimiter {
   LBRACE("{"),
   RBRACE("}"),
   LBRACK("["),
-  RBRACK("]");
+  RBRACK("]"),
+  HASH("#"),
+  COLUMN(":");
 
   private String repr;
 
