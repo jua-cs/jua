@@ -2,7 +2,7 @@ package token;
 
 public enum Keyword {
   DO("do"),
-  END("do"),
+  END("end"),
   WHILE("while"),
   REPEAT("repeat"),
   UNTIL("until"),
