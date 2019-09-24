@@ -3,7 +3,7 @@ package token;
 public class TokenKeyword extends Token {
   private Keyword keyword;
 
-  public TokenKeyword(Keyword keyword, int line, int position) {
+  protected TokenKeyword(Keyword keyword, int line, int position) {
     super(TokenType.KEYWORD, keyword.toString(), line, position);
     this.keyword = keyword;
   }

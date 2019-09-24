@@ -52,18 +52,18 @@ public class Lexer {
     System.out.printf("Char: '%c', pos: %d\n", ch, currentPos);
     switch (ch) {
       case 0:
-        token = new EOFToken(currentLine, currentPos);
+        token = TokenFactory.createEOF(currentLine, currentPos);
         break;
       case '=':
         if (peekChar() == '=') {
-          token = new TokenOperator(Operator.EQUALS, currentLine, currentPos);
+          token = TokenFactory.create(Operator.EQUALS, currentLine, currentPos);
           readChar();
         } else {
-          token = new TokenOperator(Operator.ASSIGN, currentLine, currentPos);
+          token = TokenFactory.create(Operator.ASSIGN, currentLine, currentPos);
         }
         break;
       case '+':
-        token = new TokenOperator(Operator.PLUS, currentLine, currentPos);
+        token = TokenFactory.create(Operator.PLUS, currentLine, currentPos);
         break;
       case '-':
         // Handle comments
@@ -71,69 +71,69 @@ public class Lexer {
           nextLine();
           return nextToken();
         } else {
-          token = new TokenOperator(Operator.MINUS, currentLine, currentPos);
+          token = TokenFactory.create(Operator.MINUS, currentLine, currentPos);
         }
         break;
       case '*':
-        token = new TokenOperator(Operator.ASTERISK, currentLine, currentPos);
+        token = TokenFactory.create(Operator.ASTERISK, currentLine, currentPos);
         break;
       case '/':
-        token = new TokenOperator(Operator.SLASH, currentLine, currentPos);
+        token = TokenFactory.create(Operator.SLASH, currentLine, currentPos);
         break;
       case '<':
         if (peekChar() == '=') {
-          token = new TokenOperator(Operator.LTE, currentLine, currentPos);
+          token = TokenFactory.create(Operator.LTE, currentLine, currentPos);
           readChar();
         } else {
-          token = new TokenOperator(Operator.LT, currentLine, currentPos);
+          token = TokenFactory.create(Operator.LT, currentLine, currentPos);
         }
         break;
       case '>':
         if (peekChar() == '=') {
-          token = new TokenOperator(Operator.GTE, currentLine, currentPos);
+          token = TokenFactory.create(Operator.GTE, currentLine, currentPos);
           readChar();
         } else {
-          token = new TokenOperator(Operator.GT, currentLine, currentPos);
+          token = TokenFactory.create(Operator.GT, currentLine, currentPos);
         }
         break;
       case '(':
-        token = new TokenDelimiter(Delimiter.LPAREN, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.LPAREN, currentLine, currentPos);
         break;
       case ')':
-        token = new TokenDelimiter(Delimiter.RPAREN, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.RPAREN, currentLine, currentPos);
         break;
       case '[':
-        token = new TokenDelimiter(Delimiter.LBRACK, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.LBRACK, currentLine, currentPos);
         break;
       case ']':
-        token = new TokenDelimiter(Delimiter.RBRACK, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.RBRACK, currentLine, currentPos);
         break;
       case '{':
-        token = new TokenDelimiter(Delimiter.LBRACE, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.LBRACE, currentLine, currentPos);
         break;
       case '}':
-        token = new TokenDelimiter(Delimiter.RBRACE, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.RBRACE, currentLine, currentPos);
         break;
       case ',':
-        token = new TokenDelimiter(Delimiter.COMMA, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.COMMA, currentLine, currentPos);
         break;
       case ';':
-        token = new TokenDelimiter(Delimiter.SEMICOLON, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.SEMICOLON, currentLine, currentPos);
         break;
       case '%':
-        token = new TokenOperator(Operator.PERCENT, currentLine, currentPos);
+        token = TokenFactory.create(Operator.PERCENT, currentLine, currentPos);
         break;
       case '^':
-        token = new TokenOperator(Operator.CARAT, currentLine, currentPos);
+        token = TokenFactory.create(Operator.CARAT, currentLine, currentPos);
         break;
       case '#':
-        token = new TokenDelimiter(Delimiter.HASH, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.HASH, currentLine, currentPos);
         break;
       case ':':
-        token = new TokenDelimiter(Delimiter.COLON, currentLine, currentPos);
+        token = TokenFactory.create(Delimiter.COLON, currentLine, currentPos);
         break;
       case '.':
-        token = new TokenOperator(Operator.DOT, currentLine, currentPos);
+        token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
         break;
       default:
         if (Character.isLetter(ch)) {
@@ -141,20 +141,20 @@ public class Lexer {
 
           Keyword keyword = Token.getKeywordFromLiteral(identifier);
           if (keyword != null) {
-            return new TokenKeyword(keyword, currentLine, currentPos);
+            return TokenFactory.create(keyword, currentLine, currentPos);
           }
 
           // return early to avoid readChar below
-          return new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPos);
+          return TokenFactory.create(Literal.IDENTIFIER, identifier, currentLine, currentPos);
 
         } else if (Character.isDigit(ch)) {
           String number = nextNumber();
 
           // return early to avoid readChar below
-          return new TokenLiteral(Literal.NUMBER, number, currentLine, currentPos);
+          return TokenFactory.create(Literal.NUMBER, number, currentLine, currentPos);
         }
 
-        token = new InvalidToken(currentLine, currentPos, "");
+        token = TokenFactory.createInvalid(currentLine, currentPos, "");
     }
 
     readChar();
