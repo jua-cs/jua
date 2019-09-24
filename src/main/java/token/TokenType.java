@@ -6,4 +6,6 @@ public enum TokenType {
   DELIMITER,
   KEYWORD,
   LITERAL,
+  EOF,
+  INVALID
 }
