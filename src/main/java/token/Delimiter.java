@@ -12,7 +12,7 @@ public enum Delimiter {
   LBRACK("["),
   RBRACK("]"),
   HASH("#"),
-  COLUMN(":");
+  COLON(":");
 
   private String repr;
 

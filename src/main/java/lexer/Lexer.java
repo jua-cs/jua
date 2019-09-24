@@ -27,7 +27,6 @@ public class Lexer {
     return in.charAt(readPosition);
   }
 
-
   private void readChar() {
     ch = peekChar();
     readPosition++;
@@ -79,31 +78,68 @@ public class Lexer {
         readChar();
         break;
       case '(':
+        token = new TokenDelimiter(Delimiter.LPAREN, currentLine, currentPosinLine);
+        readChar();
+        break;
       case ')':
+        token = new TokenDelimiter(Delimiter.RPAREN, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '[':
+        token = new TokenDelimiter(Delimiter.LBRACK, currentLine, currentPosinLine);
+        readChar();
+        break;
       case ']':
+        token = new TokenDelimiter(Delimiter.RBRACK, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '{':
+        token = new TokenDelimiter(Delimiter.LBRACE, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '}':
+        token = new TokenDelimiter(Delimiter.RBRACE, currentLine, currentPosinLine);
+        readChar();
+        break;
       case ',':
+        token = new TokenDelimiter(Delimiter.COMMA, currentLine, currentPosinLine);
+        readChar();
+        break;
       case ';':
+        token = new TokenDelimiter(Delimiter.SEMICOLON, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '%':
+        token = new TokenOperator(Operator.PERCENT, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '^':
+        token = new TokenOperator(Operator.CARAT, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '#':
+        token = new TokenDelimiter(Delimiter.HASH, currentLine, currentPosinLine);
+        readChar();
+        break;
       case ':':
+        token = new TokenDelimiter(Delimiter.COLON, currentLine, currentPosinLine);
+        readChar();
+        break;
       case '.':
-        token = new InvalidToken(currentLine, currentPosinLine, "");
+        token = new TokenOperator(Operator.DOT, currentLine, currentPosinLine);
         readChar();
         break;
       default:
         if (Character.isLetter(ch)) {
           String identifier = nextIdentifier();
           token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
-        }
-
-        if (Character.isDigit(ch)) {
+        } else if (Character.isDigit(ch)) {
           String identifier = nextIdentifier();
           token = new TokenLiteral(Literal.IDENTIFIER, identifier, currentLine, currentPosinLine);
         }
+
+        token = new InvalidToken(currentLine, currentPosinLine, "");
+        readChar();
     }
 
     return token;
