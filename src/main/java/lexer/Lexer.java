@@ -1,9 +1,12 @@
 package lexer;
 
+import token.*;
+
 import java.io.BufferedInputStream;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import token.*;
+import java.nio.charset.StandardCharsets;
 
 public class Lexer {
 
@@ -16,8 +19,6 @@ public class Lexer {
   public Lexer(String in) {
     this.in = in;
   }
-
-
 
   private char peekChar() {
     if (readPosition >= in.length()) {
