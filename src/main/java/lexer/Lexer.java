@@ -14,7 +14,7 @@ public class Lexer {
   private int currentPosinLine;
 
   public Lexer(String in) {
-    this.currentLine = 0;
+    this.currentLine = 1;
     this.in = in;
     readChar();
   }
@@ -177,6 +177,7 @@ public class Lexer {
     while (ch != '\n') {
       readChar();
     }
+    currentPosinLine = 0;
     readChar();
     consumeWhitespace();
   }
