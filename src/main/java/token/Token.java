@@ -1,11 +1,13 @@
-package lexer;
+package token;
 
-public class Token {
+public abstract class Token {
+  private TokenType type;
   private int line;
   private int position;
   private String litteral;
 
-  Token(int line, int position, String litteral) {
+  Token(TokenType type, int line, int position, String litteral) {
+    this.type = type;
     this.line = line;
     this.position = position;
     this.litteral = litteral;
@@ -33,5 +35,9 @@ public class Token {
 
   public void setLitteral(String litteral) {
     this.litteral = litteral;
+  }
+
+  public TokenType getType() {
+    return type;
   }
 }

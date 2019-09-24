@@ -1,8 +1,12 @@
 package test;
 
+import token.Keyword;
+
+import java.util.stream.Stream;
+
 public class Main {
 
   public static void main(String[] args) {
-    System.out.println("hello world");
+    Stream.of(Keyword.values()).forEach(System.out::println);
   }
 }
