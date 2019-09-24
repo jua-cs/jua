@@ -18,11 +18,18 @@ public class TokenFactory {
     return new TokenDelimiter(d, line, pos);
   }
 
-  public static Token createEOF(int line, int pos) {
-    return new TokenEOF(line, pos);
+  public static Token create(Special spec, int line, int pos) {
+    return create(spec, line, pos, "");
   }
 
-  public static Token createInvalid(int line, int pos, String lit) {
-    return new TokenInvalid(line, pos, lit);
+  public static Token create(Special spec, int line, int pos, String lit) {
+    switch (spec) {
+      case TokenEOF:
+        return new TokenEOF(line, pos);
+      case TokenInvalid:
+        return new TokenInvalid(line, pos, lit);
+    }
+
+    return null;
   }
 }

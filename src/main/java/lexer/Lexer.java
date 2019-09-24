@@ -46,13 +46,13 @@ public class Lexer {
     Token token;
 
     consumeWhitespace();
-    // Store it now in the cas of a multi char token
+    // Store it now in the case of a multi char token
     int currentPos = currentPosInLine;
 
     System.out.printf("Char: '%c', pos: %d\n", ch, currentPos);
     switch (ch) {
       case 0:
-        token = TokenFactory.createEOF(currentLine, currentPos);
+        token = TokenFactory.create(Special.TokenEOF, currentLine, currentPos);
         break;
       case '=':
         if (peekChar() == '=') {
@@ -154,7 +154,7 @@ public class Lexer {
           return TokenFactory.create(Literal.NUMBER, number, currentLine, currentPos);
         }
 
-        token = TokenFactory.createInvalid(currentLine, currentPos, "");
+        token = TokenFactory.create(Special.TokenInvalid, currentLine, currentPos, "");
     }
 
     readChar();
@@ -177,6 +177,7 @@ public class Lexer {
     while (ch != '\n') {
       readChar();
     }
+    currentLine++;
     currentPosInLine = 0;
     readChar();
     consumeWhitespace();
