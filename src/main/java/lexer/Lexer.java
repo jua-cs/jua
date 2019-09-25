@@ -1,9 +1,10 @@
 package lexer;
 
+import token.*;
+
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-import token.*;
 
 public class Lexer {
 
@@ -196,7 +197,13 @@ public class Lexer {
 
   public ArrayList<Token> getNTokens(int n) {
     if (n <= 0) {
-      return null;
+      ArrayList<Token> tokens = new ArrayList<>();
+      Token tok;
+      do {
+        tok = nextToken();
+        tokens.add(tok);
+      } while (tok != null && tok.getType() != TokenType.EOF);
+      return tokens;
     }
 
     Stream<Token> stream = Stream.generate(this::nextToken).limit(n);

@@ -1,6 +1,8 @@
 package test;
 
 import java.io.IOException;
+import java.util.ArrayList;
+
 import lexer.Lexer;
 import token.Token;
 import token.TokenType;
@@ -15,11 +17,7 @@ public class Main {
       e.printStackTrace();
     }
 
-    Lexer lex = new Lexer(text);
-    Token tok;
-    do {
-      tok = lex.nextToken();
-      System.out.println(tok);
-    } while (tok.getType() != TokenType.EOF);
+    ArrayList<Token> tokens = (new Lexer(text)).getNTokens(0);
+    tokens.forEach(System.out::println);
   }
 }
