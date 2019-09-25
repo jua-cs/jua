@@ -51,8 +51,11 @@ public class Parser {
           case UNARY:
             advanceTokens();
             return ExpressionUnaryFactory.create(tokOp, parseExpression());
+          case BINARY:
+            throw new IllegalParseException(
+                String.format(
+                    "Unexpected binary operator: %s, token: %s", tokOp.getOperator(), tokOp));
         }
-
         break;
       case DELIMITER:
         TokenDelimiter tokDelim = (TokenDelimiter) tok;
