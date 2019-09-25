@@ -6,13 +6,10 @@ public class ExpressionUnaryFactory {
   public static ExpressionUnary create(TokenOperator token, Expression value) {
     switch (token.getOperator()) {
       case NEGATIVE:
-        // TODO implement
-        return null;
+        return new ExpressionNegative(token, value);
       case HASH:
-        // TODO implement
-        return null;
+        return new ExpressionHash(token, value);
       case NOT:
-        // TODO
         return new ExpressionNot(token, value);
       default:
         return null;
