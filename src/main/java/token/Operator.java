@@ -16,24 +16,39 @@ public enum Operator {
   EQUALS("=="),
   LTE("<="),
   GTE(">="),
-  NOT_EQUAL("~=");
+  NOT_EQUAL("~="),
+  AND("and"),
+  OR("or"),
+
+  NOT("not", Arity.UNARY);
 
   private String repr;
+  private Arity arity = Arity.BINARY;
 
   Operator(String repr) {
     this.repr = repr;
   }
 
-  @Override
-  public String toString() {
-    return this.repr;
+  Operator(String repr, Arity arity) {
+    this.repr = repr;
+    this.arity = arity;
   }
 
-  public static HashMap<String, Operator> getLookUpTable() {
+  public static HashMap<String, Operator> getOpTable() {
+    // TODO compute only once with a static field
     HashMap<String, Operator> lookUpTable = new HashMap<>();
     for (Operator e : Operator.values()) {
       lookUpTable.put(e.toString(), e);
     }
     return lookUpTable;
+  }
+
+  public Arity getArity() {
+    return arity;
+  }
+
+  @Override
+  public String toString() {
+    return this.repr;
   }
 }

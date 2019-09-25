@@ -2,9 +2,9 @@ package ast;
 
 import token.Token;
 
-public class ExpressionLiteral extends ExpressionUnary {
+public class ExpressionLiteral extends Expression {
 
-  public ExpressionLiteral(Token token, Expression value) {
-    super(token, value);
+  public ExpressionLiteral(Token token) {
+    super(token);
   }
 }

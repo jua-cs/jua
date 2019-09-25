@@ -2,9 +2,9 @@ package ast;
 
 import token.Token;
 
-public class ExpressionIdentifier extends ExpressionUnary {
+public class ExpressionIdentifier extends Expression {
 
-  public ExpressionIdentifier(Token token, Expression value) {
-    super(token, value);
+  public ExpressionIdentifier(Token token) {
+    super(token);
   }
 }

@@ -138,15 +138,8 @@ public class Lexer {
       default:
         if (Character.isLetter(ch)) {
           String identifier = nextIdentifier();
-
-          Keyword keyword = Token.getKeywordFromLiteral(identifier);
-          if (keyword != null) {
-            return TokenFactory.create(keyword, currentLine, currentPos);
-          }
-
           // return early to avoid readChar below
           return TokenFactory.create(Literal.IDENTIFIER, identifier, currentLine, currentPos);
-
         } else if (Character.isDigit(ch)) {
           String number = nextNumber();
 

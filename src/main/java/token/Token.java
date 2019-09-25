@@ -1,6 +1,5 @@
 package token;
 
-import java.util.HashMap;
 import java.util.Objects;
 
 public abstract class Token {
@@ -14,6 +13,22 @@ public abstract class Token {
     this.line = line;
     this.position = position;
     this.literal = literal;
+  }
+
+  public static Token fromString(String literal, int currentLine, int currentPos) {
+    Keyword keyword = Keyword.getKeywordTable().get(literal);
+
+    if (keyword != null) {
+      return new TokenKeyword(keyword, currentLine, currentPos);
+    }
+
+    // Keyword that is also an operator like 'and'
+    Operator operator = Operator.getOpTable().get(literal);
+    if (operator != null) {
+      return new TokenOperator(operator, currentLine, currentPos);
+    }
+
+    return new TokenLiteral(Literal.IDENTIFIER, literal, currentLine, currentPos);
   }
 
   public int getLine() {
@@ -42,11 +57,6 @@ public abstract class Token {
 
   public TokenType getType() {
     return type;
-  }
-
-  public static Keyword getKeywordFromLiteral(String literal) {
-    HashMap<String, Keyword> lookUpTable = Keyword.getLookUpTable();
-    return lookUpTable.get(literal);
   }
 
   @Override

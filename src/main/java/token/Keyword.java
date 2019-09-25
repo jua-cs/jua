@@ -33,7 +33,8 @@ public enum Keyword {
     return this.repr;
   }
 
-  public static HashMap<String, Keyword> getLookUpTable() {
+  public static HashMap<String, Keyword> getKeywordTable() {
+    // TODO compute only once with a static field
     HashMap<String, Keyword> lookUpTable = new HashMap<>();
     for (Keyword e : Keyword.values()) {
       lookUpTable.put(e.toString(), e);
