@@ -3,7 +3,7 @@ package ast;
 import java.util.ArrayList;
 import token.Token;
 
-public class Node {
+public abstract class Node {
   private Token token;
 
   private ArrayList<Node> children = new ArrayList<>();
@@ -18,9 +18,5 @@ public class Node {
 
   public void addChild(Node node) {
     children.add(node);
-  }
-
-  public ArrayList<Node> getChildren() {
-    return children;
   }
 }

@@ -2,10 +2,8 @@ package test;
 
 import java.io.IOException;
 import java.util.ArrayList;
-
 import lexer.Lexer;
 import token.Token;
-import token.TokenType;
 
 public class Main {
 

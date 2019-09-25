@@ -2,11 +2,9 @@ package ast;
 
 import token.Token;
 
-public abstract class ExpressionNot extends Expression {
-
-  private Expression value;
+public class ExpressionNot extends ExpressionUnary {
 
   public ExpressionNot(Token token, Expression value) {
-    super(token);
+    super(token, value);
   }
 }

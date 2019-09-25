@@ -1,10 +1,9 @@
 package lexer;
 
-import token.*;
-
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import token.*;
 
 public class Lexer {
 
