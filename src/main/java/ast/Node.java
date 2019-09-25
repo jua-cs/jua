@@ -15,6 +15,6 @@ public abstract class Node {
 
   @Override
   public String toString() {
-    return String.format("Node with token: %s", token);
+    return token.toString();
   }
 }

@@ -1,12 +1,12 @@
 package ast;
 
-import token.Token;
+import token.TokenOperator;
 
 public abstract class ExpressionUnary extends Expression {
 
   private Expression value;
 
-  public ExpressionUnary(Token token, Expression value) {
+  public ExpressionUnary(TokenOperator token, Expression value) {
     super(token);
     this.value = value;
   }

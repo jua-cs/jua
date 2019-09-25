@@ -11,4 +11,9 @@ public class StatementAssignment extends Statement {
     this.lhs = lhs;
     this.rhs = rhs;
   }
+
+  @Override
+  public String toString() {
+    return String.format("Assignment(%s <- %s)", lhs, rhs);
+  }
 }
