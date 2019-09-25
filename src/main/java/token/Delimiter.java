@@ -20,16 +20,17 @@ public enum Delimiter {
     this.repr = repr;
   }
 
-  @Override
-  public String toString() {
-    return this.repr;
-  }
-
   public static HashMap<String, Delimiter> getLookUpTable() {
     HashMap<String, Delimiter> lookUpTable = new HashMap<>();
     for (Delimiter e : Delimiter.values()) {
       lookUpTable.put(e.toString(), e);
     }
+
     return lookUpTable;
+  }
+
+  @Override
+  public String toString() {
+    return this.repr;
   }
 }

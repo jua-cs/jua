@@ -15,13 +15,13 @@ public class LexerTest {
     ArrayList<Token> list = lex.getNTokens(7);
 
     ArrayList<Token> expected = new ArrayList<Token>();
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "x", 1, 1));
-    expected.add(new TokenOperator(Operator.ASSIGN, 1, 3));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "y", 1, 5));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "bonjour", 2, 1));
-    expected.add(new TokenOperator(Operator.ASSIGN, 2, 9));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "bonsoir", 2, 11));
-    expected.add(new EOFToken(2, 18));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "x", 1, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "y", 1, 5));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "bonjour", 2, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 2, 9));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "bonsoir", 2, 11));
+    expected.add(TokenFactory.create(Special.TokenEOF, 2, 18));
 
     assertEquals(expected, list);
   }
@@ -45,42 +45,42 @@ public class LexerTest {
 
     ArrayList<Token> expected = new ArrayList<Token>();
     // First line of code
-    expected.add(new TokenKeyword(Keyword.FUNCTION, 1, 1));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "fact", 1, 10));
-    expected.add(new TokenDelimiter(Delimiter.LPAREN, 1, 15));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "n", 1, 16));
-    expected.add(new TokenDelimiter(Delimiter.RPAREN, 1, 17));
+    expected.add(TokenFactory.create(Keyword.FUNCTION, 2, 1));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "fact", 2, 10));
+    expected.add(TokenFactory.create(Delimiter.LPAREN, 2, 15));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "n", 2, 16));
+    expected.add(TokenFactory.create(Delimiter.RPAREN, 2, 17));
 
-    expected.add(new TokenKeyword(Keyword.IF, 2, 3));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "n", 2, 6));
-    expected.add(new TokenOperator(Operator.EQUALS, 2, 8));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "0", 2, 11));
-    expected.add(new TokenKeyword(Keyword.THEN, 2, 13));
+    expected.add(TokenFactory.create(Keyword.IF, 3, 3));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "n", 3, 6));
+    expected.add(TokenFactory.create(Operator.EQUALS, 3, 8));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "0", 3, 11));
+    expected.add(TokenFactory.create(Keyword.THEN, 3, 13));
 
-    expected.add(new TokenKeyword(Keyword.RETURN, 3, 5));
-    expected.add(new TokenLiteral(Literal.NUMBER, "1", 3, 12));
+    expected.add(TokenFactory.create(Keyword.RETURN, 4, 5));
+    expected.add(TokenFactory.create(Literal.NUMBER, "1", 4, 12));
 
-    expected.add(new TokenKeyword(Keyword.ELSE, 4, 3));
+    expected.add(TokenFactory.create(Keyword.ELSE, 5, 3));
 
-    expected.add(new TokenKeyword(Keyword.RETURN, 5, 5));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "n", 5, 12));
-    expected.add(new TokenOperator(Operator.ASTERISK, 5, 14));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "fact", 5, 16));
-    expected.add(new TokenDelimiter(Delimiter.LPAREN, 5, 20));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "n", 5, 21));
-    expected.add(new TokenOperator(Operator.MINUS, 5, 22));
-    expected.add(new TokenLiteral(Literal.NUMBER, "1", 5, 23));
-    expected.add(new TokenDelimiter(Delimiter.RPAREN, 5, 24));
+    expected.add(TokenFactory.create(Keyword.RETURN, 6, 5));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "n", 6, 12));
+    expected.add(TokenFactory.create(Operator.ASTERISK, 6, 14));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "fact", 6, 16));
+    expected.add(TokenFactory.create(Delimiter.LPAREN, 6, 20));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "n", 6, 21));
+    expected.add(TokenFactory.create(Operator.MINUS, 6, 22));
+    expected.add(TokenFactory.create(Literal.NUMBER, "1", 6, 23));
+    expected.add(TokenFactory.create(Delimiter.RPAREN, 6, 24));
 
-    expected.add(new TokenKeyword(Keyword.END, 6, 3));
+    expected.add(TokenFactory.create(Keyword.END, 7, 3));
 
-    expected.add(new TokenKeyword(Keyword.END, 7, 1));
+    expected.add(TokenFactory.create(Keyword.END, 8, 1));
 
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "print", 9, 1));
-    expected.add(new TokenDelimiter(Delimiter.LPAREN, 9, 6));
-    expected.add(new TokenLiteral(Literal.IDENTIFIER, "n", 9, 7));
-    expected.add(new TokenDelimiter(Delimiter.RPAREN, 9, 8));
-    expected.add(new EOFToken(10, 1));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "print", 10, 1));
+    expected.add(TokenFactory.create(Delimiter.LPAREN, 10, 6));
+    expected.add(TokenFactory.create(Literal.IDENTIFIER, "n", 10, 7));
+    expected.add(TokenFactory.create(Delimiter.RPAREN, 10, 8));
+    expected.add(TokenFactory.create(Special.TokenEOF, 11, 1));
 
     assertEquals(expected, list);
   }
