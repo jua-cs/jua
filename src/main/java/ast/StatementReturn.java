@@ -3,7 +3,9 @@ package ast;
 import token.Token;
 
 public class StatementReturn extends Statement {
-  public StatementReturn(Token token) {
+  private Expression value;
+  public StatementReturn(Token token, Expression value) {
     super(token);
+    this.value = value;
   }
 }

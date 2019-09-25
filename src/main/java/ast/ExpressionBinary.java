@@ -9,5 +9,7 @@ public abstract class ExpressionBinary extends Expression {
 
   public ExpressionBinary(Token token, Expression valueLeft, Expression valueRight) {
     super(token);
+    this.valueLeft = valueLeft;
+    this.valueRight = valueRight;
   }
 }

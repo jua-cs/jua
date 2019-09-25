@@ -8,5 +8,6 @@ public abstract class ExpressionUnary extends Expression {
 
   public ExpressionUnary(Token token, Expression value) {
     super(token);
+    this.value = value;
   }
 }

@@ -3,7 +3,14 @@ package ast;
 import token.Token;
 
 public class StatementWhile extends Statement {
-  public StatementWhile(Token token) {
+
+  private Expression condition;
+  private Statement consequence;
+
+
+  public StatementWhile(Token token, Expression condition, Statement consequence) {
     super(token);
+    this.condition = condition;
+    this.consequence = consequence;
   }
 }
