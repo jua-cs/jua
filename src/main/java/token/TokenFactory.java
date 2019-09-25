@@ -2,10 +2,6 @@ package token;
 
 public class TokenFactory {
 
-  public static Token create(Literal lit, String str, int line, int pos) {
-    return new TokenLiteral(Literal.IDENTIFIER, str, line, pos);
-  }
-
   public static Token create(Operator op, int line, int pos) {
     return new TokenOperator(op, line, pos);
   }
@@ -18,16 +14,20 @@ public class TokenFactory {
     return new TokenDelimiter(d, line, pos);
   }
 
-  public static Token create(Special spec, int line, int pos) {
-    return create(spec, line, pos, "");
+  public static Token create(double number, int line, int pos) {
+    return new TokenLiteral(number, line, pos);
   }
 
-  public static Token create(Special spec, int line, int pos, String lit) {
+  public static Token create(String identifier, int line, int pos) {
+    return new TokenLiteral(identifier, line, pos);
+  }
+
+  public static Token create(Special spec, int line, int pos) {
     switch (spec) {
       case TokenEOF:
         return new TokenEOF(line, pos);
       case TokenInvalid:
-        return new TokenInvalid(line, pos, lit);
+        return new TokenInvalid(line, pos);
     }
 
     return null;
