@@ -1,5 +1,6 @@
 package ast;
 
+import java.util.Objects;
 import token.Token;
 
 public class StatementAssignment extends Statement {
@@ -15,5 +16,21 @@ public class StatementAssignment extends Statement {
   @Override
   public String toString() {
     return String.format("Assignment(%s <- %s)", lhs, rhs);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    StatementAssignment that = (StatementAssignment) o;
+    return Objects.equals(lhs, that.lhs) && Objects.equals(rhs, that.rhs);
+  }
+
+  public ExpressionIdentifier getLhs() {
+    return lhs;
+  }
+
+  public Expression getRhs() {
+    return rhs;
   }
 }

@@ -17,18 +17,17 @@ public abstract class Token {
 
   public static Token fromString(String literal, int currentLine, int currentPos) {
     Keyword keyword = Keyword.getKeywordTable().get(literal);
-
     if (keyword != null) {
-      return new TokenKeyword(keyword, currentLine, currentPos);
+      return TokenFactory.create(keyword, currentLine, currentPos);
     }
 
     // Keyword that is also an operator like 'and'
     Operator operator = Operator.getOpTable().get(literal);
     if (operator != null) {
-      return new TokenOperator(operator, currentLine, currentPos);
+      return TokenFactory.create(operator, currentLine, currentPos);
     }
 
-    return new TokenLiteral(Literal.IDENTIFIER, literal, currentLine, currentPos);
+    return TokenFactory.create(literal, currentLine, currentPos);
   }
 
   public int getLine() {

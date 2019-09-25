@@ -127,7 +127,7 @@ public class Lexer {
         token = TokenFactory.create(Operator.CARAT, currentLine, currentPos);
         break;
       case '#':
-        token = TokenFactory.create(Delimiter.HASH, currentLine, currentPos);
+        token = TokenFactory.create(Operator.HASH, currentLine, currentPos);
         break;
       case ':':
         token = TokenFactory.create(Delimiter.COLON, currentLine, currentPos);
@@ -139,7 +139,7 @@ public class Lexer {
         if (Character.isLetter(ch)) {
           String identifier = nextIdentifier();
           // return early to avoid readChar below
-          return TokenFactory.create(identifier, currentLine, currentPos);
+          return Token.fromString(identifier, currentLine, currentPos);
         } else if (Character.isDigit(ch)) {
           double number = nextNumber();
 

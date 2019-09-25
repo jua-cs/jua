@@ -1,9 +1,10 @@
 package ast;
 
+import java.util.Objects;
 import token.Token;
 
 public abstract class Node {
-  private Token token;
+  protected Token token;
 
   public Node(Token token) {
     this.token = token;
@@ -16,5 +17,18 @@ public abstract class Node {
   @Override
   public String toString() {
     return token.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Node node = (Node) o;
+    return Objects.equals(token, node.token);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(token);
   }
 }

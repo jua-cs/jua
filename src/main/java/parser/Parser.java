@@ -67,6 +67,21 @@ public class Parser {
               String.format("Unexpected delimiter: %s, token: %s", delim, tok));
         }
 
+        // TODO(Sami)
+        // processing
+
+        Token endingToken = currentToken();
+        if (endingToken.getType() != TokenType.DELIMITER) {
+          throw new IllegalParseException(
+              String.format("Expected a delimiter token but got: %s", tok));
+        }
+
+        TokenDelimiter endingDelim = (TokenDelimiter) endingToken;
+        if (!endingDelim.getDelimiter().matches(delim)) {
+          throw new IllegalParseException(
+              String.format(
+                  "Unexpected closing delimiter, opener: %s, closer: %s", tok, endingDelim));
+        }
         break;
       case KEYWORD:
         break;
@@ -93,10 +108,13 @@ public class Parser {
           && nextToken().getType() == TokenType.OPERATOR
           && ((TokenOperator) nextToken()).getOperator() == Operator.ASSIGN) {
         Statement stmt = parseAssignment();
-        // TODO add to statement list
-        System.out.printf("Assignment detected ! Assignment: %s", stmt);
-        return;
+        ast.addChild(stmt);
+        advanceTokens();
       }
     }
+  }
+
+  public AST getAst() {
+    return ast;
   }
 }
