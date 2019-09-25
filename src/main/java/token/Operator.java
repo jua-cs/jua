@@ -20,6 +20,8 @@ public enum Operator {
   AND("and"),
   OR("or"),
 
+  NEGATIVE("-", Arity.UNARY),
+  HASH("#", Arity.UNARY),
   NOT("not", Arity.UNARY);
 
   private String repr;

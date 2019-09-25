@@ -1,10 +1,10 @@
 package ast;
 
-import token.Token;
+import token.TokenOperator;
 
 public class ExpressionNot extends ExpressionUnary {
 
-  public ExpressionNot(Token token, Expression value) {
+  public ExpressionNot(TokenOperator token, Expression value) {
     super(token, value);
   }
 }
