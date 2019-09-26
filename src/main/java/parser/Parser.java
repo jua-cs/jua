@@ -86,6 +86,34 @@ public class Parser {
       case KEYWORD:
         break;
       case LITERAL:
+      case IDENTIFIER:
+        Token nextTok = nextToken();
+        switch (nextTok.getType()) {
+          case OPERATOR:
+            TokenOperator nextTokOp = (TokenOperator) nextTok;
+            if (nextTokOp.getOperator().getArity() == Arity.BINARY) {
+              advanceTokens();
+              advanceTokens();
+              Expression expr;
+              switch (tok.getType()) {
+                case LITERAL:
+                  expr = new ExpressionLiteral(tok);
+                case IDENTIFIER:
+                  expr = new ExpressionIdentifier(tok);
+              }
+              return ExpressionBinaryFactory.create(nextTokOp, expr, parseExpression());
+            }
+            throw new IllegalParseException(
+                String.format("Unexpected unary operator: %s", nextTokOp));
+
+          case DELIMITER:
+            TokenDelimiter nextTokDelim = (TokenDelimiter) nextTok;
+            switch (nextTokDelim.getDelimiter()) {
+              case LPAREN:
+                // TODO(Remi) parseFunction call
+            }
+        }
+
         break;
       case EOF:
         throw new IllegalParseException(String.format("Unexpected EOF token: %s", tok));
