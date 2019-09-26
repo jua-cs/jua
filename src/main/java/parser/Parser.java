@@ -117,7 +117,7 @@ public class Parser {
             }
 
             advanceTokens();
-            return new ExpressionLiteral(tok);
+            return ExpressionFactory.create(tok);
             // TODO: make sure that a keyword can't be after a literal
             // case KEYWORD:
             // break;
@@ -134,7 +134,7 @@ public class Parser {
         throw new IllegalParseException("Unexpected value: " + tok.getType());
     }
 
-    return new ExpressionLiteral(currentToken());
+    return ExpressionFactory.create(currentToken());
   }
 
   public void parse() throws IllegalParseException {
