@@ -1,6 +1,7 @@
 package lexer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
@@ -10,7 +11,7 @@ public class LexerTest {
 
   @Test
   void testVariableAssignment() {
-    Lexer lex = new Lexer(new String("x = y\nbonjour = bonsoir"));
+    Lexer lex = new Lexer("x = y\nbonjour = bonsoir");
 
     ArrayList<Token> list = lex.getNTokens(7);
 
@@ -23,7 +24,35 @@ public class LexerTest {
     expected.add(TokenFactory.create("bonsoir", 2, 11));
     expected.add(TokenFactory.create(Special.TokenEOF, 2, 18));
 
-    assertEquals(expected, list);
+    assertIterableEquals(expected, list);
+  }
+
+  @Test
+  void testVariableWithDigitOrUnderscore() {
+    Lexer lex = new Lexer(
+            "varw1thd1g1ts0 = y\n" +
+            "bon_jour = _bonsoir"
+//            "1ncorrect = 5hould_fail"
+            );
+
+    ArrayList<Token> list = lex.getNTokens(7);
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(TokenFactory.create("varw1thd1g1ts0", 1, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 1, 16));
+    expected.add(TokenFactory.create("y", 1, 18));
+    expected.add(TokenFactory.create("bon_jour", 2, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 2, 10));
+    expected.add(TokenFactory.create("_bonsoir", 2, 12));
+    expected.add(TokenFactory.create(Special.TokenEOF, 2, 20));
+    // TODO: implements a better lexer for number (ie fails if a char inside)
+//    expected.add(TokenFactory.create(Special.TokenInvalid, 3, 1));
+//    expected.add(TokenFactory.create(Operator.ASSIGN, 2, 11));
+//    expected.add(TokenFactory.create(Special.TokenInvalid, 3, 13));
+
+    assertIterableEquals(expected, list);
+
+
   }
 
   @Test
@@ -82,6 +111,6 @@ public class LexerTest {
     expected.add(TokenFactory.create(Delimiter.RPAREN, 10, 8));
     expected.add(TokenFactory.create(Special.TokenEOF, 11, 1));
 
-    assertEquals(expected, list);
+    assertIterableEquals(expected, list);
   }
 }

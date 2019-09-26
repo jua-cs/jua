@@ -137,7 +137,7 @@ public class Lexer {
         token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
         break;
       default:
-        if (Character.isLetter(ch)) {
+        if (Character.isLetter(ch) || ch == '_') {
           String identifier = nextIdentifier();
           // return early to avoid readChar below
           return Token.fromString(identifier, currentLine, currentPos);
@@ -151,15 +151,22 @@ public class Lexer {
         token = TokenFactory.create(Special.TokenInvalid, currentLine, currentPos);
     }
 
+    // Move to next char
     readChar();
 
     return token;
   }
 
   public String nextIdentifier() {
+    // from Lua manual : Names (also called identifiers) in Lua can be any string of letters,
+    // digits, and underscores, not beginning with a digit.
     StringBuilder identifier = new StringBuilder();
 
-    while (Character.isLetter(ch)) {
+    // (Character.isLetter(ch) || ch == '_') is true
+    identifier.append(ch);
+    readChar();
+
+    while (Character.isLetterOrDigit(ch) || ch == '_') {
       identifier.append(ch);
       readChar();
     }
