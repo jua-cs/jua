@@ -28,7 +28,7 @@ public class ParserTest {
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN, 1, 3),
             new ExpressionIdentifier(TokenFactory.create("x", 1, 1)),
-            ExpressionUnaryFactory.create(
+            ExpressionFactory.create(
                 (TokenOperator) TokenFactory.create(Operator.NOT, 1, 7),
                 new ExpressionLiteral(TokenFactory.create(Keyword.TRUE, 1, 9))));
 

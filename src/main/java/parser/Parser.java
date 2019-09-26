@@ -40,8 +40,8 @@ public class Parser {
     // We parse until we have a non binary operator as the next character and
     // we are not currently waiting the right side of
     // A binary or unary operator
-    System.out.println("PARSE EXPR");
     Token tok = currentToken();
+    System.out.printf("Parse expression, token: %s\n", tok);
 
     switch (tok.getType()) {
       case OPERATOR:
@@ -86,6 +86,7 @@ public class Parser {
         advanceTokens();
         return expr;
       case KEYWORD:
+        // TODO
         break;
       case IDENTIFIER:
       case LITERAL:
