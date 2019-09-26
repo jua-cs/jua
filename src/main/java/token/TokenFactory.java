@@ -19,7 +19,7 @@ public class TokenFactory {
   }
 
   public static Token create(String identifier, int line, int pos) {
-    return new TokenLiteral(identifier, line, pos);
+    return new TokenIdentifier(identifier, line, pos);
   }
 
   public static Token create(Special spec, int line, int pos) {

@@ -100,6 +100,10 @@ public class Parser {
                   expr = new ExpressionLiteral(tok);
                 case IDENTIFIER:
                   expr = new ExpressionIdentifier(tok);
+                  break;
+                default:
+                  //this should never happen
+                  throw new IllegalStateException("Unexpected value: " + tok.getType());
               }
               return ExpressionBinaryFactory.create(nextTokOp, expr, parseExpression());
             }

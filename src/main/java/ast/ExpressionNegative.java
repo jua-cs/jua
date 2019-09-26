@@ -1,10 +1,11 @@
 package ast;
 
 import token.Token;
+import token.TokenOperator;
 
 public class ExpressionNegative extends ExpressionUnary {
 
-  public ExpressionNegative(Token token, Expression value) {
-    super(token, value);
+  public ExpressionNegative(TokenOperator tokOp, Expression value) {
+    super(tokOp, value);
   }
 }
