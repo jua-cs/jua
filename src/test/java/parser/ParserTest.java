@@ -61,6 +61,9 @@ public class ParserTest {
     Parser parser = new Parser((new Lexer(new String("x = (1 + 5)"))).getNTokens(0));
 
     parser.parse();
-    // TODO(SAMI): verify statements
+    ArrayList<Statement> statements = parser.getAst().getChildren();
+    assertEquals(1, statements.size());
+
+    System.out.println(statements.get(0));
   }
 }

@@ -1,10 +1,10 @@
 package ast;
 
-import token.Token;
+import token.TokenOperator;
 
 public class ExpressionAddition extends ExpressionBinary {
 
-  public ExpressionAddition(Token token, Expression valueLeft, Expression valueRight) {
-    super(token, valueLeft, valueRight);
+  protected ExpressionAddition(TokenOperator token, Expression lhs, Expression rhs) {
+    super(token, lhs, rhs);
   }
 }

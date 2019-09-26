@@ -2,7 +2,7 @@ package token;
 
 public class TokenFactory {
 
-  public static Token create(Operator op, int line, int pos) {
+  public static TokenOperator create(Operator op, int line, int pos) {
     return new TokenOperator(op, line, pos);
   }
 

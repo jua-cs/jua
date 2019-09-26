@@ -1,8 +1,9 @@
 package parser;
 
 import ast.*;
-import java.util.ArrayList;
 import token.*;
+
+import java.util.ArrayList;
 
 public class Parser {
   private ArrayList<Token> tokens;
@@ -39,9 +40,7 @@ public class Parser {
     // We parse until we have a non binary operator as the next character and
     // we are not currently waiting the right side of
     // A binary or unary operator
-
-    // TODO
-
+    System.out.println("PARSE EXPR");
     Token tok = currentToken();
 
     switch (tok.getType()) {
@@ -50,7 +49,7 @@ public class Parser {
         switch (tokOp.getOperator().getArity()) {
           case UNARY:
             advanceTokens();
-            return ExpressionUnaryFactory.create(tokOp, parseExpression());
+            return ExpressionFactory.create(tokOp, parseExpression());
           case BINARY:
             throw new IllegalParseException(
                 String.format(
@@ -67,13 +66,13 @@ public class Parser {
               String.format("Unexpected delimiter: %s, token: %s", delim, tok));
         }
 
-        // TODO(Sami)
-        // processing
+        advanceTokens();
+        Expression expr = parseExpression();
 
         Token endingToken = currentToken();
         if (endingToken.getType() != TokenType.DELIMITER) {
           throw new IllegalParseException(
-              String.format("Expected a delimiter token but got: %s", tok));
+              String.format("Expected a delimiter token but got: %s", endingToken));
         }
 
         TokenDelimiter endingDelim = (TokenDelimiter) endingToken;
@@ -82,43 +81,51 @@ public class Parser {
               String.format(
                   "Unexpected closing delimiter, opener: %s, closer: %s", tok, endingDelim));
         }
-        break;
+
+        // Eat the closing delimiter
+        advanceTokens();
+        return expr;
       case KEYWORD:
         break;
-      case LITERAL:
       case IDENTIFIER:
+      case LITERAL:
         Token nextTok = nextToken();
+
         switch (nextTok.getType()) {
           case OPERATOR:
             TokenOperator nextTokOp = (TokenOperator) nextTok;
-            if (nextTokOp.getOperator().getArity() == Arity.BINARY) {
-              advanceTokens();
-              advanceTokens();
-              Expression expr;
-              switch (tok.getType()) {
-                case LITERAL:
-                  expr = new ExpressionLiteral(tok);
-                case IDENTIFIER:
-                  expr = new ExpressionIdentifier(tok);
-                  break;
-                default:
-                  //this should never happen
-                  throw new IllegalStateException("Unexpected value: " + tok.getType());
-              }
-              return ExpressionBinaryFactory.create(nextTokOp, expr, parseExpression());
+            // ALlow only binary operators if expression started with a literal
+            if (nextTokOp.getOperator().getArity() != Arity.BINARY) {
+              throw new IllegalParseException(
+                  String.format(
+                      "Expected binary operator but got: %s, token: %s",
+                      nextTokOp.getOperator(), nextTokOp));
             }
-            throw new IllegalParseException(
-                String.format("Unexpected unary operator: %s", nextTokOp));
 
+            advanceTokens();
+            advanceTokens();
+            Expression lhs = ExpressionFactory.create(tok);
+            Expression rhs = parseExpression();
+            return ExpressionFactory.create(nextTokOp, lhs, rhs);
           case DELIMITER:
+            // If we encounter a closing delimiter just return the current literal
             TokenDelimiter nextTokDelim = (TokenDelimiter) nextTok;
-            switch (nextTokDelim.getDelimiter()) {
-              case LPAREN:
-                // TODO(Remi) parseFunction call
+            Delimiter nextDelim = nextTokDelim.getDelimiter();
+            if (nextDelim != Delimiter.RPAREN && nextDelim != Delimiter.RBRACE) {
+              throw new IllegalParseException(
+                  String.format("Unexpected delimiter: %s, token: %s", nextDelim, nextTok));
             }
+
+            advanceTokens();
+            return new ExpressionLiteral(tok);
+            // TODO: make sure that a keyword can't be after a literal
+            // case KEYWORD:
+            // break;
+          default:
+            throw new IllegalParseException(
+                String.format("Unexpected token: %s after literal: %s", nextTok, tok));
         }
 
-        break;
       case EOF:
         throw new IllegalParseException(String.format("Unexpected EOF token: %s", tok));
       case INVALID:
@@ -132,16 +139,18 @@ public class Parser {
 
   public void parse() throws IllegalParseException {
     // TODO: fixme: Multi assignment is not supported
-    while (currentToken().getType() != TokenType.EOF) {
-
+    while (currentPos < tokens.size() && currentToken().getType() != TokenType.EOF) {
       // Assignment
       // Occurs when current token is literal and next token is the assign operator
-      if (currentToken().getType() == TokenType.LITERAL
+      TokenType currType = currentToken().getType();
+      if ((currType == TokenType.LITERAL || currType == TokenType.IDENTIFIER)
           && nextToken().getType() == TokenType.OPERATOR
           && ((TokenOperator) nextToken()).getOperator() == Operator.ASSIGN) {
         Statement stmt = parseAssignment();
         ast.addChild(stmt);
         advanceTokens();
+      } else {
+        throw new IllegalParseException(String.format("Unknown token: %s", currentToken()));
       }
     }
   }

@@ -1,15 +1,21 @@
 package ast;
 
 import token.Token;
+import token.TokenOperator;
 
 public abstract class ExpressionBinary extends Expression {
 
-  private Expression valueLeft;
-  private Expression valueRight;
+  private Expression lhs;
+  private Expression rhs;
 
-  public ExpressionBinary(Token token, Expression valueLeft, Expression valueRight) {
+  protected ExpressionBinary(TokenOperator token, Expression lhs, Expression rhs) {
     super(token);
-    this.valueLeft = valueLeft;
-    this.valueRight = valueRight;
+    this.lhs = lhs;
+    this.rhs = rhs;
+  }
+
+  @Override
+  public String toString() {
+    return String.format("%s BinaryOp(%s) %s", lhs, token, rhs);
   }
 }

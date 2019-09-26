@@ -1,11 +1,12 @@
 package ast;
 
+import token.Operator;
 import token.Token;
-import token.TokenOperator;
+import token.TokenFactory;
 
 public class ExpressionNegative extends ExpressionUnary {
 
-  public ExpressionNegative(TokenOperator tokOp, Expression value) {
-    super(tokOp, value);
+  public ExpressionNegative(Token token, Expression value) {
+    super(TokenFactory.create(Operator.NEGATIVE, token.getLine(), token.getPosition()), value);
   }
 }

@@ -1,10 +1,10 @@
 package ast;
 
-import token.Token;
+import token.TokenOperator;
 
 public class ExpressionDivision extends ExpressionBinary {
 
-  public ExpressionDivision(Token token, Expression valueLeft, Expression valueRight) {
-    super(token, valueLeft, valueRight);
+  protected ExpressionDivision(TokenOperator token, Expression lhs, Expression rhs) {
+    super(token, lhs, rhs);
   }
 }

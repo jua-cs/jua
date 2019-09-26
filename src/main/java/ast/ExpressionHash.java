@@ -1,11 +1,13 @@
 package ast;
 
+import token.Operator;
 import token.Token;
+import token.TokenFactory;
 import token.TokenOperator;
 
 public class ExpressionHash extends ExpressionUnary {
 
-  public ExpressionHash(TokenOperator tokOp, Expression value) {
-    super(tokOp, value);
+  protected ExpressionHash(TokenOperator token, Expression value) {
+    super(TokenFactory.create(Operator.HASH, token.getLine(), token.getPosition()), value);
   }
 }
