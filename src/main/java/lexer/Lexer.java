@@ -21,7 +21,7 @@ public class Lexer {
 
   private char peekChar() {
     if (readPosition >= in.length()) {
-      return 0;
+      return 0; // char 0 != char '0'
     }
     return in.charAt(readPosition);
   }
@@ -33,7 +33,7 @@ public class Lexer {
   }
 
   private void consumeWhitespace() {
-    while (ch == ' ' || ch == '\t' || ch == '\n') {
+    while (Character.isWhitespace(ch)) {
       if (ch == '\n') {
         currentPosInLine = 0;
         currentLine++;
@@ -46,6 +46,7 @@ public class Lexer {
     Token token;
 
     consumeWhitespace();
+
     // Store it now in the case of a multi char token
     int currentPos = currentPosInLine;
 
