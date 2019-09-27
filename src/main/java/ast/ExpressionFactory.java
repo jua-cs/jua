@@ -54,12 +54,12 @@ public class ExpressionFactory {
 
   public static ExpressionUnary create(TokenOperator token, Expression value) {
     switch (token.getOperator()) {
-      case NEGATIVE:
-        return new ExpressionNegative(token, value);
       case HASH:
         return new ExpressionHash(token, value);
       case NOT:
         return new ExpressionNot(token, value);
+      case MINUS:
+        return new ExpressionNegative(token, value);
       default:
         return null;
     }
