@@ -4,14 +4,23 @@ import ast.*;
 import token.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Parser {
   private ArrayList<Token> tokens;
   private int currentPos;
   private AST ast = new AST();
+  private HashMap<Token, PrefixParser> tokenPrefixParserHashMap;
+  private HashMap<Token, InfixParser> tokenInfixParserHashMap;
 
   public Parser(ArrayList<Token> tokens) {
     this.tokens = tokens;
+    this.tokenInfixParserHashMap = new HashMap<>();
+    this.tokenPrefixParserHashMap = new HashMap<>();
+
+    // Register the class which implements InfixParser interface
+
+    // Register the class which implements PrefixParser interface
   }
 
   private Token currentToken() {
