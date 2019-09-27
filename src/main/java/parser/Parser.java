@@ -36,12 +36,13 @@ public class Parser {
     registerBinaryOperator(Operator.LT, 1);
     registerBinaryOperator(Operator.LTE, 1);
 
-    // TODO Add paren and braces
-
+    // TODO Add braces
     // Register the class which implements PrefixParser interface
+    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser());
+
   }
 
-  private Token currentToken() {
+  protected Token currentToken() {
     return tokens.get(currentPos);
   }
 
@@ -49,7 +50,7 @@ public class Parser {
     return tokens.get(1 + currentPos);
   }
 
-  private void advanceTokens() {
+  protected void advanceTokens() {
     currentPos++;
   }
 
