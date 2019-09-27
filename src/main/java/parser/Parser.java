@@ -39,7 +39,6 @@ public class Parser {
     // TODO Add braces
     // Register the class which implements PrefixParser interface
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser());
-
   }
 
   protected Token currentToken() {
