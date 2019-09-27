@@ -7,7 +7,10 @@ import ast.*;
 import java.util.ArrayList;
 import lexer.Lexer;
 import org.junit.jupiter.api.Test;
-import token.*;
+import token.Literal;
+import token.Operator;
+import token.TokenFactory;
+import token.TokenOperator;
 import util.Tuple;
 
 public class ParserTest {
@@ -87,10 +90,10 @@ public class ParserTest {
             new ExpressionIdentifier(TokenFactory.create("x")),
             ExpressionFactory.create(
                 TokenFactory.create(Operator.PLUS),
-                ExpressionFactory.create(TokenFactory.create(1)),
+                ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
                 ExpressionFactory.create(
                     TokenFactory.create(Operator.ASTERISK),
-                    ExpressionFactory.create(TokenFactory.create(5)),
+                    ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "5")),
                     ExpressionFactory.create(TokenFactory.create("a")))));
     assertEquals(expected, statements.get(0));
   }
@@ -106,8 +109,8 @@ public class ParserTest {
     tests.add(new Tuple<String, String>("a / b / c", "((a / b) / c)"));
     tests.add(
         new Tuple<String, String>("a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)"));
-    tests.add(new Tuple<String, String>("5 > 4 == 3 < 4", "(((5.0 > 4.0) == (3.0 < 4.0)))"));
-    tests.add(new Tuple<String, String>("5 < 4 != 3 > 4", "((5.0 < 4.0) != (3.0 > 4.0))"));
+    tests.add(new Tuple<String, String>("5 > 4 == 3 < 4", "(((5 > 4) == 3) < 4)"));
+    tests.add(new Tuple<String, String>("5 < 4 ~= 3 > 4", "(((5 < 4) ~= 3) > 4)"));
     tests.add(
         new Tuple<String, String>(
             "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));

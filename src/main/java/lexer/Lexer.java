@@ -136,6 +136,14 @@ public class Lexer {
       case '.':
         token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
         break;
+      case '~':
+        // TODO make sure this works correctly
+        if (peekChar() == '=') {
+          token = TokenFactory.create(Operator.NOT_EQUAL, currentLine, currentPos);
+          readChar();
+          break;
+        }
+        // fallthrough
       default:
         if (Character.isLetter(ch) || ch == '_') {
           String identifier = nextIdentifier();
