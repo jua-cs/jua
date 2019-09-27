@@ -11,6 +11,7 @@ import token.Keyword;
 import token.Operator;
 import token.TokenFactory;
 import token.TokenOperator;
+import util.Tuple;
 
 public class ParserTest {
 
@@ -79,7 +80,6 @@ public class ParserTest {
   @Test
   void testAdditionAndMultiplicationAssignment() throws IllegalParseException {
     Parser parser = new Parser((new Lexer(new String("x = 1 + 5 * a"))).getNTokens(0));
-
     parser.parse();
     ArrayList<Statement> statements = parser.getAst().getChildren();
     assertEquals(1, statements.size());
@@ -96,5 +96,34 @@ public class ParserTest {
                     new ExpressionLiteral(TokenFactory.create(5)),
                     new ExpressionIdentifier(TokenFactory.create("a")))));
     assertEquals(expected, statements.get(0));
+  }
+
+  @Test
+  void testOperatorPrecedenceParsing() throws IllegalParseException {
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<String, String>("-a * b", "((-a) * b"));
+    tests.add(new Tuple<String, String>("!-a", "(!(-a"));
+    tests.add(new Tuple<String, String>("a + b + c", "((a + b) + c"));
+    tests.add(new Tuple<String, String>("a + b - c", "((a + b) - c"));
+    tests.add(new Tuple<String, String>("a * b * c", "((a * b) * c"));
+    tests.add(new Tuple<String, String>("a / b / c", "((a / b) / c"));
+    tests.add(
+        new Tuple<String, String>("a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)"));
+    tests.add(new Tuple<String, String>("5 > 4 == 3 < 4", "((5 > 4) == (3 < 4))"));
+    tests.add(new Tuple<String, String>("5 < 4 != 3 > 4", "((5 < 4) != (3 > 4))"));
+    tests.add(
+        new Tuple<String, String>(
+            "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
+    tests.add(
+        new Tuple<String, String>(
+            "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
+
+    for (Tuple<String, String> t : tests) {
+      Parser parser = new Parser((new Lexer(t.x)).getNTokens(0));
+      parser.parse();
+      ArrayList<Statement> statements = parser.getAst().getChildren();
+      assertEquals(1, statements.size());
+      assertEquals(t.y, statements.get(0).toString());
+    }
   }
 }

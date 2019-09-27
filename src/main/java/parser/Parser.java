@@ -6,14 +6,14 @@ import java.util.HashMap;
 import token.*;
 
 public class Parser {
+  // Used to access the map
+  private static final Token identifierKey = TokenFactory.create("", 0, 0);
+  private static final Token literalKey = TokenFactory.create(0, 0, 0);
   private ArrayList<Token> tokens;
   private int currentPos;
   private AST ast = new AST();
   private HashMap<Token, PrefixParser> tokenPrefixParserHashMap;
   private HashMap<Token, InfixParser> tokenInfixParserHashMap;
-  // Used to access the map
-  private static final Token identifierKey = TokenFactory.create("", 0, 0);
-  private static final Token literalKey = TokenFactory.create(0, 0, 0);
 
   public Parser(ArrayList<Token> tokens) {
     this.tokens = tokens;
@@ -134,11 +134,10 @@ public class Parser {
       if ((currType == TokenType.LITERAL || currType == TokenType.IDENTIFIER)
           && nextToken().getType() == TokenType.OPERATOR
           && ((TokenOperator) nextToken()).getOperator() == Operator.ASSIGN) {
-        Statement stmt = parseAssignment();
-        ast.addChild(stmt);
+        ast.addChild(parseAssignment());
         advanceTokens();
       } else {
-        throw new IllegalParseException(String.format("Unknown token: %s", currentToken()));
+        ast.addChild(new StatementExpression(parseExpression()));
       }
     }
   }
