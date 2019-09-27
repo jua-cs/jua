@@ -27,12 +27,12 @@ public class FunctionCallParser implements InfixParser {
     if (parser.currentToken().isSubtype(Delimiter.RPAREN)) {
       return exp;
     } else {
-      exp.addArgument(parser.parseExpression());
+      exp.addArgument(parser.parseExpression(precedence));
 
       while (parser.currentToken().isSubtype(Delimiter.COMMA)) {
         // Consume ','
         parser.consume(Delimiter.COMMA);
-        exp.addArgument(parser.parseExpression());
+        exp.addArgument(parser.parseExpression(precedence));
       }
     }
 

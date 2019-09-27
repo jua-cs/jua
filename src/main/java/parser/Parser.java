@@ -39,13 +39,13 @@ public class Parser {
     registerBinaryOperator(Operator.LT, 3);
     registerBinaryOperator(Operator.LTE, 3);
 
-    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(7));
+    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(8));
 
     // TODO Add braces
     // Register the class which implements PrefixParser interface
-    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser());
-    register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(0));
-    register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(0));
+    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(7));
+    register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(7));
+    register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(7));
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());
   }
@@ -81,15 +81,17 @@ public class Parser {
     return new StatementAssignment(tok, identifier, expr);
   }
 
-  protected Expression parseExpression() throws IllegalParseException {
+  private Expression parseExpression() throws IllegalParseException {
     return parseExpression(0);
   }
 
   protected Expression parseExpression(int precedence) throws IllegalParseException {
     Token tok = currentToken();
+    System.out.printf("Parse expression ! Current token: %s\n", tok);
     advanceTokens();
 
     PrefixParser prefix = getPrefixParser(tok);
+    System.out.printf("Token: %s\n", tok);
     if (prefix == null) {
       throw new IllegalParseException(String.format("Unexpected token: %s", tok));
     }
@@ -104,6 +106,7 @@ public class Parser {
       InfixParser infix = tokenInfixParserHashMap.get(tok);
       lhs = infix.parseInfix(this, tok, lhs);
     }
+    System.out.println("LHS: " + lhs);
     return lhs;
   }
 
@@ -127,7 +130,10 @@ public class Parser {
 
   public void parse() throws IllegalParseException {
     // TODO: fixme: Multi assignment is not supported
-    while (currentPos < tokens.size() && currentToken().getType() != TokenType.EOF) {
+    System.out.println("Current token: %s" + currentToken());
+    while (currentPos < tokens.size()
+        && currentToken().getType() != TokenType.EOF
+        && currentToken().getType() != TokenType.INVALID) {
       // Assignment
       // Occurs when current token is literal and next token is the assign operator
       TokenType currType = currentToken().getType();

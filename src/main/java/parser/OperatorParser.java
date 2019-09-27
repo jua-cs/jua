@@ -20,13 +20,13 @@ public class OperatorParser implements PrefixParser, InfixParser {
   @Override
   public Expression parseInfix(Parser parser, Token tok, Expression lhs)
       throws IllegalParseException {
-    Expression rhs = parser.parseExpression();
+    Expression rhs = parser.parseExpression(precedence);
     return ExpressionFactory.create((TokenOperator) tok, lhs, rhs);
   }
 
   @Override
   public Expression parsePrefix(Parser parser, Token tok) throws IllegalParseException {
-    Expression rhs = parser.parseExpression();
+    Expression rhs = parser.parseExpression(precedence);
     return ExpressionFactory.create((TokenOperator) tok, rhs);
   }
 }

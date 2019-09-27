@@ -15,30 +15,32 @@ public class ExpressionFactory {
       case SLASH:
         return new ExpressionDivision(token, lhs, rhs);
       case CARAT:
-        // TODO finish this
-        break;
+        return new ExpressionPower(token, lhs, rhs);
       case PERCENT:
-        break;
+        return new ExpressionModulo(token, lhs, rhs);
       case DOT:
         break;
       case ASSIGN:
+        // TODO: figure out
         break;
       case LT:
-        break;
+        return new ExpressionLessThan(token, lhs, rhs);
       case GT:
-        break;
+        return new ExpressionGreaterThan(token, lhs, rhs);
       case EQUALS:
-        break;
+        return new ExpressionEquals(token, lhs, rhs);
       case LTE:
-        break;
+        return new ExpressionLessThanOrEqual(token, lhs, rhs);
       case GTE:
-        break;
+        return new ExpressionGreaterThanOrEqual(token, lhs, rhs);
       case NOT_EQUAL:
-        break;
+        return new ExpressionNotEqual(token, lhs, rhs);
       case AND:
-        break;
+        return new ExpressionAnd(token, lhs, rhs);
       case OR:
-        break;
+        return new ExpressionOr(token, lhs, rhs);
+
+        // TODO: exception for those ?
       case NEGATIVE:
         break;
       case HASH:

@@ -87,27 +87,27 @@ public class ParserTest {
             new ExpressionIdentifier(TokenFactory.create("x")),
             ExpressionFactory.create(
                 TokenFactory.create(Operator.PLUS),
-                new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
+                ExpressionFactory.create(TokenFactory.create(1)),
                 ExpressionFactory.create(
                     TokenFactory.create(Operator.ASTERISK),
-                    new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "5")),
-                    new ExpressionIdentifier(TokenFactory.create("a")))));
+                    ExpressionFactory.create(TokenFactory.create(5)),
+                    ExpressionFactory.create(TokenFactory.create("a")))));
     assertEquals(expected, statements.get(0));
   }
 
   @Test
   void testOperatorPrecedenceParsing() throws IllegalParseException {
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
-    tests.add(new Tuple<String, String>("-a * b", "((-a) * b"));
-    tests.add(new Tuple<String, String>("!-a", "(!(-a"));
-    tests.add(new Tuple<String, String>("a + b + c", "((a + b) + c"));
-    tests.add(new Tuple<String, String>("a + b - c", "((a + b) - c"));
-    tests.add(new Tuple<String, String>("a * b * c", "((a * b) * c"));
-    tests.add(new Tuple<String, String>("a / b / c", "((a / b) / c"));
+    tests.add(new Tuple<String, String>("-a * b", "((- a) * b)"));
+    tests.add(new Tuple<String, String>("not -a", "(not (- a))"));
+    tests.add(new Tuple<String, String>("a + b + c", "((a + b) + c)"));
+    tests.add(new Tuple<String, String>("a + b - c", "((a + b) - c)"));
+    tests.add(new Tuple<String, String>("a * b * c", "((a * b) * c)"));
+    tests.add(new Tuple<String, String>("a / b / c", "((a / b) / c)"));
     tests.add(
         new Tuple<String, String>("a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)"));
-    tests.add(new Tuple<String, String>("5 > 4 == 3 < 4", "((5 > 4) == (3 < 4))"));
-    tests.add(new Tuple<String, String>("5 < 4 != 3 > 4", "((5 < 4) != (3 > 4))"));
+    tests.add(new Tuple<String, String>("5 > 4 == 3 < 4", "(((5.0 > 4.0) == (3.0 < 4.0)))"));
+    tests.add(new Tuple<String, String>("5 < 4 != 3 > 4", "((5.0 < 4.0) != (3.0 > 4.0))"));
     tests.add(
         new Tuple<String, String>(
             "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
@@ -116,11 +116,12 @@ public class ParserTest {
             "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
 
     for (Tuple<String, String> t : tests) {
+      System.out.println(t.x);
       Parser parser = new Parser((new Lexer(t.x)).getNTokens(0));
       parser.parse();
       ArrayList<Statement> statements = parser.getAst().getChildren();
       assertEquals(1, statements.size());
-      assertEquals(t.y, statements.get(0).toString());
+      assertEquals(t.y, statements.get(0).toString(), String.format("Test: %s", t.x));
     }
   }
 }
