@@ -11,6 +11,9 @@ public class Parser {
   private AST ast = new AST();
   private HashMap<Token, PrefixParser> tokenPrefixParserHashMap;
   private HashMap<Token, InfixParser> tokenInfixParserHashMap;
+  // Used to access the map
+  private static final Token identifierKey = TokenFactory.create("", 0, 0);
+  private static final Token literalKey = TokenFactory.create(0, 0, 0);
 
   public Parser(ArrayList<Token> tokens) {
     this.tokens = tokens;
@@ -43,8 +46,8 @@ public class Parser {
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser());
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(0));
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(0));
-    register(TokenFactory.create(0, 0, 0), new LiteralParser());
-    register(TokenFactory.create("", 0, 0), new IdentifierParser());
+    register(literalKey, new LiteralParser());
+    register(identifierKey, new IdentifierParser());
   }
 
   Token currentToken() {
@@ -84,10 +87,9 @@ public class Parser {
 
   protected Expression parseExpression(int precedence) throws IllegalParseException {
     Token tok = currentToken();
-    System.out.printf("Parse Expression, token: %s, precedence: %d\n", tok, precedence);
     advanceTokens();
 
-    PrefixParser prefix = tokenPrefixParserHashMap.get(tok);
+    PrefixParser prefix = getPrefixParser(tok);
     if (prefix == null) {
       throw new IllegalParseException(String.format("Unexpected token: %s", tok));
     }
@@ -112,7 +114,7 @@ public class Parser {
   }
 
   protected void registerBinaryOperator(Operator op, int precedence) {
-    tokenPrefixParserHashMap.put(TokenFactory.create(op), new OperatorParser(precedence));
+    tokenInfixParserHashMap.put(TokenFactory.create(op), new OperatorParser(precedence));
   }
 
   protected void register(Token type, PrefixParser parser) {
@@ -138,6 +140,17 @@ public class Parser {
       } else {
         throw new IllegalParseException(String.format("Unknown token: %s", currentToken()));
       }
+    }
+  }
+
+  private PrefixParser getPrefixParser(Token token) {
+    switch (token.getType()) {
+      case IDENTIFIER:
+        return tokenPrefixParserHashMap.get(identifierKey);
+      case LITERAL:
+        return tokenPrefixParserHashMap.get(literalKey);
+      default:
+        return tokenPrefixParserHashMap.get(token);
     }
   }
 

@@ -26,11 +26,11 @@ public class ParserTest {
 
     StatementAssignment expected =
         new StatementAssignment(
-            TokenFactory.create(Operator.ASSIGN, 1, 3),
-            new ExpressionIdentifier(TokenFactory.create("x", 1, 1)),
+            TokenFactory.create(Operator.ASSIGN),
+            new ExpressionIdentifier(TokenFactory.create("x")),
             ExpressionFactory.create(
-                (TokenOperator) TokenFactory.create(Operator.NOT, 1, 7),
-                new ExpressionLiteral(TokenFactory.create(Keyword.TRUE, 1, 9))));
+                (TokenOperator) TokenFactory.create(Operator.NOT),
+                new ExpressionLiteral(TokenFactory.create(Keyword.TRUE))));
 
     assertEquals(expected, statements.get(0));
   }
@@ -65,5 +65,14 @@ public class ParserTest {
     assertEquals(1, statements.size());
 
     System.out.println(statements.get(0));
+    Statement expected =
+        new StatementAssignment(
+            TokenFactory.create(Operator.ASSIGN),
+            new ExpressionIdentifier(TokenFactory.create("x")),
+            ExpressionFactory.create(
+                TokenFactory.create(Operator.PLUS),
+                new ExpressionLiteral(TokenFactory.create(1)),
+                new ExpressionLiteral(TokenFactory.create(5))));
+    assertEquals(expected, statements.get(0));
   }
 }

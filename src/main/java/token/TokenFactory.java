@@ -26,8 +26,16 @@ public class TokenFactory {
     return new TokenDelimiter(d, line, pos);
   }
 
+  public static Token create(double number) {
+    return new TokenLiteral(number, 0, 0);
+  }
+
   public static Token create(double number, int line, int pos) {
     return new TokenLiteral(number, line, pos);
+  }
+
+  public static Token create(String identifier) {
+    return new TokenIdentifier(identifier, 0, 0);
   }
 
   public static Token create(String identifier, int line, int pos) {

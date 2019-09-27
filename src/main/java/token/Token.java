@@ -88,6 +88,11 @@ public abstract class Token {
   }
 
   @Override
+  public int hashCode() {
+    return Objects.hash(type, literal);
+  }
+
+  @Override
   public String toString() {
     return "Token{"
         + "type="
