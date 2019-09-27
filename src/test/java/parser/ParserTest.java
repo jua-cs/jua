@@ -57,7 +57,7 @@ public class ParserTest {
   }
 
   @Test
-  void testValidDelimitedArithmeticExpr() throws IllegalParseException {
+  void testAdditionAssignment() throws IllegalParseException {
     Parser parser = new Parser((new Lexer(new String("x = (1 + 5)"))).getNTokens(0));
 
     parser.parse();
@@ -73,6 +73,28 @@ public class ParserTest {
                 TokenFactory.create(Operator.PLUS),
                 new ExpressionLiteral(TokenFactory.create(1)),
                 new ExpressionLiteral(TokenFactory.create(5))));
+    assertEquals(expected, statements.get(0));
+  }
+
+  @Test
+  void testAdditionAndMultiplicationAssignment() throws IllegalParseException {
+    Parser parser = new Parser((new Lexer(new String("x = 1 + 5 * a"))).getNTokens(0));
+
+    parser.parse();
+    ArrayList<Statement> statements = parser.getAst().getChildren();
+    assertEquals(1, statements.size());
+
+    Statement expected =
+        new StatementAssignment(
+            TokenFactory.create(Operator.ASSIGN),
+            new ExpressionIdentifier(TokenFactory.create("x")),
+            ExpressionFactory.create(
+                TokenFactory.create(Operator.PLUS),
+                new ExpressionLiteral(TokenFactory.create(1)),
+                ExpressionFactory.create(
+                    TokenFactory.create(Operator.ASTERISK),
+                    new ExpressionLiteral(TokenFactory.create(5)),
+                    new ExpressionIdentifier(TokenFactory.create("a")))));
     assertEquals(expected, statements.get(0));
   }
 }
