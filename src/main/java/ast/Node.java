@@ -16,7 +16,7 @@ public abstract class Node {
 
   @Override
   public String toString() {
-    return token.toString();
+    return token.getLiteral();
   }
 
   @Override

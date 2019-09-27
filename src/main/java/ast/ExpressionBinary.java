@@ -15,6 +15,6 @@ public abstract class ExpressionBinary extends Expression {
 
   @Override
   public String toString() {
-    return String.format("%s BinaryOp(%s) %s", lhs, token, rhs);
+    return String.format("(%s %s %s)", lhs, ((TokenOperator) token).getOperator(), rhs);
   }
 }

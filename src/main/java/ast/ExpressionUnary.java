@@ -18,7 +18,7 @@ public abstract class ExpressionUnary extends Expression {
 
   @Override
   public String toString() {
-    return String.format("Unary(%s, %s)", ((TokenOperator) this.token).getOperator(), value);
+    return String.format("(%s %s)", ((TokenOperator) this.token).getOperator(), value);
   }
 
   @Override

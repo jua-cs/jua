@@ -43,8 +43,9 @@ public class Parser {
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser());
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(0));
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(0));
+    register(TokenFactory.create(0, 0, 0), new LiteralParser());
+    register(TokenFactory.create("", 0, 0), new IdentifierParser());
   }
-
 
   Token currentToken() {
     return tokens.get(currentPos);
@@ -201,7 +202,6 @@ public class Parser {
 
     return ExpressionFactory.create(currentToken());
   }
-
 
   public void parse() throws IllegalParseException {
     // TODO: fixme: Multi assignment is not supported
