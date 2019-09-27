@@ -16,6 +16,14 @@ public abstract class Token {
   }
 
   public static Token fromString(String literal, int currentLine, int currentPos) {
+    if (literal.equals("true") || literal.equals("false")) {
+      return TokenFactory.create(Literal.BOOLEAN, literal, currentLine, currentPos);
+    }
+
+    if (literal.equals("nil")) {
+      return TokenFactory.create(Literal.NIL, literal, currentLine, currentPos);
+    }
+
     Keyword keyword = Keyword.getKeywordTable().get(literal);
     if (keyword != null) {
       return TokenFactory.create(keyword, currentLine, currentPos);

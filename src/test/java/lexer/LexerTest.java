@@ -91,11 +91,11 @@ public class LexerTest {
     expected.add(TokenFactory.create(Keyword.IF, 3, 3));
     expected.add(TokenFactory.create("n", 3, 6));
     expected.add(TokenFactory.create(Operator.EQUALS, 3, 8));
-    expected.add(TokenFactory.create(0, 3, 11));
+    expected.add(TokenFactory.create(Literal.NUMBER, "0", 3, 11));
     expected.add(TokenFactory.create(Keyword.THEN, 3, 13));
 
     expected.add(TokenFactory.create(Keyword.RETURN, 4, 5));
-    expected.add(TokenFactory.create(1, 4, 12));
+    expected.add(TokenFactory.create(Literal.NUMBER, "1", 4, 12));
 
     expected.add(TokenFactory.create(Keyword.ELSE, 5, 3));
 
@@ -106,7 +106,7 @@ public class LexerTest {
     expected.add(TokenFactory.create(Delimiter.LPAREN, 6, 20));
     expected.add(TokenFactory.create("n", 6, 21));
     expected.add(TokenFactory.create(Operator.MINUS, 6, 22));
-    expected.add(TokenFactory.create(1, 6, 23));
+    expected.add(TokenFactory.create(Literal.NUMBER, "1", 6, 23));
     expected.add(TokenFactory.create(Delimiter.RPAREN, 6, 24));
 
     expected.add(TokenFactory.create(Keyword.END, 7, 3));

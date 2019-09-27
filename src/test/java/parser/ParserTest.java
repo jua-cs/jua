@@ -7,10 +7,7 @@ import ast.*;
 import java.util.ArrayList;
 import lexer.Lexer;
 import org.junit.jupiter.api.Test;
-import token.Keyword;
-import token.Operator;
-import token.TokenFactory;
-import token.TokenOperator;
+import token.*;
 import util.Tuple;
 
 public class ParserTest {
@@ -31,7 +28,7 @@ public class ParserTest {
             new ExpressionIdentifier(TokenFactory.create("x")),
             ExpressionFactory.create(
                 (TokenOperator) TokenFactory.create(Operator.NOT),
-                new ExpressionLiteral(TokenFactory.create(Keyword.TRUE))));
+                new ExpressionLiteral(TokenFactory.create(Literal.BOOLEAN, "true"))));
 
     assertEquals(expected, statements.get(0));
   }
@@ -72,8 +69,8 @@ public class ParserTest {
             new ExpressionIdentifier(TokenFactory.create("x")),
             ExpressionFactory.create(
                 TokenFactory.create(Operator.PLUS),
-                new ExpressionLiteral(TokenFactory.create(1)),
-                new ExpressionLiteral(TokenFactory.create(5))));
+                new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
+                new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "5"))));
     assertEquals(expected, statements.get(0));
   }
 
@@ -90,10 +87,10 @@ public class ParserTest {
             new ExpressionIdentifier(TokenFactory.create("x")),
             ExpressionFactory.create(
                 TokenFactory.create(Operator.PLUS),
-                new ExpressionLiteral(TokenFactory.create(1)),
+                new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
                 ExpressionFactory.create(
                     TokenFactory.create(Operator.ASTERISK),
-                    new ExpressionLiteral(TokenFactory.create(5)),
+                    new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "5")),
                     new ExpressionIdentifier(TokenFactory.create("a")))));
     assertEquals(expected, statements.get(0));
   }

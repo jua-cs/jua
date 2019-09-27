@@ -142,10 +142,10 @@ public class Lexer {
           // return early to avoid readChar below
           return Token.fromString(identifier, currentLine, currentPos);
         } else if (Character.isDigit(ch)) {
-          double number = nextNumber();
+          String number = nextNumber();
 
           // return early to avoid readChar below
-          return TokenFactory.create(number, currentLine, currentPos);
+          return TokenFactory.create(Literal.NUMBER, number, currentLine, currentPos);
         }
 
         token = TokenFactory.create(Special.TokenInvalid, currentLine, currentPos);
@@ -184,7 +184,7 @@ public class Lexer {
     consumeWhitespace();
   }
 
-  public double nextNumber() {
+  public String nextNumber() {
     StringBuilder number = new StringBuilder();
     boolean dotSeen = false;
     while (Character.isDigit(ch) || (!dotSeen && ch == '.')) {
@@ -193,7 +193,7 @@ public class Lexer {
       dotSeen = ch == '.';
     }
 
-    return Double.parseDouble(number.toString());
+    return number.toString();
   }
 
   public ArrayList<Token> getNTokens(int n) {

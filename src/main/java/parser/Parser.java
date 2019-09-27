@@ -8,7 +8,7 @@ import token.*;
 public class Parser {
   // Used to access the map
   private static final Token identifierKey = TokenFactory.create("", 0, 0);
-  private static final Token literalKey = TokenFactory.create(0, 0, 0);
+  private static final Token literalKey = TokenFactory.create(Literal.BOOLEAN, "0", 0, 0);
   private ArrayList<Token> tokens;
   private int currentPos;
   private AST ast = new AST();

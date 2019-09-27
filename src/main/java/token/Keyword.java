@@ -17,10 +17,7 @@ public enum Keyword {
   FUNCTION("function"),
   LOCAL("local"),
   RETURN("return"),
-  BREAK("break"),
-  NIL("nil"),
-  FALSE("false"),
-  TRUE("true");
+  BREAK("break");
 
   private String repr;
 
