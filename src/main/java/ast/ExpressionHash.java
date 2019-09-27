@@ -1,7 +1,6 @@
 package ast;
 
 import token.Operator;
-import token.Token;
 import token.TokenFactory;
 import token.TokenOperator;
 

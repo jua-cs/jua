@@ -1,17 +1,16 @@
 package parser;
 
 import ast.*;
-import token.*;
-
 import java.util.ArrayList;
 import java.util.HashMap;
+import token.*;
 
 public class Parser {
   private ArrayList<Token> tokens;
   private int currentPos;
   private AST ast = new AST();
-  private HashMap<Token, PrefixParser> tokenPrefixParserHashMap;
-  private HashMap<Token, InfixParser> tokenInfixParserHashMap;
+  private HashMap<TokenType, PrefixParser> tokenPrefixParserHashMap;
+  private HashMap<TokenType, InfixParser> tokenInfixParserHashMap;
 
   public Parser(ArrayList<Token> tokens) {
     this.tokens = tokens;
@@ -43,6 +42,28 @@ public class Parser {
     Expression expr = parseExpression();
 
     return new StatementAssignment(tok, identifier, expr);
+  }
+
+  protected Expression parseExpression2() throws IllegalParseException {
+    Token tok = currentToken();
+    advanceTokens();
+
+    PrefixParser prefix = tokenPrefixParserHashMap.get(tok.getType());
+    if (prefix == null) {
+      throw new IllegalParseException(String.format("Unexpected token: %s", tok));
+    }
+
+    Expression lhs = prefix.parsePrefix(this, tok);
+
+    // Check if we have an infix operator after the left hand side
+    Token nextTok = currentToken();
+    InfixParser infix = tokenInfixParserHashMap.get(tok.getType());
+    if (infix == null) {
+      return lhs;
+    }
+
+    advanceTokens();
+    return infix.parseInfix(this, nextTok, lhs);
   }
 
   protected Expression parseExpression() throws IllegalParseException {

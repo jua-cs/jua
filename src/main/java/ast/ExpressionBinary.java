@@ -1,6 +1,5 @@
 package ast;
 
-import token.Token;
 import token.TokenOperator;
 
 public abstract class ExpressionBinary extends Expression {
