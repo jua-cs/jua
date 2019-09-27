@@ -14,7 +14,7 @@ public class ParenthesisParser implements PrefixParser {
 
   @Override
   public Expression parsePrefix(Parser parser, Token tok) throws IllegalParseException {
-    Expression inner = parser.parseExpression(precedence);
+    Expression inner = parser.parseExpression(0);
     TokenDelimiter delim = (TokenDelimiter) parser.currentToken();
     if (delim.getDelimiter() != Delimiter.RPAREN) {
       throw new IllegalParseException(

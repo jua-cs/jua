@@ -65,7 +65,6 @@ public class ParserTest {
     ArrayList<Statement> statements = parser.getAst().getChildren();
     assertEquals(1, statements.size());
 
-    System.out.println(statements.get(0));
     Statement expected =
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
@@ -119,7 +118,6 @@ public class ParserTest {
             "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
 
     for (Tuple<String, String> t : tests) {
-      System.out.println(t.x);
       Parser parser = new Parser((new Lexer(t.x)).getNTokens(0));
       parser.parse();
       ArrayList<Statement> statements = parser.getAst().getChildren();

@@ -50,7 +50,6 @@ public class Lexer {
     // Store it now in the case of a multi char token
     int currentPos = currentPosInLine;
 
-    System.out.printf("Char: '%c', pos: %d\n", ch, currentPos);
     switch (ch) {
       case 0:
         token = TokenFactory.create(Special.TokenEOF, currentLine, currentPos);

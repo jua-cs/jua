@@ -87,11 +87,9 @@ public class Parser {
 
   protected Expression parseExpression(int precedence) throws IllegalParseException {
     Token tok = currentToken();
-    System.out.printf("Parse expression ! Current token: %s\n", tok);
     advanceTokens();
 
     PrefixParser prefix = getPrefixParser(tok);
-    System.out.printf("Token: %s\n", tok);
     if (prefix == null) {
       throw new IllegalParseException(String.format("Unexpected token: %s", tok));
     }
@@ -106,7 +104,6 @@ public class Parser {
       InfixParser infix = tokenInfixParserHashMap.get(tok);
       lhs = infix.parseInfix(this, tok, lhs);
     }
-    System.out.println("LHS: " + lhs);
     return lhs;
   }
 
@@ -130,7 +127,6 @@ public class Parser {
 
   public void parse() throws IllegalParseException {
     // TODO: fixme: Multi assignment is not supported
-    System.out.println("Current token: %s" + currentToken());
     while (currentPos < tokens.size()
         && currentToken().getType() != TokenType.EOF
         && currentToken().getType() != TokenType.INVALID) {

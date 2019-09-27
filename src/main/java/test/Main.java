@@ -17,10 +17,15 @@ public class Main {
       e.printStackTrace();
     }
 
+    System.out.println("---");
+    System.out.println("Lexing:");
     ArrayList<Token> tokens = (new Lexer(text)).getNTokens(0);
     tokens.forEach(System.out::println);
     System.out.println("---");
+    System.out.println("Parsing:");
     Parser parser = new Parser(tokens);
     parser.parse();
+    parser.getAst().getChildren().forEach(System.out::println);
+    System.out.println("---");
   }
 }
