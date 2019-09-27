@@ -1,12 +1,22 @@
 package lexer;
 
-import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import token.*;
 
 public class LexerTest {
+
+  public void assertStrictEqual(ArrayList<Token> expected, ArrayList<Token> actual) {
+    assertEquals(expected.size(), actual.size());
+
+    for (int i = 0; i < expected.size(); i++) {
+      var e = expected.get(i);
+      var a = actual.get(i);
+      assertTrue(e.strictEquals(a), String.format("%s != %s index: %d", e, a, i));
+    }
+  }
 
   @Test
   void testVariableAssignment() {
@@ -23,7 +33,7 @@ public class LexerTest {
     expected.add(TokenFactory.create("bonsoir", 2, 11));
     expected.add(TokenFactory.create(Special.TokenEOF, 2, 18));
 
-    assertIterableEquals(expected, list);
+    assertStrictEqual(expected, list);
   }
 
   @Test
@@ -49,7 +59,7 @@ public class LexerTest {
     //    expected.add(TokenFactory.create(Operator.ASSIGN, 2, 11));
     //    expected.add(TokenFactory.create(Special.TokenInvalid, 3, 13));
 
-    assertIterableEquals(expected, list);
+    assertStrictEqual(expected, list);
   }
 
   @Test
@@ -80,11 +90,11 @@ public class LexerTest {
     expected.add(TokenFactory.create(Keyword.IF, 3, 3));
     expected.add(TokenFactory.create("n", 3, 6));
     expected.add(TokenFactory.create(Operator.EQUALS, 3, 8));
-    expected.add(TokenFactory.create("0.0", 3, 11));
+    expected.add(TokenFactory.create(0, 3, 11));
     expected.add(TokenFactory.create(Keyword.THEN, 3, 13));
 
     expected.add(TokenFactory.create(Keyword.RETURN, 4, 5));
-    expected.add(TokenFactory.create("1.0", 4, 12));
+    expected.add(TokenFactory.create(1, 4, 12));
 
     expected.add(TokenFactory.create(Keyword.ELSE, 5, 3));
 
@@ -95,7 +105,7 @@ public class LexerTest {
     expected.add(TokenFactory.create(Delimiter.LPAREN, 6, 20));
     expected.add(TokenFactory.create("n", 6, 21));
     expected.add(TokenFactory.create(Operator.MINUS, 6, 22));
-    expected.add(TokenFactory.create("1.0", 6, 23));
+    expected.add(TokenFactory.create(1, 6, 23));
     expected.add(TokenFactory.create(Delimiter.RPAREN, 6, 24));
 
     expected.add(TokenFactory.create(Keyword.END, 7, 3));
@@ -108,6 +118,6 @@ public class LexerTest {
     expected.add(TokenFactory.create(Delimiter.RPAREN, 10, 8));
     expected.add(TokenFactory.create(Special.TokenEOF, 11, 1));
 
-    assertIterableEquals(expected, list);
+    assertStrictEqual(expected, list);
   }
 }

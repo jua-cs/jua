@@ -66,6 +66,16 @@ public abstract class Token {
     return type == token.type && Objects.equals(literal, token.literal);
   }
 
+  public boolean strictEquals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    Token token = (Token) o;
+    return type == token.type
+        && line == token.line
+        && position == token.position
+        && Objects.equals(literal, token.literal);
+  }
+
   @Override
   public String toString() {
     return "Token{"
