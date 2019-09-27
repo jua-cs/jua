@@ -9,8 +9,8 @@ public class Parser {
   private ArrayList<Token> tokens;
   private int currentPos;
   private AST ast = new AST();
-  private HashMap<TokenType, PrefixParser> tokenPrefixParserHashMap;
-  private HashMap<TokenType, InfixParser> tokenInfixParserHashMap;
+  private HashMap<Token, PrefixParser> tokenPrefixParserHashMap;
+  private HashMap<Token, InfixParser> tokenInfixParserHashMap;
 
   public Parser(ArrayList<Token> tokens) {
     this.tokens = tokens;
@@ -18,6 +18,25 @@ public class Parser {
     this.tokenPrefixParserHashMap = new HashMap<>();
 
     // Register the class which implements InfixParser interface
+    // TODO Fix precedences
+    registerBinaryOperator(Operator.PLUS, 1);
+    registerBinaryOperator(Operator.ASTERISK, 1);
+    registerBinaryOperator(Operator.SLASH, 1);
+    registerBinaryOperator(Operator.MINUS, 1);
+    registerBinaryOperator(Operator.CARAT, 1);
+    registerBinaryOperator(Operator.PERCENT, 1);
+
+    registerBinaryOperator(Operator.AND, 1);
+    registerBinaryOperator(Operator.OR, 1);
+
+    registerBinaryOperator(Operator.EQUALS, 1);
+    registerBinaryOperator(Operator.NOT_EQUAL, 1);
+    registerBinaryOperator(Operator.GT, 1);
+    registerBinaryOperator(Operator.GTE, 1);
+    registerBinaryOperator(Operator.LT, 1);
+    registerBinaryOperator(Operator.LTE, 1);
+
+    // TODO Add paren and braces
 
     // Register the class which implements PrefixParser interface
   }
@@ -53,6 +72,7 @@ public class Parser {
       throw new IllegalParseException(String.format("Unexpected token: %s", tok));
     }
 
+    // TODO: handle precedence
     Expression lhs = prefix.parsePrefix(this, tok);
 
     // Check if we have an infix operator after the left hand side
@@ -188,5 +208,17 @@ public class Parser {
 
   public AST getAst() {
     return ast;
+  }
+
+  protected void registerBinaryOperator(Operator op, int precedence) {
+    tokenPrefixParserHashMap.put(TokenFactory.create(op), new OperatorParser(precedence));
+  }
+
+  protected void register(Token type, PrefixParser parser) {
+    tokenPrefixParserHashMap.put(type, parser);
+  }
+
+  protected void register(Token type, InfixParser parser) {
+    tokenInfixParserHashMap.put(type, parser);
   }
 }

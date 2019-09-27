@@ -63,10 +63,7 @@ public abstract class Token {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Token token = (Token) o;
-    return line == token.line
-        && position == token.position
-        && type == token.type
-        && Objects.equals(literal, token.literal);
+    return type == token.type && Objects.equals(literal, token.literal);
   }
 
   @Override

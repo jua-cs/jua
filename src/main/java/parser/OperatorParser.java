@@ -7,6 +7,16 @@ import token.TokenOperator;
 
 public class OperatorParser implements PrefixParser, InfixParser {
 
+  private final int precedence;
+
+  public OperatorParser(int precedence) {
+    this.precedence = precedence;
+  }
+
+  public int getPrecedence() {
+    return precedence;
+  }
+
   @Override
   public Expression parseInfix(Parser parser, Token tok, Expression lhs)
       throws IllegalParseException {

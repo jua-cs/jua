@@ -2,12 +2,24 @@ package token;
 
 public class TokenFactory {
 
+  public static TokenOperator create(Operator op) {
+    return new TokenOperator(op, 0, 0);
+  }
+
   public static TokenOperator create(Operator op, int line, int pos) {
     return new TokenOperator(op, line, pos);
   }
 
+  public static Token create(Keyword kw) {
+    return new TokenKeyword(kw, 0, 0);
+  }
+
   public static Token create(Keyword kw, int line, int pos) {
     return new TokenKeyword(kw, line, pos);
+  }
+
+  public static Token create(Delimiter d) {
+    return new TokenDelimiter(d, 0, 0);
   }
 
   public static Token create(Delimiter d, int line, int pos) {
