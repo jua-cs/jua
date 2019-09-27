@@ -45,7 +45,7 @@ public class Parser {
     return new StatementAssignment(tok, identifier, expr);
   }
 
-  private Expression parseExpression() throws IllegalParseException {
+  protected Expression parseExpression() throws IllegalParseException {
     // We parse until we have a non binary operator as the next character and
     // we are not currently waiting the right side of
     // A binary or unary operator
