@@ -18,23 +18,23 @@ public class Parser {
     this.tokenPrefixParserHashMap = new HashMap<>();
 
     // Register the class which implements InfixParser interface
-    // TODO Fix precedences
-    registerBinaryOperator(Operator.PLUS, 1);
-    registerBinaryOperator(Operator.ASTERISK, 1);
-    registerBinaryOperator(Operator.SLASH, 1);
-    registerBinaryOperator(Operator.MINUS, 1);
-    registerBinaryOperator(Operator.CARAT, 1);
-    registerBinaryOperator(Operator.PERCENT, 1);
+    // FIXME: ^ has greater precedence than unary operators, this is not handled at the moment
+    registerBinaryOperator(Operator.PLUS, 4);
+    registerBinaryOperator(Operator.ASTERISK, 5);
+    registerBinaryOperator(Operator.SLASH, 5);
+    registerBinaryOperator(Operator.MINUS, 4);
+    registerBinaryOperator(Operator.CARAT, 6);
+    registerBinaryOperator(Operator.PERCENT, 5);
 
-    registerBinaryOperator(Operator.AND, 1);
+    registerBinaryOperator(Operator.AND, 2);
     registerBinaryOperator(Operator.OR, 1);
 
-    registerBinaryOperator(Operator.EQUALS, 1);
-    registerBinaryOperator(Operator.NOT_EQUAL, 1);
-    registerBinaryOperator(Operator.GT, 1);
-    registerBinaryOperator(Operator.GTE, 1);
-    registerBinaryOperator(Operator.LT, 1);
-    registerBinaryOperator(Operator.LTE, 1);
+    registerBinaryOperator(Operator.EQUALS, 3);
+    registerBinaryOperator(Operator.NOT_EQUAL, 3);
+    registerBinaryOperator(Operator.GT, 3);
+    registerBinaryOperator(Operator.GTE, 3);
+    registerBinaryOperator(Operator.LT, 3);
+    registerBinaryOperator(Operator.LTE, 3);
 
     // TODO Add braces
     // Register the class which implements PrefixParser interface
