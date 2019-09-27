@@ -15,7 +15,7 @@ public class StatementAssignment extends Statement {
 
   @Override
   public String toString() {
-    return String.format("%s = %s)", lhs, rhs);
+    return String.format("%s = %s", lhs, rhs);
   }
 
   @Override
