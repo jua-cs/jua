@@ -43,15 +43,17 @@ public class Parser {
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(0));
   }
 
-  protected Token currentToken() {
+
+  Token currentToken() {
     return tokens.get(currentPos);
   }
 
-  private Token nextToken() {
+  Token nextToken() {
     return tokens.get(1 + currentPos);
   }
 
-  protected void advanceTokens() {
+
+  void advanceTokens() {
     currentPos++;
   }
 
@@ -189,6 +191,7 @@ public class Parser {
 
     return ExpressionFactory.create(currentToken());
   }
+
 
   public void parse() throws IllegalParseException {
     // TODO: fixme: Multi assignment is not supported

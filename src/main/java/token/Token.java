@@ -58,6 +58,17 @@ public abstract class Token {
     return type;
   }
 
+  public boolean isSubtype(Delimiter delimiter) {
+
+    if (!(this instanceof TokenDelimiter)) {
+      return false;
+    }
+
+    TokenDelimiter tok = (TokenDelimiter) this;
+
+    return (tok.getDelimiter() == delimiter);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
