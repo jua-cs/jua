@@ -1,0 +1,16 @@
+#!/bin/sh
+
+# Stash unstaged changes
+git stash -q --keep-index
+
+find src/ -name "*.java" | xargs java -jar tools/google-java-format-1.7-all-deps.jar --set-exit-if-changed
+
+# Store last exit code before unstashing again
+RESULT="$?"
+
+# Format anyway
+./scripts/fmt.sh
+
+git stash pop -q
+
+exit $RESULT

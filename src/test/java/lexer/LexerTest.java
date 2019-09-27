@@ -1,6 +1,7 @@
 package lexer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
@@ -99,7 +100,7 @@ public class LexerTest {
     expected.add(TokenFactory.create(Keyword.ELSE, 5, 3));
 
     expected.add(TokenFactory.create(Keyword.RETURN, 6, 5));
-    expected.add(TokenFactory.create("n", 6, 12));
+    expected.add(TokenFactory.create("" + "n", 6, 12));
     expected.add(TokenFactory.create(Operator.ASTERISK, 6, 14));
     expected.add(TokenFactory.create("fact", 6, 16));
     expected.add(TokenFactory.create(Delimiter.LPAREN, 6, 20));

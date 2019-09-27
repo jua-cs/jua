@@ -13,6 +13,7 @@ repositories {
 
 apply plugin: 'application'
 apply plugin: 'java'
+apply from: rootProject.file("gradle/install-git-hooks.gradle")
 
 application {
     mainClassName = 'test.Main'
