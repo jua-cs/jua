@@ -36,6 +36,8 @@ public class Parser {
     registerBinaryOperator(Operator.LT, 3);
     registerBinaryOperator(Operator.LTE, 3);
 
+    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(7));
+
     // TODO Add braces
     // Register the class which implements PrefixParser interface
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser());
@@ -52,9 +54,17 @@ public class Parser {
     return tokens.get(1 + currentPos);
   }
 
-
   void advanceTokens() {
     currentPos++;
+  }
+
+  // TODO: add others overloading
+  void consume(Delimiter delimiter) throws IllegalParseException {
+    if (!nextToken().isSubtype(delimiter)) {
+      throw new IllegalParseException("Expecting " + delimiter + " but found " + nextToken());
+    }
+
+    advanceTokens();
   }
 
   private StatementAssignment parseAssignment() throws IllegalParseException {

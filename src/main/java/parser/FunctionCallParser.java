@@ -6,6 +6,15 @@ import ast.ExpressionIdentifier;
 import token.*;
 
 public class FunctionCallParser implements InfixParser {
+
+    private final int precedence;
+
+    public FunctionCallParser(int precedence) {
+        this.precedence = precedence;
+    }
+
+
+
     @Override
     public Expression parseInfix(Parser parser, Token tok, Expression lhs) throws IllegalParseException {
         // Parser is on the token nxt "(", lhs is the function identifier
@@ -22,7 +31,7 @@ public class FunctionCallParser implements InfixParser {
 
             while (parser.currentToken().isSubtype(Delimiter.COMMA)) {
                 // Consume ','
-                parser.advanceTokens();
+                parser.consume(Delimiter.COMMA);
                 exp.addArgument(parser.parseExpression());
             }
         }
@@ -32,8 +41,13 @@ public class FunctionCallParser implements InfixParser {
         }
 
         // Consume ')'
-        parser.advanceTokens();
+        parser.consume(Delimiter.RPAREN);
 
         return exp;
+    }
+
+    @Override
+    public int getPrecedence() {
+        return this.precedence;
     }
 }
