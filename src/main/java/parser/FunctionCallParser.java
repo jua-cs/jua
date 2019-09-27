@@ -3,7 +3,8 @@ package parser;
 import ast.Expression;
 import ast.ExpressionFunctionCall;
 import ast.ExpressionIdentifier;
-import token.*;
+import token.Delimiter;
+import token.Token;
 
 public class FunctionCallParser implements InfixParser {
 
