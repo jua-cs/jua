@@ -116,6 +116,10 @@ public class ParserTest {
     tests.add(
         new Tuple<String, String>(
             "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
+    tests.add(new Tuple<String, String>("(5 + 5) * 2", "((5 + 5) * 2)"));
+    tests.add(new Tuple<String, String>("1 + (2 + 3) + 4", "((1 + (2 + 3)) + 4)"));
+    tests.add(new Tuple<String, String>("-(5 + 5)", "(- (5 + 5))"));
+    tests.add(new Tuple<String, String>("not(true == true)", "(not (true == true))"));
 
     for (Tuple<String, String> t : tests) {
       Parser parser = new Parser((new Lexer(t.x)).getNTokens(0));
