@@ -158,9 +158,18 @@ public class Parser {
     }
   }
 
-  // TODO(Sami)
-  private StatementAssignment parseFunctionStatement() throws IllegalParseException {
-    throw new IllegalParseException("Functions statements are not supported yet");
+  private StatementFunction parseFunctionStatement() throws IllegalParseException {
+    // Next token should be an identifier
+    Token tok = currentToken();
+    advanceTokens();
+    ExpressionIdentifier funcName = new ExpressionIdentifier(currentToken());
+
+    // Parse args
+    advanceTokens();
+    ArrayList<ExpressionIdentifier> args = parseFuncArgs();
+    StatementList stmts = parseBlockStatement();
+
+    return new StatementFunction(tok, funcName, new ExpressionFunction(tok, args, stmts));
   }
 
   private boolean isFunctionStatement() {

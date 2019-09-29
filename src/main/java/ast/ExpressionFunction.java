@@ -36,4 +36,12 @@ public class ExpressionFunction extends Expression {
   public int hashCode() {
     return Objects.hash(super.hashCode(), args, statements);
   }
+
+  public ArrayList<ExpressionIdentifier> getArgs() {
+    return args;
+  }
+
+  public StatementList getStatements() {
+    return statements;
+  }
 }

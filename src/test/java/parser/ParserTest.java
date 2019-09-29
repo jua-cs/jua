@@ -14,7 +14,7 @@ public class ParserTest {
 
   @Test
   void testCorrectNotExpression() throws IllegalParseException {
-    Parser parser = new Parser((new Lexer(new String("x = not true"))).getNTokens(0));
+    Parser parser = new Parser((new Lexer("x = not true")).getNTokens(0));
 
     ArrayList<Statement> statements = parser.parse();
     assertEquals(1, statements.size());
@@ -32,7 +32,7 @@ public class ParserTest {
 
   @Test
   void shouldThrowParseExceptionIfStartingWithBinary() {
-    Parser parser = new Parser((new Lexer(new String("x = + 5"))).getNTokens(0));
+    Parser parser = new Parser((new Lexer("x = + 5")).getNTokens(0));
 
     assertThrows(IllegalParseException.class, parser::parse);
   }
@@ -53,7 +53,7 @@ public class ParserTest {
 
   @Test
   void testAdditionAssignment() throws IllegalParseException {
-    Parser parser = new Parser((new Lexer(new String("x = (1 + 5)"))).getNTokens(0));
+    Parser parser = new Parser((new Lexer("x = (1 + 5)")).getNTokens(0));
 
     ArrayList<Statement> statements = parser.parse();
     assertEquals(1, statements.size());
@@ -71,7 +71,7 @@ public class ParserTest {
 
   @Test
   void testAdditionAndMultiplicationAssignment() throws IllegalParseException {
-    Parser parser = new Parser((new Lexer(new String("x = 1 + 5 * a"))).getNTokens(0));
+    Parser parser = new Parser((new Lexer("x = 1 + 5 * a")).getNTokens(0));
     ArrayList<Statement> statements = parser.parse();
     assertEquals(1, statements.size());
 
@@ -92,26 +92,21 @@ public class ParserTest {
   @Test
   void testOperatorPrecedenceParsing() throws IllegalParseException {
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
-    tests.add(new Tuple<String, String>("-a * b", "((- a) * b)"));
-    tests.add(new Tuple<String, String>("not -a", "(not (- a))"));
-    tests.add(new Tuple<String, String>("a + b + c", "((a + b) + c)"));
-    tests.add(new Tuple<String, String>("a + b - c", "((a + b) - c)"));
-    tests.add(new Tuple<String, String>("a * b * c", "((a * b) * c)"));
-    tests.add(new Tuple<String, String>("a / b / c", "((a / b) / c)"));
-    tests.add(
-        new Tuple<String, String>("a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)"));
-    tests.add(new Tuple<String, String>("5 > 4 == 3 < 4", "(((5 > 4) == 3) < 4)"));
-    tests.add(new Tuple<String, String>("5 < 4 ~= 3 > 4", "(((5 < 4) ~= 3) > 4)"));
-    tests.add(
-        new Tuple<String, String>(
-            "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
-    tests.add(
-        new Tuple<String, String>(
-            "3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
-    tests.add(new Tuple<String, String>("(5 + 5) * 2", "((5 + 5) * 2)"));
-    tests.add(new Tuple<String, String>("1 + (2 + 3) + 4", "((1 + (2 + 3)) + 4)"));
-    tests.add(new Tuple<String, String>("-(5 + 5)", "(- (5 + 5))"));
-    tests.add(new Tuple<String, String>("not(true == true)", "(not (true == true))"));
+    tests.add(new Tuple<>("-a * b", "((- a) * b)"));
+    tests.add(new Tuple<>("not -a", "(not (- a))"));
+    tests.add(new Tuple<>("a + b + c", "((a + b) + c)"));
+    tests.add(new Tuple<>("a + b - c", "((a + b) - c)"));
+    tests.add(new Tuple<>("a * b * c", "((a * b) * c)"));
+    tests.add(new Tuple<>("a / b / c", "((a / b) / c)"));
+    tests.add(new Tuple<>("a + b * c + d / e - f", "(((a + (b * c)) + (d / e)) - f)"));
+    tests.add(new Tuple<>("5 > 4 == 3 < 4", "(((5 > 4) == 3) < 4)"));
+    tests.add(new Tuple<>("5 < 4 ~= 3 > 4", "(((5 < 4) ~= 3) > 4)"));
+    tests.add(new Tuple<>("3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
+    tests.add(new Tuple<>("3 + 4 * 5 == 3 * 1 + 4 * 5", "((3 + (4 * 5)) == ((3 * 1) + (4 * 5)))"));
+    tests.add(new Tuple<>("(5 + 5) * 2", "((5 + 5) * 2)"));
+    tests.add(new Tuple<>("1 + (2 + 3) + 4", "((1 + (2 + 3)) + 4)"));
+    tests.add(new Tuple<>("-(5 + 5)", "(- (5 + 5))"));
+    tests.add(new Tuple<>("not(true == true)", "(not (true == true))"));
 
     for (Tuple<String, String> t : tests) {
       Parser parser = new Parser((new Lexer(t.x)).getNTokens(0));
@@ -123,7 +118,7 @@ public class ParserTest {
 
   @Test
   void testMultilineExpressions() throws IllegalParseException {
-    Parser parser = new Parser((new Lexer(new String("x = 3 * 2\nx + 5 / 7"))).getNTokens(0));
+    Parser parser = new Parser((new Lexer("x = 3 * 2\nx + 5 / 7")).getNTokens(0));
 
     ArrayList<Statement> statements = parser.parse();
     assertEquals(2, statements.size());
@@ -148,6 +143,33 @@ public class ParserTest {
 
     // TODO
     System.out.println(parser.parse());
+  }
+
+  @Test
+  void testSimpleFuncStatement() throws IllegalParseException {
+    String in = "function identity(x)\n" + "y = x\n" + "return y\n" + "end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    ArrayList<Statement> statements = parser.parse();
+    assertEquals(1, statements.size());
+
+    ExpressionIdentifier yIdent = new ExpressionIdentifier(TokenFactory.create("y"));
+    ExpressionIdentifier xIdent = new ExpressionIdentifier(TokenFactory.create("x"));
+
+    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
+    args.add(xIdent);
+
+    StatementList statementList = new StatementList(TokenFactory.create("y"));
+    statementList.addChild(
+        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), yIdent, xIdent));
+    statementList.addChild(new StatementReturn(TokenFactory.create(Keyword.RETURN), yIdent));
+
+    Statement expected =
+        new StatementFunction(
+            TokenFactory.create(Keyword.FUNCTION),
+            new ExpressionIdentifier(TokenFactory.create("identity")),
+            new ExpressionFunction(TokenFactory.create(Keyword.FUNCTION), args, statementList));
+    assertEquals(expected, statements.get(0));
   }
 
   @Test
