@@ -11,7 +11,6 @@ public class Parser {
   private static final Token literalKey = TokenFactory.create(Literal.BOOLEAN, "0", 0, 0);
   private ArrayList<Token> tokens;
   private int currentPos;
-  private AST ast = new AST();
   private HashMap<Token, PrefixParser> tokenPrefixParserHashMap;
   private HashMap<Token, InfixParser> tokenInfixParserHashMap;
 
@@ -46,6 +45,7 @@ public class Parser {
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(7));
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(7));
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(7));
+    register(TokenFactory.create(Keyword.FUNCTION), (PrefixParser) new FunctionExprParser());
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());
   }
@@ -54,7 +54,7 @@ public class Parser {
     return tokens.get(currentPos);
   }
 
-  Token nextToken() {
+  private Token nextToken() {
     return tokens.get(1 + currentPos);
   }
 
@@ -124,22 +124,84 @@ public class Parser {
     tokenInfixParserHashMap.put(type, parser);
   }
 
-  public void parse() throws IllegalParseException {
-    // TODO: fixme: Multi assignment is not supported
-    while (currentPos < tokens.size()
-        && currentToken().getType() != TokenType.EOF
-        && currentToken().getType() != TokenType.INVALID) {
+  public ArrayList<Statement> parse() throws IllegalParseException {
+    ArrayList<Statement> statements = new ArrayList<>();
+
+    while (currentPos < tokens.size() && currentTokenIsValid()) {
+      statements.add(parseStatement());
+    }
+
+    return statements;
+  }
+
+  protected StatementList parseBlockStatement() throws IllegalParseException {
+    StatementList list = new StatementList(currentToken());
+
+    while (currentTokenIsValid() && !isBlockEnd()) {
+      list.addChild(parseStatement());
+    }
+    return list;
+  }
+
+  protected Statement parseStatement() throws IllegalParseException {
+    if (isAssignmentStatement()) {
+      // TODO: fixme: Multi assignment is not supported
       // Assignment
       // Occurs when current token is literal and next token is the assign operator
-      TokenType currType = currentToken().getType();
-      if ((currType == TokenType.LITERAL || currType == TokenType.IDENTIFIER)
-          && nextToken().getType() == TokenType.OPERATOR
-          && ((TokenOperator) nextToken()).getOperator() == Operator.ASSIGN) {
-        ast.addChild(parseAssignment());
-      } else {
-        ast.addChild(new StatementExpression(parseExpression()));
-      }
+      return parseAssignment();
+    } else if (isFunctionStatement()) {
+      return parseFunctionStatement();
+    } else if (isReturnStatement()) {
+      return parseReturnStatement();
+    } else {
+      return new StatementExpression(parseExpression());
     }
+  }
+
+  // TODO(Sami)
+  private StatementAssignment parseFunctionStatement() throws IllegalParseException {
+    throw new IllegalParseException("Functions statements are not supported yet");
+  }
+
+  private boolean isFunctionStatement() {
+    Token tok = currentToken();
+    boolean isFunc =
+        tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.FUNCTION;
+    boolean nextIsIdent = nextToken().getType() == TokenType.IDENTIFIER;
+    return isFunc && nextIsIdent;
+  }
+
+  private StatementReturn parseReturnStatement() throws IllegalParseException {
+    Token tok = currentToken();
+    advanceTokens();
+    StatementReturn stmt = new StatementReturn(tok, parseExpression());
+    advanceTokens();
+    return stmt;
+  }
+
+  private boolean isReturnStatement() {
+    Token tok = currentToken();
+    return tok.getType() == TokenType.KEYWORD
+        && ((TokenKeyword) tok).getKeyword() == Keyword.RETURN;
+  }
+
+  private boolean isAssignmentStatement() {
+    TokenType currType = currentToken().getType();
+    boolean isIdent = currType == TokenType.IDENTIFIER;
+    boolean nextTokIsAssign =
+        nextToken().getType() == TokenType.OPERATOR
+            && ((TokenOperator) nextToken()).getOperator() == Operator.ASSIGN;
+    return isIdent && nextTokIsAssign;
+  }
+
+  private boolean currentTokenIsValid() {
+    return currentToken().getType() != TokenType.EOF
+        && currentToken().getType() != TokenType.INVALID;
+  }
+
+  private boolean isBlockEnd() {
+    Token tok = currentToken();
+    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.END;
   }
 
   private PrefixParser getPrefixParser(Token token) {
@@ -153,7 +215,25 @@ public class Parser {
     }
   }
 
-  public AST getAst() {
-    return ast;
+  protected ArrayList<ExpressionIdentifier> parseFuncArgs() throws IllegalParseException {
+    advanceTokens();
+    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
+    // if there is no args, we look for a ')'
+
+    Token tok = currentToken();
+    while (!tok.isSubtype(Delimiter.RPAREN)) {
+      if (tok.getType() != TokenType.IDENTIFIER) {
+        throw new IllegalParseException(
+            String.format("Expected identifier in function args but got: %s", tok));
+      }
+      args.add(new ExpressionIdentifier(tok));
+      advanceTokens();
+      tok = currentToken();
+    }
+
+    // Consume ')'
+    advanceTokens();
+
+    return args;
   }
 }

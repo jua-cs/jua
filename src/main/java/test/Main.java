@@ -24,8 +24,7 @@ public class Main {
     System.out.println("---");
     System.out.println("Parsing:");
     Parser parser = new Parser(tokens);
-    parser.parse();
-    parser.getAst().getChildren().forEach(System.out::println);
+    parser.parse().forEach(System.out::println);
     System.out.println("---");
   }
 }

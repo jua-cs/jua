@@ -7,10 +7,7 @@ import ast.*;
 import java.util.ArrayList;
 import lexer.Lexer;
 import org.junit.jupiter.api.Test;
-import token.Literal;
-import token.Operator;
-import token.TokenFactory;
-import token.TokenOperator;
+import token.*;
 import util.Tuple;
 
 public class ParserTest {
@@ -19,10 +16,7 @@ public class ParserTest {
   void testCorrectNotExpression() throws IllegalParseException {
     Parser parser = new Parser((new Lexer(new String("x = not true"))).getNTokens(0));
 
-    parser.parse();
-    AST ast = parser.getAst();
-
-    ArrayList<Statement> statements = ast.getChildren();
+    ArrayList<Statement> statements = parser.parse();
     assertEquals(1, statements.size());
 
     StatementAssignment expected =
@@ -61,8 +55,7 @@ public class ParserTest {
   void testAdditionAssignment() throws IllegalParseException {
     Parser parser = new Parser((new Lexer(new String("x = (1 + 5)"))).getNTokens(0));
 
-    parser.parse();
-    ArrayList<Statement> statements = parser.getAst().getChildren();
+    ArrayList<Statement> statements = parser.parse();
     assertEquals(1, statements.size());
 
     Statement expected =
@@ -79,8 +72,7 @@ public class ParserTest {
   @Test
   void testAdditionAndMultiplicationAssignment() throws IllegalParseException {
     Parser parser = new Parser((new Lexer(new String("x = 1 + 5 * a"))).getNTokens(0));
-    parser.parse();
-    ArrayList<Statement> statements = parser.getAst().getChildren();
+    ArrayList<Statement> statements = parser.parse();
     assertEquals(1, statements.size());
 
     Statement expected =
@@ -123,8 +115,7 @@ public class ParserTest {
 
     for (Tuple<String, String> t : tests) {
       Parser parser = new Parser((new Lexer(t.x)).getNTokens(0));
-      parser.parse();
-      ArrayList<Statement> statements = parser.getAst().getChildren();
+      ArrayList<Statement> statements = parser.parse();
       assertEquals(1, statements.size());
       assertEquals(t.y, statements.get(0).toString(), String.format("Test: %s", t.x));
     }
@@ -134,13 +125,88 @@ public class ParserTest {
   void testMultilineExpressions() throws IllegalParseException {
     Parser parser = new Parser((new Lexer(new String("x = 3 * 2\nx + 5 / 7"))).getNTokens(0));
 
-    parser.parse();
-    AST ast = parser.getAst();
-
-    ArrayList<Statement> statements = ast.getChildren();
+    ArrayList<Statement> statements = parser.parse();
     assertEquals(2, statements.size());
     System.out.println(statements.get(0).toString());
     assertEquals("x = (3 * 2)", statements.get(0).toString());
     assertEquals("(x + (5 / 7))", statements.get(1).toString());
+  }
+
+  @Test
+  void testFactorialFuncStatement() throws IllegalParseException {
+    String in =
+        "-- defines a factorial function\n"
+            + "function fact (n)\n"
+            + "  if n == 0 then\n"
+            + "    return 1\n"
+            + "  else\n"
+            + "    return n * fact(n-1)\n"
+            + "  end\n"
+            + "end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+
+    // TODO
+    System.out.println(parser.parse());
+  }
+
+  @Test
+  void testSimpleFuncExpression() throws IllegalParseException {
+    String in = "identity = function (x)\n" + "y = x\n" + "return y\n" + "end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    ArrayList<Statement> statements = parser.parse();
+    assertEquals(1, statements.size());
+
+    ExpressionIdentifier yIdent = new ExpressionIdentifier(TokenFactory.create("y"));
+    ExpressionIdentifier xIdent = new ExpressionIdentifier(TokenFactory.create("x"));
+
+    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
+    args.add(xIdent);
+
+    StatementList statementList = new StatementList(TokenFactory.create("y"));
+    statementList.addChild(
+        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), yIdent, xIdent));
+    statementList.addChild(new StatementReturn(TokenFactory.create(Keyword.RETURN), yIdent));
+
+    Statement expected =
+        new StatementAssignment(
+            TokenFactory.create(Operator.ASSIGN),
+            new ExpressionIdentifier(TokenFactory.create("identity")),
+            new ExpressionFunction(TokenFactory.create(Keyword.FUNCTION), args, statementList));
+    assertEquals(expected, statements.get(0));
+  }
+
+  @Test
+  void testFactorialFuncAssignment() throws IllegalParseException {
+    String in =
+        "-- defines a factorial function\n"
+            + "fact = function (n)\n"
+            + "  if n == 0 then\n"
+            + "    return 1\n"
+            + "  else\n"
+            + "    return n * fact(n-1)\n"
+            + "  end\n"
+            + "end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    // TODO
+    System.out.println(parser.parse());
+  }
+
+  @Test
+  void testInvalidFuncStatementAssignment() throws IllegalParseException {
+    String in =
+        "-- notice the extra fact before the parenthesis\n"
+            + "fact = function fact(n)\n"
+            + "  if n == 0 then\n"
+            + "    return 1\n"
+            + "  else\n"
+            + "    return n * fact(n-1)\n"
+            + "  end\n"
+            + "end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    assertThrows(IllegalParseException.class, parser::parse);
   }
 }
