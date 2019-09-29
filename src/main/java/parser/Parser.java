@@ -77,7 +77,6 @@ public class Parser {
     Token tok = currentToken();
     advanceTokens();
     Expression expr = parseExpression();
-
     return new StatementAssignment(tok, identifier, expr);
   }
 
@@ -137,7 +136,6 @@ public class Parser {
           && nextToken().getType() == TokenType.OPERATOR
           && ((TokenOperator) nextToken()).getOperator() == Operator.ASSIGN) {
         ast.addChild(parseAssignment());
-        advanceTokens();
       } else {
         ast.addChild(new StatementExpression(parseExpression()));
       }

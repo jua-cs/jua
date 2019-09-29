@@ -129,4 +129,18 @@ public class ParserTest {
       assertEquals(t.y, statements.get(0).toString(), String.format("Test: %s", t.x));
     }
   }
+
+  @Test
+  void testMultilineExpressions() throws IllegalParseException {
+    Parser parser = new Parser((new Lexer(new String("x = 3 * 2\nx + 5 / 7"))).getNTokens(0));
+
+    parser.parse();
+    AST ast = parser.getAst();
+
+    ArrayList<Statement> statements = ast.getChildren();
+    assertEquals(2, statements.size());
+    System.out.println(statements.get(0).toString());
+    assertEquals("x = (3 * 2)", statements.get(0).toString());
+    assertEquals("(x + (5 / 7))", statements.get(1).toString());
+  }
 }
