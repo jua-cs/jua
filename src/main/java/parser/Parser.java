@@ -138,7 +138,11 @@ public class Parser {
     StatementList list = new StatementList(currentToken());
 
     while (currentTokenIsValid() && !isBlockEnd()) {
-      list.addChild(parseStatement());
+      Statement child = parseStatement();
+      list.addChild(child);
+      if (child instanceof StatementReturn) {
+        break;
+      }
     }
     return list;
   }
@@ -162,13 +166,16 @@ public class Parser {
     // Next token should be an identifier
     Token tok = currentToken();
     advanceTokens();
+
     ExpressionIdentifier funcName = new ExpressionIdentifier(currentToken());
+    advanceTokens();
 
     // Parse args
-    advanceTokens();
     ArrayList<ExpressionIdentifier> args = parseFuncArgs();
     StatementList stmts = parseBlockStatement();
 
+    // consume END of function statement
+    advanceTokens();
     return new StatementFunction(tok, funcName, new ExpressionFunction(tok, args, stmts));
   }
 
@@ -184,7 +191,6 @@ public class Parser {
     Token tok = currentToken();
     advanceTokens();
     StatementReturn stmt = new StatementReturn(tok, parseExpression());
-    advanceTokens();
     return stmt;
   }
 
@@ -210,7 +216,10 @@ public class Parser {
 
   private boolean isBlockEnd() {
     Token tok = currentToken();
-    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.END;
+    return tok.getType() == TokenType.KEYWORD
+        && (((TokenKeyword) tok).getKeyword() == Keyword.END
+            || ((TokenKeyword) tok).getKeyword() == Keyword.ELSE
+            || ((TokenKeyword) tok).getKeyword() == Keyword.ELSEIF);
   }
 
   private PrefixParser getPrefixParser(Token token) {
