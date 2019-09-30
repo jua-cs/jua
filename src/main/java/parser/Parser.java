@@ -177,6 +177,10 @@ public class Parser {
       return parseReturnStatement();
     } else if (isIfStatement()) {
       return parseIfStatement();
+    } else if (isBlockStatement()) {
+      return parseBlockStatement();
+    } else if (isWhileStatement()) {
+      return parseWhileStatement();
     } else {
       return new StatementExpression(parseExpression());
     }
@@ -282,6 +286,25 @@ public class Parser {
     }
 
     return new StatementIf(tok, condition, consequence, alternative);
+  }
+
+  private boolean isWhileStatement() {
+    Token tok = currentToken();
+    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.WHILE;
+  }
+
+  private Statement parseWhileStatement() throws IllegalParseException {
+    Token tok = currentToken();
+    advanceTokens();
+    Expression condition = parseExpression();
+    if (!isBlockStatement()) {
+      throw new IllegalParseException(
+          String.format("expected do ... end statement after while %s", tok));
+    }
+
+    Statement consequence = parseBlockStatement();
+
+    return new StatementWhile(tok, condition, consequence);
   }
 
   private boolean currentTokenIsValid() {
