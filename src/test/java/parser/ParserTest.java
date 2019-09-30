@@ -231,4 +231,23 @@ public class ParserTest {
     Parser parser = new Parser((new Lexer(in)).getNTokens(0));
     assertThrows(IllegalParseException.class, parser::parse);
   }
+
+  @Test
+  void testFactorialFuncAssignmentElseif() throws IllegalParseException {
+    String in =
+        "-- defines a factorial function\n"
+            + "fact = function (n)\n"
+            + "  if n == 0 then\n"
+            + "    return 1\n"
+            + "  elseif n == 1 then\n"
+            + "    return 1\n"
+            + "  else\n"
+            + "    return n * fact(n-1)\n"
+            + "  end\n"
+            + "end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    // TODO
+    System.out.println(parser.parse());
+  }
 }
