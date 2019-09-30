@@ -157,6 +157,8 @@ public class Parser {
       return parseFunctionStatement();
     } else if (isReturnStatement()) {
       return parseReturnStatement();
+    } else if (isIfStatement()) {
+      return parseIfStatement();
     } else {
       return new StatementExpression(parseExpression());
     }
@@ -207,6 +209,61 @@ public class Parser {
         nextToken().getType() == TokenType.OPERATOR
             && ((TokenOperator) nextToken()).getOperator() == Operator.ASSIGN;
     return isIdent && nextTokIsAssign;
+  }
+
+  private boolean isIfStatement() {
+    Token tok = currentToken();
+    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.IF;
+  }
+
+  private StatementIf parseIfStatement() throws IllegalParseException {
+    return parseIfStatement(false);
+  }
+
+  // nested should only be true when parsing an elseif statement inside a main if
+  // this argument tells parseIfStatement not to consume the only END keyword
+  private StatementIf parseIfStatement(boolean nested) throws IllegalParseException {
+
+    advanceTokens();
+    Expression condition = parseExpression();
+
+    Token tok = currentToken();
+    if (tok.getType() != TokenType.KEYWORD || ((TokenKeyword) tok).getKeyword() != Keyword.THEN) {
+      throw new IllegalParseException(String.format("unexpected token %s, then expected", tok));
+    }
+    advanceTokens();
+    Statement consequence = parseBlockStatement();
+    tok = currentToken();
+    if (tok.getType() != TokenType.KEYWORD
+        || (((TokenKeyword) tok).getKeyword() != Keyword.END
+            && ((TokenKeyword) tok).getKeyword() != Keyword.ELSE
+            && ((TokenKeyword) tok).getKeyword() != Keyword.ELSEIF)) {
+      throw new IllegalParseException(
+          String.format("unexpected token %s, expected end, else or elseif", tok));
+    }
+    Statement alternative = null;
+    TokenKeyword keyword = (TokenKeyword) tok;
+    switch (keyword.getKeyword()) {
+      case ELSEIF:
+        alternative = parseIfStatement(true);
+        break;
+      case ELSE:
+        advanceTokens();
+        alternative = parseBlockStatement();
+        break;
+    }
+
+    tok = currentToken();
+    if (tok.getType() != TokenType.KEYWORD || ((TokenKeyword) tok).getKeyword() != Keyword.END) {
+      throw new IllegalParseException(String.format("unexpected token %s, expected end", keyword));
+    }
+
+    if (!nested) {
+      // consume the END keyword
+      advanceTokens();
+    }
+
+    return new StatementIf(tok, condition, consequence, alternative);
   }
 
   private boolean currentTokenIsValid() {
