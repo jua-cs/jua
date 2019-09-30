@@ -12,4 +12,9 @@ public class StatementWhile extends Statement {
     this.condition = condition;
     this.consequence = consequence;
   }
+
+  @Override
+  public String toString() {
+    return String.format("while %s do\n%s end", condition, consequence);
+  }
 }
