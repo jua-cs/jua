@@ -64,7 +64,7 @@ public class Parser {
 
   // TODO: add others overloading
   void consume(Delimiter delimiter) throws IllegalParseException {
-    if (!nextToken().isSubtype(delimiter)) {
+    if (!currentToken().isSubtype(delimiter)) {
       throw new IllegalParseException("Expecting " + delimiter + " but found " + nextToken());
     }
 
