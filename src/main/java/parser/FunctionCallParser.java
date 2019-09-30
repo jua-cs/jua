@@ -26,18 +26,14 @@ public class FunctionCallParser implements InfixParser {
     // if there is no args, we look for a ')'
     if (parser.currentToken().isSubtype(Delimiter.RPAREN)) {
       return exp;
-    } else {
-      exp.addArgument(parser.parseExpression(precedence));
-
-      while (parser.currentToken().isSubtype(Delimiter.COMMA)) {
-        // Consume ','
-        parser.consume(Delimiter.COMMA);
-        exp.addArgument(parser.parseExpression(precedence));
-      }
     }
 
-    if (!(parser.currentToken().isSubtype(Delimiter.RPAREN))) {
-      throw new IllegalParseException("Function should be closed with a ')'");
+    exp.addArgument(parser.parseExpression(0));
+
+    while (parser.currentToken().isSubtype(Delimiter.COMMA)) {
+      // Consume ','
+      parser.consume(Delimiter.COMMA);
+      exp.addArgument(parser.parseExpression(precedence));
     }
 
     // Consume ')'
