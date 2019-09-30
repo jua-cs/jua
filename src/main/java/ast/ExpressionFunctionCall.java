@@ -1,11 +1,9 @@
 package ast;
 
 import java.util.ArrayList;
-import token.TokenIdentifier;
 
 public class ExpressionFunctionCall extends Expression {
 
-  private TokenIdentifier functionName;
   private ArrayList<Expression> args = new ArrayList<>();
 
   public ExpressionFunctionCall(ExpressionIdentifier functionName) {
@@ -14,5 +12,20 @@ public class ExpressionFunctionCall extends Expression {
 
   public void addArgument(Expression arg) {
     args.add(arg);
+  }
+
+  @Override
+  public String toString() {
+    StringBuilder str = new StringBuilder();
+    str.append(token.getLiteral());
+    str.append("(");
+    for (Expression arg : args) {
+      str.append(arg);
+      str.append(",");
+    }
+
+    str.deleteCharAt(str.lastIndexOf(","));
+    str.append(")");
+    return str.toString();
   }
 }
