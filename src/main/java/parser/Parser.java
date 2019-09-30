@@ -134,7 +134,7 @@ public class Parser {
     return statements;
   }
 
-  protected StatementList parseBlockStatement() throws IllegalParseException {
+  protected StatementList parseListStatement() throws IllegalParseException {
     StatementList list = new StatementList(currentToken());
 
     while (currentTokenIsValid() && !isBlockEnd()) {
@@ -144,6 +144,24 @@ public class Parser {
         break;
       }
     }
+    return list;
+  }
+
+  private boolean isBlockStatement() {
+    Token tok = currentToken();
+    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.DO;
+  }
+
+  protected StatementList parseBlockStatement() throws IllegalParseException {
+
+    // consume the DO keyword
+    advanceTokens();
+
+    StatementList list = parseListStatement();
+
+    // consume the END keyword
+    advanceTokens();
+
     return list;
   }
 
@@ -174,7 +192,7 @@ public class Parser {
 
     // Parse args
     ArrayList<ExpressionIdentifier> args = parseFuncArgs();
-    StatementList stmts = parseBlockStatement();
+    StatementList stmts = parseListStatement();
 
     // consume END of function statement
     advanceTokens();
@@ -232,7 +250,7 @@ public class Parser {
       throw new IllegalParseException(String.format("unexpected token %s, then expected", tok));
     }
     advanceTokens();
-    Statement consequence = parseBlockStatement();
+    Statement consequence = parseListStatement();
     tok = currentToken();
     if (tok.getType() != TokenType.KEYWORD
         || (((TokenKeyword) tok).getKeyword() != Keyword.END
@@ -249,7 +267,7 @@ public class Parser {
         break;
       case ELSE:
         advanceTokens();
-        alternative = parseBlockStatement();
+        alternative = parseListStatement();
         break;
     }
 
