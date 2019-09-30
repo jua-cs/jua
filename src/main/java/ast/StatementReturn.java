@@ -9,4 +9,9 @@ public class StatementReturn extends Statement {
     super(token);
     this.value = value;
   }
+
+  @Override
+  public String toString() {
+    return String.format("return %s", value);
+  }
 }

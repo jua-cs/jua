@@ -20,4 +20,12 @@ public class StatementIf extends Statement {
     this.consequence = consequence;
     this.alternative = alternative;
   }
+
+  @Override
+  public String toString() {
+    if (alternative != null) {
+      return String.format("if %s\nthen %s\nelse\n%s\nend", condition, consequence, alternative);
+    }
+    return String.format("if %s\nthen %s\nend", condition, consequence);
+  }
 }
