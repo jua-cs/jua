@@ -45,4 +45,16 @@ public class StatementIf extends Statement {
   public int hashCode() {
     return Objects.hash(super.hashCode(), condition, consequence, alternative);
   }
+
+  public Expression getCondition() {
+    return condition;
+  }
+
+  public Statement getConsequence() {
+    return consequence;
+  }
+
+  public Statement getAlternative() {
+    return alternative;
+  }
 }

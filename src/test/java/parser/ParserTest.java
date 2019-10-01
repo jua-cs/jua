@@ -242,9 +242,27 @@ public class ParserTest {
             + "    return 2\n"
             + "  end\n";
 
+    Token tok = TokenFactory.create("n");
+    ExpressionIdentifier variable = new ExpressionIdentifier(tok);
+
+    Expression zero = new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "0"));
+    Expression one = new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1"));
+    Expression two = new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2"));
+
+    Token returnTok = TokenFactory.create(Keyword.RETURN);
+
     Parser parser = new Parser((new Lexer(in)).getNTokens(0));
-    // TODO
-    System.out.println(parser.parse());
+    StatementIf expected =
+        new StatementIf(
+            TokenFactory.create(Keyword.IF),
+            ExpressionFactory.create(TokenFactory.create(Operator.EQUALS), variable, zero),
+            new StatementList(returnTok, new StatementReturn(returnTok, one)),
+            new StatementIf(
+                TokenFactory.create(Keyword.ELSEIF),
+                ExpressionFactory.create(TokenFactory.create(Operator.EQUALS), variable, one),
+                new StatementList(returnTok, new StatementReturn(returnTok, one)),
+                new StatementList(returnTok, new StatementReturn(returnTok, two))));
+    assertEquals(expected.getConsequence(), ((StatementIf) parser.parse().get(0)).getConsequence());
   }
 
   @Test

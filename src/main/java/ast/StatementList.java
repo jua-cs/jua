@@ -13,6 +13,12 @@ public class StatementList extends Statement {
     super(token);
   }
 
+  public StatementList(Token token, Statement statement) {
+    super(token);
+
+    children.add(statement);
+  }
+
   public void addChild(Statement statement) {
     children.add(statement);
   }
