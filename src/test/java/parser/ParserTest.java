@@ -4,10 +4,14 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import ast.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+
 import lexer.Lexer;
 import org.junit.jupiter.api.Test;
 import token.*;
 import util.Tuple;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ParserTest {
 
@@ -16,17 +20,17 @@ public class ParserTest {
     Parser parser = new Parser((new Lexer("x = not true")).getNTokens(0));
 
     ArrayList<Statement> statements = parser.parse();
-    assertEquals(1, statements.size());
+    ArrayList<Statement> expected = new ArrayList<>();
 
-    StatementAssignment expected =
+    expected.add(
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
                 (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x")),
             ExpressionFactory.create(
                 (TokenOperator) TokenFactory.create(Operator.NOT),
-                ExpressionFactory.create(TokenFactory.create(Literal.BOOLEAN, "true"))));
+                ExpressionFactory.create(TokenFactory.create(Literal.BOOLEAN, "true")))));
 
-    assertEquals(expected, statements.get(0));
+    assertIterableEquals(expected, statements);
   }
 
   @Test
@@ -287,12 +291,12 @@ public class ParserTest {
             variable,
             new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "10")));
 
-    StatementList consequence = new StatementList(tok);
+    StatementList consequence = new StatementList();
     consequence.addChild(
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
             variable,
-            new ExpressionAddition(
+            ExpressionFactory.create(
                 TokenFactory.create(Operator.PLUS),
                 variable,
                 new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")))));
@@ -419,7 +423,7 @@ public class ParserTest {
     ArrayList<Tuple<Expression, Expression>> tuples = new ArrayList<>();
     tuples.add(
         new Tuple<>(
-            new ExpressionFunctionCall(
+            ExpressionFactory.create(
                 func,
                 util.Util.createArrayList(
                     ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))),
@@ -439,7 +443,7 @@ public class ParserTest {
     tuples.add(
         new Tuple<>(
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "3")),
-            new ExpressionFunctionCall(
+            ExpressionFactory.create(
                 func,
                 util.Util.createArrayList(ExpressionFactory.create(TokenFactory.create("x"))))));
     tuples.add(

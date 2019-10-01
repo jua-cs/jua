@@ -85,6 +85,10 @@ public class ExpressionFactory {
     return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()));
   }
 
+  public static ExpressionFunctionCall create(ExpressionIdentifier identifier, ArrayList<Expression> args) {
+    return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()), args);
+  }
+
   public static ExpressionFunction createExpressionFunction(Token token, ArrayList<Expression> args, StatementList statements) {
     return new ExpressionFunction(token, args, statements);
   }

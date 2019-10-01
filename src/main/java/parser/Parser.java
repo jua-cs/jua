@@ -6,13 +6,38 @@ import java.util.HashMap;
 import token.*;
 
 public class Parser {
-  // Used to access the map
+
+
+  // Used to access the HasmMap with Token, with still a functionning equals for Lexer
+  private class TokenHashmMapKey {
+    private final Token token;
+
+    public TokenHashmMapKey(Token token) {
+      this.token = token;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      TokenHashmMapKey that = (TokenHashmMapKey) o;
+
+      return (token != null) && token.getClass() == that.token.getClass() && token.hashCode() == that.token.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+      return token != null ? token.hashCode() : 0;
+    }
+  }
+
   private static final Token identifierKey = TokenFactory.create("", 0, 0);
   private static final Token literalKey = TokenFactory.create(Literal.BOOLEAN, "0", 0, 0);
   private ArrayList<Token> tokens;
   private int currentPos;
-  private HashMap<Token, PrefixParser> tokenPrefixParserHashMap;
-  private HashMap<Token, InfixParser> tokenInfixParserHashMap;
+  private HashMap<TokenHashmMapKey, PrefixParser> tokenPrefixParserHashMap;
+  private HashMap<TokenHashmMapKey, InfixParser> tokenInfixParserHashMap;
 
   public Parser(ArrayList<Token> tokens) {
     this.tokens = tokens;
@@ -88,7 +113,6 @@ public class Parser {
     advanceTokens();
   }
 
-
   protected StatementAssignment parseAssignment() throws IllegalParseException {
     return parseAssignment(-1);
   }
@@ -97,15 +121,10 @@ public class Parser {
     // At least one identifier
     ArrayList<ExpressionIdentifier> identifiers = parseCommaSeparatedExpressions(0, max);
 
-    Token tok = currentToken();
-
-    // Check if we are on equal token
-    if (!(tok.getType() == TokenType.OPERATOR
-        && ((TokenOperator) tok).getOperator() == Operator.ASSIGN)) {
-      throw new IllegalParseException(String.format("Expected equal operator but got %s", tok));
-    }
-    Token assignTok = tok;
-    advanceTokens();
+    // Store the '=' position
+    Token assignTok = currentToken();
+    // Consume '='
+    consume(Operator.ASSIGN);
 
     ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0, max);
     return new StatementAssignment(assignTok, identifiers, exprs);
@@ -152,28 +171,28 @@ public class Parser {
 
       // We are 100 % sure that infix is not null here because getCurrTokenPrecedence
       // returns 0 otherwise and precedence has to be positive
-      InfixParser infix = tokenInfixParserHashMap.get(tok);
+      InfixParser infix = getInfix(tok);
       lhs = infix.parseInfix(this, tok, lhs);
     }
     return lhs;
   }
 
   private int getCurrTokenPrecedence() {
-    InfixParser parser = tokenInfixParserHashMap.get(currentToken());
+    InfixParser parser = getInfix(currentToken());
 
     return parser != null ? parser.getPrecedence() : 0;
   }
 
   protected void registerBinaryOperator(Operator op, int precedence) {
-    tokenInfixParserHashMap.put(TokenFactory.create(op), new OperatorParser(precedence));
+    tokenInfixParserHashMap.put(new TokenHashmMapKey(TokenFactory.create(op)), new OperatorParser(precedence));
   }
 
   protected void register(Token type, PrefixParser parser) {
-    tokenPrefixParserHashMap.put(type, parser);
+    tokenPrefixParserHashMap.put(new TokenHashmMapKey(type), parser);
   }
 
   protected void register(Token type, InfixParser parser) {
-    tokenInfixParserHashMap.put(type, parser);
+    tokenInfixParserHashMap.put(new TokenHashmMapKey(type), parser);
   }
 
   public ArrayList<Statement> parse() throws IllegalParseException {
@@ -184,6 +203,27 @@ public class Parser {
     }
 
     return statements;
+  }
+
+  private PrefixParser getPrefix(Token token) {
+    return tokenPrefixParserHashMap.get(new TokenHashmMapKey(token));
+  }
+
+
+  private InfixParser getInfix(Token tok) {
+    return tokenInfixParserHashMap.get(new TokenHashmMapKey(tok));
+  }
+
+  private PrefixParser getPrefixParser(Token token) {
+    switch (token.getType()) {
+      case IDENTIFIER:
+        return getPrefix(identifierKey);
+      case LITERAL:
+        return getPrefix(literalKey);
+      default:
+        PrefixParser prefixParser = getPrefix(token);
+        return prefixParser;
+    }
   }
 
   protected StatementList parseListStatement() throws IllegalParseException {
@@ -457,16 +497,8 @@ public class Parser {
             || ((TokenKeyword) tok).getKeyword() == Keyword.ELSEIF);
   }
 
-  private PrefixParser getPrefixParser(Token token) {
-    switch (token.getType()) {
-      case IDENTIFIER:
-        return tokenPrefixParserHashMap.get(identifierKey);
-      case LITERAL:
-        return tokenPrefixParserHashMap.get(literalKey);
-      default:
-        return tokenPrefixParserHashMap.get(token);
-    }
-  }
+
+
 
   protected ArrayList<Expression> parseFuncArgs() throws IllegalParseException {
     advanceTokens();

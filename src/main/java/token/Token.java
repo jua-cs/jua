@@ -119,8 +119,6 @@ public abstract class Token {
   @Override
   public int hashCode() {
     int result = type.hashCode();
-    result = 31 * result + line;
-    result = 31 * result + position;
     result = 31 * result + (literal != null ? literal.hashCode() : 0);
     return result;
   }

@@ -10,9 +10,15 @@ public class ExpressionFunctionCall extends ExpressionFunction {
 
   private String functionName;
 
-  public ExpressionFunctionCall(Token token) {
+  ExpressionFunctionCall(Token token) {
     super(token);
     functionName = token.getLiteral();
+  }
+
+  ExpressionFunctionCall(
+          Token token, ArrayList<Expression> args) {
+    super(token);
+    this.args = args;
   }
 
 

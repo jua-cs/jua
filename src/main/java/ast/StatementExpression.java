@@ -7,7 +7,7 @@ public class StatementExpression extends Statement {
   private final Expression expr;
 
   public StatementExpression(Expression expr) {
-    super(null);
+    super();
     this.expr = expr;
   }
 
