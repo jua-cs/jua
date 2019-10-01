@@ -1,6 +1,7 @@
 package ast;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 import token.Token;
 
 public class StatementFunction extends Statement {
@@ -29,6 +30,10 @@ public class StatementFunction extends Statement {
 
   @Override
   public String toString() {
-    return String.format("function %s(%s)\n%s\nend", name, func.getArgs(), func.getStatements());
+    return String.format(
+        "function %s(%s)\n%s\nend",
+        name,
+        func.getArgs().stream().map(Object::toString).collect(Collectors.joining("\n")),
+        func.getStatements());
   }
 }
