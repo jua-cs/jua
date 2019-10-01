@@ -15,15 +15,6 @@ public class TokenKeyword extends Token {
   }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    TokenKeyword that = (TokenKeyword) o;
-    return keyword == that.keyword;
-  }
-
-  @Override
   public int hashCode() {
     return Objects.hash(keyword);
   }

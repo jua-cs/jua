@@ -67,13 +67,10 @@ public abstract class Token {
   }
 
   public boolean isSubtype(Delimiter delimiter) {
-
     if (!(this instanceof TokenDelimiter)) {
       return false;
     }
-
     TokenDelimiter tok = (TokenDelimiter) this;
-
     return (tok.getDelimiter() == delimiter);
   }
 
@@ -99,22 +96,40 @@ public abstract class Token {
     return (tok.getKeyword() == kw);
   }
 
-  @Override
-  public boolean equals(Object o) {
+  public boolean lightEquals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Token token = (Token) o;
     return type == token.type && Objects.equals(literal, token.literal);
   }
 
-  public boolean strictEquals(Object o) {
+  @Override
+  public final boolean equals(Object o) {
+    // Since we implement the comparison for subclass here, we make it final
     if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
+    if (!(o.getClass() == getClass())) return false;
     Token token = (Token) o;
-    return type == token.type
-        && line == token.line
-        && position == token.position
-        && Objects.equals(literal, token.literal);
+    if (line != token.line) return false;
+    if (position != token.position) return false;
+    if (type != token.type) return false;
+    if (!Objects.equals(literal, token.literal)) return false;
+
+    // Because most equals() calls are done between token, but we want to differentiate two TokenDelimiter
+    if (o instanceof TokenDelimiter) {
+      TokenDelimiter target = (TokenDelimiter) token;
+      TokenDelimiter current = (TokenDelimiter) this;
+      return target.getDelimiter() == current.getDelimiter();
+    } else if (o instanceof TokenKeyword) {
+      TokenKeyword target = (TokenKeyword) token;
+      TokenKeyword current = (TokenKeyword) this;
+      return target.getKeyword() == current.getKeyword();
+    } else if (o instanceof TokenOperator) {
+      TokenOperator target = (TokenOperator) token;
+      TokenOperator current = (TokenOperator) this;
+      return target.getOperator() == current.getOperator();
+      }
+
+    return true;
   }
 
   @Override

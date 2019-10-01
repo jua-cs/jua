@@ -12,4 +12,5 @@ public class TokenOperator extends Token {
   public Operator getOperator() {
     return operator;
   }
+
 }

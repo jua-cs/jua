@@ -1,23 +1,12 @@
 package lexer;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
 import token.*;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 public class LexerTest {
-
-  public void assertStrictEqual(ArrayList<Token> expected, ArrayList<Token> actual) {
-    assertEquals(expected.size(), actual.size());
-
-    for (int i = 0; i < expected.size(); i++) {
-      var e = expected.get(i);
-      var a = actual.get(i);
-      assertTrue(e.strictEquals(a), String.format("%s != %s index: %d", e, a, i));
-    }
-  }
 
   @Test
   void testVariableAssignment() {
@@ -34,7 +23,7 @@ public class LexerTest {
     expected.add(TokenFactory.create("bonsoir", 2, 11));
     expected.add(TokenFactory.create(Special.TokenEOF, 2, 18));
 
-    assertStrictEqual(expected, list);
+    assertIterableEquals(expected, list);
   }
 
   @Test
@@ -60,7 +49,7 @@ public class LexerTest {
     //    expected.add(TokenFactory.create(Operator.ASSIGN, 2, 11));
     //    expected.add(TokenFactory.create(Special.TokenInvalid, 3, 13));
 
-    assertStrictEqual(expected, list);
+    assertIterableEquals(expected, list);
   }
 
   @Test
@@ -119,6 +108,6 @@ public class LexerTest {
     expected.add(TokenFactory.create(Delimiter.RPAREN, 10, 8));
     expected.add(TokenFactory.create(Special.TokenEOF, 11, 1));
 
-    assertStrictEqual(expected, list);
+    assertIterableEquals(expected, list);
   }
 }

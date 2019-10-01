@@ -12,4 +12,5 @@ public class TokenLiteral extends Token {
   public Literal getLiteralType() {
     return literalType;
   }
+
 }
