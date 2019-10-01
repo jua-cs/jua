@@ -397,4 +397,64 @@ public class ParserTest {
     assertEquals(1, stmts.size());
     assertEquals(expected, stmts.get(0));
   }
+
+  @Test
+  void testTableConstructorWithString() throws IllegalParseException {
+    // TODO enable this test when strings are parsed
+    String in = "a = { [f(1)] = g; \"x\", \"y\"; x = 1, f(x), [30] = 23; 45 }";
+
+    // ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+    // System.out.println(stmts);
+  }
+
+  @Test
+  void testTableConstructor() throws IllegalParseException {
+    String in = "{ [f(1)] = g; x, y; x = 1, f(x), [30] = 23; 45 }";
+
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+
+    ExpressionIdentifier func =
+        ((ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("f")));
+
+    ArrayList<Tuple<Expression, Expression>> tuples = new ArrayList<>();
+    tuples.add(
+        new Tuple<>(
+            new ExpressionFunctionCall(
+                func,
+                util.Util.createArrayList(
+                    ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))),
+            ExpressionFactory.create(TokenFactory.create("g"))));
+    tuples.add(
+        new Tuple<>(
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
+            ExpressionFactory.create(TokenFactory.create("x"))));
+    tuples.add(
+        new Tuple<>(
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")),
+            ExpressionFactory.create(TokenFactory.create("y"))));
+    tuples.add(
+        new Tuple<>(
+            ExpressionFactory.create(TokenFactory.create(Literal.STRING, "x")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1"))));
+    tuples.add(
+        new Tuple<>(
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "3")),
+            new ExpressionFunctionCall(
+                func,
+                util.Util.createArrayList(ExpressionFactory.create(TokenFactory.create("x"))))));
+    tuples.add(
+        new Tuple<>(
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "30")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "23"))));
+    tuples.add(
+        new Tuple<>(
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "4")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "45"))));
+
+    assertEquals(1, stmts.size());
+
+    var result =
+        ((ExpressionTableConstructor) ((StatementExpression) stmts.get(0)).getExpr()).getTuples();
+    assertIterableEquals(tuples, result);
+  }
 }

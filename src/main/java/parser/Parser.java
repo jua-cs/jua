@@ -40,8 +40,8 @@ public class Parser {
 
     register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(8));
 
-    // TODO Add braces
     // Register the class which implements PrefixParser interface
+    register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser(7));
     register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(7));
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(7));
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(7));
@@ -76,9 +76,13 @@ public class Parser {
     advanceTokens();
   }
 
-  private StatementAssignment parseAssignment() throws IllegalParseException {
+  protected StatementAssignment parseAssignment() throws IllegalParseException {
+    return parseAssignment(-1);
+  }
+
+  protected StatementAssignment parseAssignment(int max) throws IllegalParseException {
     // At least one identifier
-    ArrayList<ExpressionIdentifier> identifiers = parseCommaSeparatedExpressions(0);
+    ArrayList<ExpressionIdentifier> identifiers = parseCommaSeparatedExpressions(0, max);
 
     Token tok = currentToken();
 
@@ -90,7 +94,7 @@ public class Parser {
     Token assignTok = tok;
     advanceTokens();
 
-    ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
+    ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0, max);
     return new StatementAssignment(assignTok, identifiers, exprs);
   }
 
@@ -100,11 +104,17 @@ public class Parser {
 
   protected <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(int precedence)
       throws IllegalParseException {
+    return parseCommaSeparatedExpressions(precedence, -1);
+  }
+
+  protected <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(
+      int precedence, int max) throws IllegalParseException {
     ArrayList<T> exprs = new ArrayList<>();
 
     exprs.add((T) parseExpression());
+    int count = 1;
 
-    while (currentToken().isSubtype(Delimiter.COMMA)) {
+    while (currentToken().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
       // Consume ','
       consume(Delimiter.COMMA);
       exprs.add((T) parseExpression(precedence));
@@ -255,7 +265,7 @@ public class Parser {
         && ((TokenKeyword) tok).getKeyword() == Keyword.RETURN;
   }
 
-  private boolean isAssignmentStatement() {
+  protected boolean isAssignmentStatement() {
     int pos = 0;
 
     do {

@@ -12,6 +12,11 @@ public class ExpressionFunctionCall extends Expression {
     super(functionName.getToken());
   }
 
+  public ExpressionFunctionCall(ExpressionIdentifier functionName, ArrayList<Expression> args) {
+    super(functionName.getToken());
+    this.args = args;
+  }
+
   public void addArgument(Expression arg) {
     args.add(arg);
   }
@@ -28,5 +33,19 @@ public class ExpressionFunctionCall extends Expression {
     str.append(args.stream().map(Objects::toString).collect(Collectors.joining(",")));
     str.append(")");
     return str.toString();
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    ExpressionFunctionCall that = (ExpressionFunctionCall) o;
+    return Objects.equals(args, that.args);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), args);
   }
 }
