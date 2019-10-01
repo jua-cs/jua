@@ -263,9 +263,8 @@ public class Parser {
   }
 
   private boolean isFunctionStatement() {
-    Token tok = currentToken();
     boolean isFunc =
-        tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.FUNCTION;
+        currentToken().isSubtype(Keyword.FUNCTION);
     boolean nextIsIdent = nextToken().getType() == TokenType.IDENTIFIER;
     return isFunc && nextIsIdent;
   }
@@ -278,9 +277,7 @@ public class Parser {
   }
 
   private boolean isReturnStatement() {
-    Token tok = currentToken();
-    return tok.getType() == TokenType.KEYWORD
-        && ((TokenKeyword) tok).getKeyword() == Keyword.RETURN;
+    return currentToken().isSubtype(Keyword.RETURN);
   }
 
   protected boolean isAssignmentStatement() {
@@ -311,8 +308,7 @@ public class Parser {
   }
 
   private boolean isIfStatement() {
-    Token tok = currentToken();
-    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.IF;
+    return currentToken().isSubtype(Keyword.IF);
   }
 
   private StatementIf parseIfStatement() throws IllegalParseException {
@@ -327,16 +323,13 @@ public class Parser {
     Expression condition = parseExpression();
 
     Token tok = currentToken();
-    if (tok.getType() != TokenType.KEYWORD || ((TokenKeyword) tok).getKeyword() != Keyword.THEN) {
+    if (!tok.isSubtype(Keyword.THEN)) {
       throw new IllegalParseException(String.format("unexpected token %s, then expected", tok));
     }
     advanceTokens();
     Statement consequence = parseListStatement();
     tok = currentToken();
-    if (tok.getType() != TokenType.KEYWORD
-        || (((TokenKeyword) tok).getKeyword() != Keyword.END
-            && ((TokenKeyword) tok).getKeyword() != Keyword.ELSE
-            && ((TokenKeyword) tok).getKeyword() != Keyword.ELSEIF)) {
+    if (!isBlockEnd()) {
       throw new IllegalParseException(
           String.format("unexpected token %s, expected end, else or elseif", tok));
     }
@@ -353,7 +346,7 @@ public class Parser {
     }
 
     tok = currentToken();
-    if (tok.getType() != TokenType.KEYWORD || ((TokenKeyword) tok).getKeyword() != Keyword.END) {
+    if (!tok.isSubtype(Keyword.END)) {
       throw new IllegalParseException(String.format("unexpected token %s, expected end", keyword));
     }
 
@@ -366,8 +359,7 @@ public class Parser {
   }
 
   private boolean isWhileStatement() {
-    Token tok = currentToken();
-    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.WHILE;
+    return currentToken().isSubtype(Keyword.WHILE);
   }
 
   private Statement parseWhileStatement() throws IllegalParseException {
