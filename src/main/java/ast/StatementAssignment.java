@@ -1,13 +1,22 @@
 package ast;
 
+import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import token.Token;
 
 public class StatementAssignment extends Statement {
-  private ExpressionIdentifier lhs;
-  private Expression rhs;
+  private ArrayList<ExpressionIdentifier> lhs = new ArrayList<>();
+  private ArrayList<Expression> rhs = new ArrayList<>();
 
   public StatementAssignment(Token token, ExpressionIdentifier lhs, Expression rhs) {
+    super(token);
+    this.lhs.add(lhs);
+    this.rhs.add(rhs);
+  }
+
+  public StatementAssignment(
+      Token token, ArrayList<ExpressionIdentifier> lhs, ArrayList<Expression> rhs) {
     super(token);
     this.lhs = lhs;
     this.rhs = rhs;
@@ -15,7 +24,10 @@ public class StatementAssignment extends Statement {
 
   @Override
   public String toString() {
-    return String.format("%s = %s", lhs, rhs);
+    return String.format(
+        "%s = %s",
+        lhs.stream().map(Object::toString).collect(Collectors.joining(", ")),
+        rhs.stream().map(Objects::toString).collect(Collectors.joining(", ")));
   }
 
   @Override
@@ -26,11 +38,11 @@ public class StatementAssignment extends Statement {
     return Objects.equals(lhs, that.lhs) && Objects.equals(rhs, that.rhs);
   }
 
-  public ExpressionIdentifier getLhs() {
+  public ArrayList<ExpressionIdentifier> getLhs() {
     return lhs;
   }
 
-  public Expression getRhs() {
+  public ArrayList<Expression> getRhs() {
     return rhs;
   }
 }

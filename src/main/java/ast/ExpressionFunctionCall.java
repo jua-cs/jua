@@ -14,6 +14,10 @@ public class ExpressionFunctionCall extends Expression {
     args.add(arg);
   }
 
+  public void setArgs(ArrayList<Expression> args) {
+    this.args = args;
+  }
+
   @Override
   public String toString() {
     StringBuilder str = new StringBuilder();

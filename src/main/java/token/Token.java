@@ -77,6 +77,17 @@ public abstract class Token {
     return (tok.getDelimiter() == delimiter);
   }
 
+  public boolean isSubtype(Operator op) {
+
+    if (!(this instanceof TokenOperator)) {
+      return false;
+    }
+
+    TokenOperator tok = (TokenOperator) this;
+
+    return (tok.getOperator() == op);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

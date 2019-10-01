@@ -3,6 +3,7 @@ package parser;
 import ast.Expression;
 import ast.ExpressionFunctionCall;
 import ast.ExpressionIdentifier;
+import java.util.ArrayList;
 import token.Delimiter;
 import token.Token;
 
@@ -28,13 +29,8 @@ public class FunctionCallParser implements InfixParser {
       return exp;
     }
 
-    exp.addArgument(parser.parseExpression(0));
-
-    while (parser.currentToken().isSubtype(Delimiter.COMMA)) {
-      // Consume ','
-      parser.consume(Delimiter.COMMA);
-      exp.addArgument(parser.parseExpression(precedence));
-    }
+    ArrayList<Expression> args = parser.parseCommaSeparatedExpressions(precedence);
+    exp.setArgs(args);
 
     // Consume ')'
     parser.consume(Delimiter.RPAREN);

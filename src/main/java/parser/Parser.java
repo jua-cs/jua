@@ -50,12 +50,16 @@ public class Parser {
     register(identifierKey, new IdentifierParser());
   }
 
-  Token currentToken() {
-    return tokens.get(currentPos);
+  private Token nextToken(int i) {
+    return tokens.get(i + currentPos);
   }
 
   private Token nextToken() {
-    return tokens.get(1 + currentPos);
+    return nextToken(1);
+  }
+
+  Token currentToken() {
+    return nextToken(0);
   }
 
   void advanceTokens() {
@@ -72,16 +76,51 @@ public class Parser {
   }
 
   private StatementAssignment parseAssignment() throws IllegalParseException {
-    ExpressionIdentifier identifier = new ExpressionIdentifier(currentToken());
-    advanceTokens();
+    // At least one identifier
+    ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
+
     Token tok = currentToken();
+    // Continue parsing identifiers while we have commas
+    while (true) {
+      identifiers.add(new ExpressionIdentifier(tok));
+      advanceTokens();
+      tok = currentToken();
+      if (!tok.isSubtype(Delimiter.COMMA)) {
+        break;
+      }
+      advanceTokens();
+      tok = currentToken();
+    }
+
+    // Check if we are on equal token
+    if (!(tok.getType() == TokenType.OPERATOR
+        && ((TokenOperator) tok).getOperator() == Operator.ASSIGN)) {
+      throw new IllegalParseException(String.format("Expected equal operator but got %s", tok));
+    }
+    Token assignTok = tok;
     advanceTokens();
-    Expression expr = parseExpression();
-    return new StatementAssignment(tok, identifier, expr);
+
+    ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
+    return new StatementAssignment(assignTok, identifiers, exprs);
   }
 
   private Expression parseExpression() throws IllegalParseException {
     return parseExpression(0);
+  }
+
+  protected ArrayList<Expression> parseCommaSeparatedExpressions(int precedence)
+      throws IllegalParseException {
+    ArrayList<Expression> exprs = new ArrayList<>();
+
+    exprs.add(parseExpression());
+
+    while (currentToken().isSubtype(Delimiter.COMMA)) {
+      // Consume ','
+      consume(Delimiter.COMMA);
+      exprs.add(parseExpression(precedence));
+    }
+
+    return exprs;
   }
 
   protected Expression parseExpression(int precedence) throws IllegalParseException {
@@ -225,12 +264,30 @@ public class Parser {
   }
 
   private boolean isAssignmentStatement() {
-    TokenType currType = currentToken().getType();
-    boolean isIdent = currType == TokenType.IDENTIFIER;
-    boolean nextTokIsAssign =
-        nextToken().getType() == TokenType.OPERATOR
-            && ((TokenOperator) nextToken()).getOperator() == Operator.ASSIGN;
-    return isIdent && nextTokIsAssign;
+    int pos = 0;
+
+    do {
+      TokenType currType = nextToken(pos).getType();
+      boolean isIdent = currType == TokenType.IDENTIFIER;
+
+      if (!isIdent) {
+        return false;
+      }
+
+      // Simple assignment
+      if (nextToken(pos + 1).isSubtype(Operator.ASSIGN)) {
+        return true;
+      }
+
+      // Else check for comma else return
+      if (!nextToken(pos + 1).isSubtype(Delimiter.COMMA)) {
+        return false;
+      }
+
+      pos += 2;
+    } while (!nextToken(pos).isSubtype(Operator.ASSIGN));
+
+    return true;
   }
 
   private boolean isIfStatement() {

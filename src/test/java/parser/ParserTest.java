@@ -303,4 +303,14 @@ public class ParserTest {
     expected.add(whileStatement);
     assertIterableEquals(expected, parser.parse());
   }
+
+  @Test
+  void testMultiAssignment() throws IllegalParseException {
+    String in = "a, b, c = 1, 2, 3";
+    String in2 = "a, b, c = 1, 2\n3";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    // TODO
+    System.out.println(parser.parse());
+  }
 }
