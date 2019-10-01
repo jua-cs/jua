@@ -67,12 +67,24 @@ public class Parser {
     currentPos++;
   }
 
-  // TODO: add others overloading
   void consume(Delimiter delimiter) throws IllegalParseException {
     if (!currentToken().isSubtype(delimiter)) {
       throw new IllegalParseException("Expecting " + delimiter + " but found " + nextToken());
     }
+    advanceTokens();
+  }
 
+  void consume(Keyword keyword) throws IllegalParseException {
+    if (!currentToken().isSubtype(keyword)) {
+      throw new IllegalParseException("Expecting " + keyword + " but found " + nextToken());
+    }
+    advanceTokens();
+  }
+
+  void consume(Operator operator) throws IllegalParseException {
+    if (!currentToken().isSubtype(operator)) {
+      throw new IllegalParseException("Expecting " + operator + " but found " + nextToken());
+    }
     advanceTokens();
   }
 
@@ -194,12 +206,12 @@ public class Parser {
   protected StatementList parseBlockStatement() throws IllegalParseException {
 
     // consume the DO keyword
-    advanceTokens();
+    consume(Keyword.DO);
 
     StatementList list = parseListStatement();
 
     // consume the END keyword
-    advanceTokens();
+    consume(Keyword.END);
 
     return list;
   }
@@ -240,7 +252,7 @@ public class Parser {
     StatementList stmts = parseListStatement();
 
     // consume END of function statement
-    advanceTokens();
+    consume(Keyword.END);
     return new StatementFunction(tok, funcName, new ExpressionFunction(tok, args, stmts));
   }
 
@@ -341,7 +353,7 @@ public class Parser {
 
     if (!nested) {
       // consume the END keyword
-      advanceTokens();
+      consume(Keyword.END);
     }
 
     return new StatementIf(tok, condition, consequence, alternative);
@@ -475,7 +487,7 @@ public class Parser {
     }
 
     // Consume ')'
-    advanceTokens();
+    consume(Delimiter.RPAREN);
 
     return args;
   }

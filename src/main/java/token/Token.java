@@ -96,6 +96,14 @@ public abstract class Token {
     return (tok.getKeyword() == kw);
   }
 
+  public boolean isSubtype(Operator operator) {
+    if (!(this instanceof TokenOperator)) {
+      return false;
+    }
+    TokenOperator tok = (TokenOperator) this;
+    return (tok.getOperator() == operator);
+  }
+
   public boolean lightEquals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
