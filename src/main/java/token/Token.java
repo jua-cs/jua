@@ -112,37 +112,25 @@ public abstract class Token {
   }
 
   @Override
-  public final boolean equals(Object o) {
-    // Since we implement the comparison for subclass here, we make it final
+  public boolean equals(Object o) {
     if (this == o) return true;
-    if (!(o.getClass() == getClass())) return false;
+    if (o == null || getClass() != o.getClass()) return false;
+
     Token token = (Token) o;
+
     if (line != token.line) return false;
     if (position != token.position) return false;
     if (type != token.type) return false;
-    if (!Objects.equals(literal, token.literal)) return false;
-
-    // Because most equals() calls are done between token, but we want to differentiate two TokenDelimiter
-    if (o instanceof TokenDelimiter) {
-      TokenDelimiter target = (TokenDelimiter) token;
-      TokenDelimiter current = (TokenDelimiter) this;
-      return target.getDelimiter() == current.getDelimiter();
-    } else if (o instanceof TokenKeyword) {
-      TokenKeyword target = (TokenKeyword) token;
-      TokenKeyword current = (TokenKeyword) this;
-      return target.getKeyword() == current.getKeyword();
-    } else if (o instanceof TokenOperator) {
-      TokenOperator target = (TokenOperator) token;
-      TokenOperator current = (TokenOperator) this;
-      return target.getOperator() == current.getOperator();
-      }
-
-    return true;
+    return Objects.equals(literal, token.literal);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(type, literal);
+    int result = type.hashCode();
+    result = 31 * result + line;
+    result = 31 * result + position;
+    result = 31 * result + (literal != null ? literal.hashCode() : 0);
+    return result;
   }
 
   @Override
