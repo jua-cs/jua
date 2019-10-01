@@ -34,8 +34,11 @@ public class StatementAssignment extends Statement {
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+
     StatementAssignment that = (StatementAssignment) o;
-    return Objects.equals(lhs, that.lhs) && Objects.equals(rhs, that.rhs);
+    if (!lhs.equals(that.lhs)) return false;
+    return rhs.equals(that.rhs);
   }
 
   public ArrayList<ExpressionIdentifier> getLhs() {
@@ -44,5 +47,13 @@ public class StatementAssignment extends Statement {
 
   public ArrayList<Expression> getRhs() {
     return rhs;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + lhs.hashCode();
+    result = 31 * result + rhs.hashCode();
+    return result;
   }
 }

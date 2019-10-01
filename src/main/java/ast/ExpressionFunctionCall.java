@@ -1,24 +1,41 @@
 package ast;
 
+import token.Token;
+
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class ExpressionFunctionCall extends Expression {
+public class ExpressionFunctionCall extends ExpressionFunction {
 
-  private ArrayList<Expression> args = new ArrayList<>();
+  private String functionName;
 
-  public ExpressionFunctionCall(ExpressionIdentifier functionName) {
-    super(functionName.getToken());
+  public ExpressionFunctionCall(Token token) {
+    super(token);
+    functionName = token.getLiteral();
   }
 
-  public ExpressionFunctionCall(ExpressionIdentifier functionName, ArrayList<Expression> args) {
-    super(functionName.getToken());
-    this.args = args;
-  }
 
   public void addArgument(Expression arg) {
     args.add(arg);
+    }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+
+    ExpressionFunctionCall that = (ExpressionFunctionCall) o;
+
+    return functionName.equals(that.functionName);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + functionName.hashCode();
+    return result;
   }
 
   public void setArgs(ArrayList<Expression> args) {
@@ -28,24 +45,11 @@ public class ExpressionFunctionCall extends Expression {
   @Override
   public String toString() {
     StringBuilder str = new StringBuilder();
-    str.append(token.getLiteral());
+    str.append(functionName);
     str.append("(");
     str.append(args.stream().map(Objects::toString).collect(Collectors.joining(",")));
     str.append(")");
     return str.toString();
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    ExpressionFunctionCall that = (ExpressionFunctionCall) o;
-    return Objects.equals(args, that.args);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), args);
-  }
 }

@@ -88,6 +88,7 @@ public class Parser {
     advanceTokens();
   }
 
+
   protected StatementAssignment parseAssignment() throws IllegalParseException {
     return parseAssignment(-1);
   }
@@ -186,7 +187,7 @@ public class Parser {
   }
 
   protected StatementList parseListStatement() throws IllegalParseException {
-    StatementList list = new StatementList(currentToken());
+    StatementList list = new StatementList();
 
     while (currentTokenIsValid() && !isBlockEnd()) {
       Statement child = parseStatement();
@@ -244,16 +245,21 @@ public class Parser {
     Token tok = currentToken();
     advanceTokens();
 
-    ExpressionIdentifier funcName = new ExpressionIdentifier(currentToken());
+    if (!(currentToken().getType() == TokenType.IDENTIFIER)) {
+      throw new IllegalParseException(
+              String.format("Expected identifier in function args but got: %s", currentToken())
+      );
+    }
+    ExpressionIdentifier funcName = (ExpressionIdentifier) ExpressionFactory.create(currentToken());
     advanceTokens();
 
     // Parse args
-    ArrayList<ExpressionIdentifier> args = parseFuncArgs();
+    ArrayList<Expression> args = parseFuncArgs();
     StatementList stmts = parseListStatement();
 
     // consume END of function statement
     consume(Keyword.END);
-    return new StatementFunction(tok, funcName, new ExpressionFunction(tok, args, stmts));
+    return new StatementFunction(tok, funcName, ExpressionFactory.createExpressionFunction(tok, args, stmts));
   }
 
   private boolean isFunctionStatement() {
@@ -470,18 +476,19 @@ public class Parser {
     }
   }
 
-  protected ArrayList<ExpressionIdentifier> parseFuncArgs() throws IllegalParseException {
+  protected ArrayList<Expression> parseFuncArgs() throws IllegalParseException {
     advanceTokens();
-    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
+    ArrayList<Expression> args = new ArrayList<>();
     // if there is no args, we look for a ')'
 
     Token tok = currentToken();
     while (!tok.isSubtype(Delimiter.RPAREN)) {
+      // TODO: what if we have f(3+4, 5) ? I'm not sure we're looking for an identifier. Make a test... (19)
       if (tok.getType() != TokenType.IDENTIFIER) {
         throw new IllegalParseException(
             String.format("Expected identifier in function args but got: %s", tok));
       }
-      args.add(new ExpressionIdentifier(tok));
+      args.add(ExpressionFactory.create(tok));
       advanceTokens();
       tok = currentToken();
     }

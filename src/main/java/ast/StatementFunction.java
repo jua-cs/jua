@@ -19,13 +19,19 @@ public class StatementFunction extends Statement {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
+
     StatementFunction that = (StatementFunction) o;
-    return Objects.equals(name, that.name) && Objects.equals(func, that.func);
+
+    if (!name.equals(that.name)) return false;
+    return func.equals(that.func);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), name, func);
+    int result = super.hashCode();
+    result = 31 * result + name.hashCode();
+    result = 31 * result + func.hashCode();
+    return result;
   }
 
   @Override

@@ -6,7 +6,7 @@ import token.TokenOperator;
 
 public class ExpressionHash extends ExpressionUnary {
 
-  protected ExpressionHash(TokenOperator token, Expression value) {
+  ExpressionHash(TokenOperator token, Expression value) {
     super(TokenFactory.create(Operator.HASH, token.getLine(), token.getPosition()), value);
   }
 }

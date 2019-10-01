@@ -1,6 +1,7 @@
 package parser;
 
 import ast.Expression;
+import ast.ExpressionFactory;
 import ast.ExpressionFunctionCall;
 import ast.ExpressionIdentifier;
 import java.util.ArrayList;
@@ -22,10 +23,12 @@ public class FunctionCallParser implements InfixParser {
     if (!(lhs instanceof ExpressionIdentifier)) {
       throw new IllegalParseException("lhs is not an ExpressionIdentifier but a " + lhs.getClass());
     }
-    ExpressionFunctionCall exp = new ExpressionFunctionCall((ExpressionIdentifier) lhs);
+
+    ExpressionFunctionCall exp = ExpressionFactory.create((ExpressionIdentifier) lhs);
 
     // if there is no args, we look for a ')'
     if (parser.currentToken().isSubtype(Delimiter.RPAREN)) {
+      parser.consume(Delimiter.RPAREN);
       return exp;
     }
 

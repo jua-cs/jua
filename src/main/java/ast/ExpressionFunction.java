@@ -6,11 +6,17 @@ import java.util.stream.Collectors;
 import token.Token;
 
 public class ExpressionFunction extends Expression {
-  private ArrayList<ExpressionIdentifier> args;
+  protected ArrayList<Expression> args;
   private StatementList statements;
 
-  public ExpressionFunction(
-      Token token, ArrayList<ExpressionIdentifier> args, StatementList statements) {
+  ExpressionFunction(Token token) {
+    super(token);
+    this.args = new ArrayList<>();
+    this.statements = new StatementList();
+  }
+
+  ExpressionFunction(
+      Token token, ArrayList<Expression> args, StatementList statements) {
     super(token);
     this.args = args;
     this.statements = statements;
@@ -28,20 +34,31 @@ public class ExpressionFunction extends Expression {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
+
     ExpressionFunction that = (ExpressionFunction) o;
-    return Objects.equals(args, that.args) && Objects.equals(statements, that.statements);
+
+    if (!args.equals(that.args)) return false;
+    return statements.equals(that.statements);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), args, statements);
+    int result = super.hashCode();
+    result = 31 * result + args.hashCode();
+    result = 31 * result + statements.hashCode();
+    return result;
   }
 
-  public ArrayList<ExpressionIdentifier> getArgs() {
+  public ArrayList<Expression> getArgs() {
     return args;
   }
 
   public StatementList getStatements() {
     return statements;
   }
+
+  public void addArgument(Expression exp) {
+    args.add(exp);
+  }
+
 }

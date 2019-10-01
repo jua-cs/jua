@@ -1,7 +1,10 @@
 package ast;
 
 import token.Token;
+import token.TokenFactory;
 import token.TokenOperator;
+
+import java.util.ArrayList;
 
 public class ExpressionFactory {
   public static ExpressionBinary create(TokenOperator token, Expression lhs, Expression rhs) {
@@ -76,5 +79,13 @@ public class ExpressionFactory {
       default:
         return null;
     }
+  }
+
+  public static ExpressionFunctionCall create(ExpressionIdentifier identifier) {
+    return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()));
+  }
+
+  public static ExpressionFunction createExpressionFunction(Token token, ArrayList<Expression> args, StatementList statements) {
+    return new ExpressionFunction(token, args, statements);
   }
 }

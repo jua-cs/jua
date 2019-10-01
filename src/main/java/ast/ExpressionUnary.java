@@ -7,7 +7,7 @@ public abstract class ExpressionUnary extends Expression {
 
   protected Expression value;
 
-  public ExpressionUnary(TokenOperator token, Expression value) {
+  ExpressionUnary(TokenOperator token, Expression value) {
     super(token);
     this.value = value;
   }
@@ -16,9 +16,12 @@ public abstract class ExpressionUnary extends Expression {
     return value;
   }
 
-  @Override
-  public String toString() {
-    return String.format("(%s %s)", ((TokenOperator) this.token).getOperator(), value);
+//  public String toString() {
+//    return String.format("(%s %s)", ((TokenOperator) this.token).getOperator(), value);
+//  }
+@Override
+public String toString() {
+    return String.format("(%s %s)", toString(), value);
   }
 
   @Override

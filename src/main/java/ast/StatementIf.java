@@ -23,27 +23,33 @@ public class StatementIf extends Statement {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+
+    StatementIf that = (StatementIf) o;
+
+    if (!condition.equals(that.condition)) return false;
+    if (!consequence.equals(that.consequence)) return false;
+    return alternative.equals(that.alternative);
+  }
+
+  @Override
+  public int hashCode() {
+    int result = super.hashCode();
+    result = 31 * result + condition.hashCode();
+    result = 31 * result + consequence.hashCode();
+    result = 31 * result + alternative.hashCode();
+    return result;
+  }
+
+  @Override
   public String toString() {
     if (alternative != null) {
       return String.format("if %s\nthen %s\nelse\n%s\nend", condition, consequence, alternative);
     }
     return String.format("if %s\nthen %s\nend", condition, consequence);
-  }
-
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-    StatementIf that = (StatementIf) o;
-    return Objects.equals(condition, that.condition)
-        && Objects.equals(consequence, that.consequence)
-        && Objects.equals(alternative, that.alternative);
-  }
-
-  @Override
-  public int hashCode() {
-    return Objects.hash(super.hashCode(), condition, consequence, alternative);
   }
 
   public Expression getCondition() {

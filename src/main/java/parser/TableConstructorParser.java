@@ -52,7 +52,7 @@ public class TableConstructorParser implements PrefixParser {
                 // Convert the LHS to a string
                 ExpressionFactory.create(
                     TokenFactory.create(
-                        Literal.STRING, assign.getLhs().get(0).getToken().getLiteral())),
+                        Literal.STRING, assign.getLhs().get(0).getLiteral())),
                 assign.getRhs().get(0));
         tuples.add(tup);
       } else {

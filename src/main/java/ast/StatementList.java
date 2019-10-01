@@ -9,8 +9,7 @@ public class StatementList extends Statement {
 
   private ArrayList<Statement> children = new ArrayList<>();
 
-  public StatementList(Token token) {
-    super(token);
+  public StatementList() {
   }
 
   public StatementList(Token token, Statement statement) {

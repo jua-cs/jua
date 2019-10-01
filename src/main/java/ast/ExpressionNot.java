@@ -6,7 +6,7 @@ import token.TokenOperator;
 
 public class ExpressionNot extends ExpressionUnary {
 
-  protected ExpressionNot(TokenOperator token, Expression value) {
+  ExpressionNot(TokenOperator token, Expression value) {
     super(TokenFactory.create(Operator.NOT, token.getLine(), token.getPosition()), value);
   }
 }

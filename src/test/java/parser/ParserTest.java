@@ -21,10 +21,10 @@ public class ParserTest {
     StatementAssignment expected =
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
-            new ExpressionIdentifier(TokenFactory.create("x")),
+                (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x")),
             ExpressionFactory.create(
                 (TokenOperator) TokenFactory.create(Operator.NOT),
-                new ExpressionLiteral(TokenFactory.create(Literal.BOOLEAN, "true"))));
+                ExpressionFactory.create(TokenFactory.create(Literal.BOOLEAN, "true"))));
 
     assertEquals(expected, statements.get(0));
   }
@@ -60,11 +60,11 @@ public class ParserTest {
     Statement expected =
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
-            new ExpressionIdentifier(TokenFactory.create("x")),
+                (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x")),
             ExpressionFactory.create(
                 TokenFactory.create(Operator.PLUS),
-                new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
-                new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "5"))));
+                ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
+                ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "5"))));
     assertEquals(expected, statements.get(0));
   }
 
@@ -77,7 +77,7 @@ public class ParserTest {
     Statement expected =
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
-            new ExpressionIdentifier(TokenFactory.create("x")),
+                (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x")),
             ExpressionFactory.create(
                 TokenFactory.create(Operator.PLUS),
                 ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
@@ -152,13 +152,13 @@ public class ParserTest {
     ArrayList<Statement> statements = parser.parse();
     assertEquals(1, statements.size());
 
-    ExpressionIdentifier yIdent = new ExpressionIdentifier(TokenFactory.create("y"));
-    ExpressionIdentifier xIdent = new ExpressionIdentifier(TokenFactory.create("x"));
+    ExpressionIdentifier yIdent = (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("y"));
+    ExpressionIdentifier xIdent = (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x"));
 
-    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
+    ArrayList<Expression> args = new ArrayList<>();
     args.add(xIdent);
 
-    StatementList statementList = new StatementList(TokenFactory.create("y"));
+    StatementList statementList = new StatementList();
     statementList.addChild(
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), yIdent, xIdent));
     statementList.addChild(new StatementReturn(TokenFactory.create(Keyword.RETURN), yIdent));
@@ -166,8 +166,8 @@ public class ParserTest {
     Statement expected =
         new StatementFunction(
             TokenFactory.create(Keyword.FUNCTION),
-            new ExpressionIdentifier(TokenFactory.create("identity")),
-            new ExpressionFunction(TokenFactory.create(Keyword.FUNCTION), args, statementList));
+                (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("identity")),
+            ExpressionFactory.createExpressionFunction(TokenFactory.create(Keyword.FUNCTION), args, statementList));
     assertEquals(expected, statements.get(0));
   }
 
@@ -179,13 +179,13 @@ public class ParserTest {
     ArrayList<Statement> statements = parser.parse();
     assertEquals(1, statements.size());
 
-    ExpressionIdentifier yIdent = new ExpressionIdentifier(TokenFactory.create("y"));
-    ExpressionIdentifier xIdent = new ExpressionIdentifier(TokenFactory.create("x"));
+    ExpressionIdentifier yIdent = (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("y"));
+    ExpressionIdentifier xIdent = (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x"));
 
-    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
+    ArrayList<Expression> args = new ArrayList<>();
     args.add(xIdent);
 
-    StatementList statementList = new StatementList(TokenFactory.create("y"));
+    StatementList statementList = new StatementList();
     statementList.addChild(
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), yIdent, xIdent));
     statementList.addChild(new StatementReturn(TokenFactory.create(Keyword.RETURN), yIdent));
@@ -193,8 +193,8 @@ public class ParserTest {
     Statement expected =
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
-            new ExpressionIdentifier(TokenFactory.create("identity")),
-            new ExpressionFunction(TokenFactory.create(Keyword.FUNCTION), args, statementList));
+                (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("identity")),
+            ExpressionFactory.createExpressionFunction(TokenFactory.create(Keyword.FUNCTION), args, statementList));
     assertEquals(expected, statements.get(0));
   }
 

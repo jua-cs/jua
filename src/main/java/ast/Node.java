@@ -4,31 +4,39 @@ import java.util.Objects;
 import token.Token;
 
 public abstract class Node {
-  protected Token token;
+  private int line;
+  private int position;
+  private String literal;
 
-  public Node(Token token) {
-    this.token = token;
-  }
+  Node() {}
 
-  public Token getToken() {
-    return token;
+  Node(Token token) {
+    this.literal = token.getLiteral();
+    this.line = token.getLine();
+    this.position = token.getPosition();
   }
 
   @Override
   public String toString() {
-    return token.getLiteral();
+    return this.literal;
+  }
+
+  public String getLiteral() {
+    return literal;
   }
 
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
+
     Node node = (Node) o;
-    return Objects.equals(token, node.token);
+
+    return Objects.equals(literal, node.literal);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(token);
+    return literal != null ? literal.hashCode() : 0;
   }
 }

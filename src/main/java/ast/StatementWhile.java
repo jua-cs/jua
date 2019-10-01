@@ -15,24 +15,30 @@ public class StatementWhile extends Statement {
   }
 
   @Override
-  public String toString() {
-    return String.format("while %s do\n%s end", condition, consequence);
-  }
-
-  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
+
     StatementWhile that = (StatementWhile) o;
-    return Objects.equals(condition, that.condition)
-        && Objects.equals(consequence, that.consequence);
+
+    if (!condition.equals(that.condition)) return false;
+    return consequence.equals(that.consequence);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), condition, consequence);
+    int result = super.hashCode();
+    result = 31 * result + condition.hashCode();
+    result = 31 * result + consequence.hashCode();
+    return result;
   }
+
+  @Override
+  public String toString() {
+    return String.format("while %s do\n%s end", condition, consequence);
+  }
+
 
   public Expression getCondition() {
     return condition;
