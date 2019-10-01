@@ -77,20 +77,9 @@ public class Parser {
 
   private StatementAssignment parseAssignment() throws IllegalParseException {
     // At least one identifier
-    ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
+    ArrayList<ExpressionIdentifier> identifiers = parseCommaSeparatedExpressions(0);
 
     Token tok = currentToken();
-    // Continue parsing identifiers while we have commas
-    while (true) {
-      identifiers.add(new ExpressionIdentifier(tok));
-      advanceTokens();
-      tok = currentToken();
-      if (!tok.isSubtype(Delimiter.COMMA)) {
-        break;
-      }
-      advanceTokens();
-      tok = currentToken();
-    }
 
     // Check if we are on equal token
     if (!(tok.getType() == TokenType.OPERATOR
@@ -108,16 +97,16 @@ public class Parser {
     return parseExpression(0);
   }
 
-  protected ArrayList<Expression> parseCommaSeparatedExpressions(int precedence)
+  protected <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(int precedence)
       throws IllegalParseException {
-    ArrayList<Expression> exprs = new ArrayList<>();
+    ArrayList<T> exprs = new ArrayList<>();
 
-    exprs.add(parseExpression());
+    exprs.add((T) parseExpression());
 
     while (currentToken().isSubtype(Delimiter.COMMA)) {
       // Consume ','
       consume(Delimiter.COMMA);
-      exprs.add(parseExpression(precedence));
+      exprs.add((T) parseExpression(precedence));
     }
 
     return exprs;
@@ -220,6 +209,8 @@ public class Parser {
       return parseBlockStatement();
     } else if (isWhileStatement()) {
       return parseWhileStatement();
+    } else if (isForStatement()) {
+      return parseForStatement();
     } else {
       return new StatementExpression(parseExpression());
     }
@@ -362,6 +353,74 @@ public class Parser {
     Statement consequence = parseBlockStatement();
 
     return new StatementWhile(tok, condition, consequence);
+  }
+
+  private boolean isForStatement() {
+    Token tok = currentToken();
+    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.FOR;
+  }
+
+  private StatementFor parseForStatement() throws IllegalParseException {
+    Token next = nextToken(3);
+    if (next.isSubtype(Operator.ASSIGN)) {
+      return parseNumericForStatement();
+    }
+
+    return parseGenericForStatement();
+  }
+
+  private StatementFor parseNumericForStatement() throws IllegalParseException {
+    Token tok = currentToken();
+    advanceTokens();
+
+    if (!isAssignmentStatement()) {
+      throw new IllegalParseException(String.format("expected assignment in for loop"));
+    }
+    StatementAssignment assignment = parseAssignment();
+    ExpressionIdentifier variable = assignment.getLhs().get(0);
+    Expression var = assignment.getRhs().get(0);
+    Expression limit = null;
+    Expression step = null;
+
+    if (assignment.getRhs().size() > 1) {
+      limit = assignment.getRhs().get(1);
+    } else {
+      throw new IllegalParseException("expected limit in for loop");
+    }
+
+    if (assignment.getRhs().size() > 2) {
+      step = assignment.getRhs().get(2);
+    }
+
+    Statement block = parseBlockStatement();
+
+    return new StatementNumericFor(tok, variable, block, var, limit, step);
+  }
+
+  private StatementFor parseGenericForStatement() throws IllegalParseException {
+    ArrayList<ExpressionIdentifier> variables = parseCommaSeparatedExpressions(0);
+
+    Token tok = currentToken();
+
+    // Check if we are on equal token
+    if (!tok.isSubtype(Keyword.IN)) {
+      throw new IllegalParseException(String.format("Expected in keyword but got %s", tok));
+    }
+
+    ArrayList<Expression> explist = parseCommaSeparatedExpressions(0);
+    Expression iterator = explist.get(0);
+    Expression state = null;
+    Expression var = null;
+    if (explist.size() > 1) {
+      state = explist.get(1);
+    }
+    if (explist.size() > 2) {
+      var = explist.get(2);
+    }
+
+    Statement block = parseBlockStatement();
+
+    return new StatementGenericFor(tok, variables, block, iterator, state, var);
   }
 
   private boolean currentTokenIsValid() {

@@ -88,6 +88,17 @@ public abstract class Token {
     return (tok.getOperator() == op);
   }
 
+  public boolean isSubtype(Keyword kw) {
+
+    if (!(this instanceof TokenKeyword)) {
+      return false;
+    }
+
+    TokenKeyword tok = (TokenKeyword) this;
+
+    return (tok.getKeyword() == kw);
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
