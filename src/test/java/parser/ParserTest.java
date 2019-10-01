@@ -305,12 +305,73 @@ public class ParserTest {
   }
 
   @Test
-  void testMultiAssignment() throws IllegalParseException {
-    String in = "a, b, c = 1, 2, 3";
-    String in2 = "a, b, c = 1, 2\n3";
+  void testSameSizeMultiAssignment() throws IllegalParseException {
+    String in1 = "a, b, c = 1, 2, 3";
+    String in2 = "a, b, c = 1, 2,\n3";
 
-    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
-    // TODO
-    System.out.println(parser.parse());
+    ArrayList<Statement> stmts1 = new Parser((new Lexer(in1)).getNTokens(0)).parse();
+    ArrayList<Statement> stmts2 = new Parser((new Lexer(in2)).getNTokens(0)).parse();
+
+    ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
+    identifiers.add(new ExpressionIdentifier(TokenFactory.create("a")));
+    identifiers.add(new ExpressionIdentifier(TokenFactory.create("b")));
+    identifiers.add(new ExpressionIdentifier(TokenFactory.create("c")));
+
+    ArrayList<Expression> values = new ArrayList<>();
+    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")));
+    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")));
+    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "3")));
+
+    StatementAssignment expected =
+        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
+
+    assertEquals(1, stmts1.size());
+    assertEquals(1, stmts2.size());
+    assertEquals(expected, stmts1.get(0));
+    assertEquals(expected, stmts2.get(0));
+  }
+
+  @Test
+  void testMultiAssignmentWithLessValues() throws IllegalParseException {
+    String in = "a, b, c = 1, 2";
+
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+
+    ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
+    identifiers.add(new ExpressionIdentifier(TokenFactory.create("a")));
+    identifiers.add(new ExpressionIdentifier(TokenFactory.create("b")));
+    identifiers.add(new ExpressionIdentifier(TokenFactory.create("c")));
+
+    ArrayList<Expression> values = new ArrayList<>();
+    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")));
+    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")));
+
+    StatementAssignment expected =
+        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
+
+    assertEquals(1, stmts.size());
+    assertEquals(expected, stmts.get(0));
+  }
+
+  @Test
+  void testMultiAssignmentWithLessIdentifiers() throws IllegalParseException {
+    String in = "a, b = 1, 2, 3";
+
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+
+    ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
+    identifiers.add(new ExpressionIdentifier(TokenFactory.create("a")));
+    identifiers.add(new ExpressionIdentifier(TokenFactory.create("b")));
+
+    ArrayList<Expression> values = new ArrayList<>();
+    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")));
+    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")));
+    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "3")));
+
+    StatementAssignment expected =
+        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
+
+    assertEquals(1, stmts.size());
+    assertEquals(expected, stmts.get(0));
   }
 }
