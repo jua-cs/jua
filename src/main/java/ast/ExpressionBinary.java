@@ -5,8 +5,8 @@ import token.TokenOperator;
 
 public abstract class ExpressionBinary extends Expression {
 
-  private Expression lhs;
-  private Expression rhs;
+  protected Expression lhs;
+  protected Expression rhs;
 
   protected ExpressionBinary(TokenOperator token, Expression lhs, Expression rhs) {
     super(token);

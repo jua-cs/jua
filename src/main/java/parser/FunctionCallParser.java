@@ -29,7 +29,7 @@ public class FunctionCallParser implements InfixParser {
       return exp;
     }
 
-    ArrayList<Expression> args = parser.parseCommaSeparatedExpressions(precedence);
+    ArrayList<Expression> args = parser.parseCommaSeparatedExpressions(0);
     exp.setArgs(args);
 
     // Consume ')'

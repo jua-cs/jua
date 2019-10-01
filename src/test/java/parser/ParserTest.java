@@ -317,10 +317,11 @@ public class ParserTest {
     identifiers.add(new ExpressionIdentifier(TokenFactory.create("b")));
     identifiers.add(new ExpressionIdentifier(TokenFactory.create("c")));
 
-    ArrayList<Expression> values = new ArrayList<>();
-    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")));
-    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")));
-    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "3")));
+    ArrayList<Expression> values =
+        util.Util.createArrayList(
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")),
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "3")));
 
     StatementAssignment expected =
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
@@ -342,9 +343,10 @@ public class ParserTest {
     identifiers.add(new ExpressionIdentifier(TokenFactory.create("b")));
     identifiers.add(new ExpressionIdentifier(TokenFactory.create("c")));
 
-    ArrayList<Expression> values = new ArrayList<>();
-    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")));
-    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")));
+    ArrayList<Expression> values =
+        util.Util.createArrayList(
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")));
 
     StatementAssignment expected =
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
@@ -359,18 +361,39 @@ public class ParserTest {
 
     ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
 
-    ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
-    identifiers.add(new ExpressionIdentifier(TokenFactory.create("a")));
-    identifiers.add(new ExpressionIdentifier(TokenFactory.create("b")));
+    var identifiers =
+        util.Util.createArrayList(
+            new ExpressionIdentifier(TokenFactory.create("a")),
+            new ExpressionIdentifier(TokenFactory.create("b")));
 
-    ArrayList<Expression> values = new ArrayList<>();
-    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")));
-    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")));
-    values.add(new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "3")));
+    ArrayList<Expression> values =
+        util.Util.createArrayList(
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")),
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "3")));
 
     StatementAssignment expected =
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
 
+    assertEquals(1, stmts.size());
+    assertEquals(expected, stmts.get(0));
+  }
+
+  @Test
+  void testBracketExpr() throws IllegalParseException {
+    String in = "a[x * 2]";
+
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+
+    StatementExpression expected =
+        new StatementExpression(
+            new ExpressionIndex(
+                TokenFactory.create(Operator.INDEX),
+                ExpressionFactory.create(TokenFactory.create("a")),
+                ExpressionFactory.create(
+                    TokenFactory.create(Operator.ASTERISK),
+                    ExpressionFactory.create(TokenFactory.create("x")),
+                    ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")))));
     assertEquals(1, stmts.size());
     assertEquals(expected, stmts.get(0));
   }

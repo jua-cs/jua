@@ -42,6 +42,7 @@ public class Parser {
 
     // TODO Add braces
     // Register the class which implements PrefixParser interface
+    register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(7));
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(7));
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(7));
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(7));

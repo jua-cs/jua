@@ -19,6 +19,7 @@ public enum Operator {
   NOT_EQUAL("~="),
   AND("and"),
   OR("or"),
+  INDEX("["),
 
   NEGATIVE("-", Arity.UNARY),
   HASH("#", Arity.UNARY),
