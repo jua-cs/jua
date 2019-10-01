@@ -1,7 +1,6 @@
 package parser;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 import ast.*;
 import java.util.ArrayList;
@@ -235,16 +234,13 @@ public class ParserTest {
   @Test
   void testIfElseif() throws IllegalParseException {
     String in =
-        "-- defines a factorial function\n"
-            + "fact = function (n)\n"
-            + "  if n == 0 then\n"
+        "  if n == 0 then\n"
             + "    return 1\n"
             + "  elseif n == 1 then\n"
             + "    return 1\n"
             + "  else\n"
-            + "    return n * fact(n-1)\n"
-            + "  end\n"
-            + "end";
+            + "    return 2\n"
+            + "  end\n";
 
     Parser parser = new Parser((new Lexer(in)).getNTokens(0));
     // TODO
@@ -253,17 +249,40 @@ public class ParserTest {
 
   @Test
   void testWhile() throws IllegalParseException {
-    String in =
-        "-- defines a function\n"
-            + "function f(n)\n"
-            + "  n = 0\n"
-            + "  while n < 10 do\n"
-            + "    n = n + 1\n"
-            + "  end\n"
-            + "end";
+    String in = "  n = 0\n" + "  while n < 10 do\n" + "    n = n + 1\n" + "  end\n";
 
     Parser parser = new Parser((new Lexer(in)).getNTokens(0));
-    // TODO
-    System.out.println(parser.parse());
+    Token tok = TokenFactory.create("n");
+    ArrayList<Statement> expected = new ArrayList<>();
+
+    ExpressionIdentifier variable = new ExpressionIdentifier(tok);
+
+    expected.add(
+        new StatementAssignment(
+            TokenFactory.create(Operator.ASSIGN),
+            variable,
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "0"))));
+
+    Expression condition =
+        ExpressionFactory.create(
+            TokenFactory.create(Operator.LT),
+            variable,
+            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "10")));
+
+    StatementList consequence = new StatementList(tok);
+    consequence.addChild(
+        new StatementAssignment(
+            TokenFactory.create(Operator.ASSIGN),
+            variable,
+            new ExpressionAddition(
+                TokenFactory.create(Operator.PLUS),
+                variable,
+                new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")))));
+
+    Statement whileStatement =
+        new StatementWhile(TokenFactory.create(Keyword.WHILE), condition, consequence);
+
+    expected.add(whileStatement);
+    assertIterableEquals(expected, parser.parse());
   }
 }

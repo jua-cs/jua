@@ -1,5 +1,6 @@
 package ast;
 
+import java.util.Objects;
 import token.Token;
 
 public class StatementIf extends Statement {
@@ -27,5 +28,21 @@ public class StatementIf extends Statement {
       return String.format("if %s\nthen %s\nelse\n%s\nend", condition, consequence, alternative);
     }
     return String.format("if %s\nthen %s\nend", condition, consequence);
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    StatementIf that = (StatementIf) o;
+    return Objects.equals(condition, that.condition)
+        && Objects.equals(consequence, that.consequence)
+        && Objects.equals(alternative, that.alternative);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(super.hashCode(), condition, consequence, alternative);
   }
 }
