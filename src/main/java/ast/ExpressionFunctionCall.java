@@ -1,6 +1,8 @@
 package ast;
 
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class ExpressionFunctionCall extends Expression {
 
@@ -23,12 +25,7 @@ public class ExpressionFunctionCall extends Expression {
     StringBuilder str = new StringBuilder();
     str.append(token.getLiteral());
     str.append("(");
-    for (Expression arg : args) {
-      str.append(arg);
-      str.append(",");
-    }
-
-    str.deleteCharAt(str.lastIndexOf(","));
+    str.append(args.stream().map(Objects::toString).collect(Collectors.joining(",")));
     str.append(")");
     return str.toString();
   }
