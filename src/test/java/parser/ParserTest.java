@@ -162,7 +162,7 @@ public class ParserTest {
     ArrayList<Expression> args = new ArrayList<>();
     args.add(xIdent);
 
-    StatementList statementList = new StatementList();
+    StatementList statementList = new StatementList(TokenFactory.create("y"));
     statementList.addChild(
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), yIdent, xIdent));
     statementList.addChild(new StatementReturn(TokenFactory.create(Keyword.RETURN), yIdent));
@@ -189,7 +189,7 @@ public class ParserTest {
     ArrayList<Expression> args = new ArrayList<>();
     args.add(xIdent);
 
-    StatementList statementList = new StatementList();
+    StatementList statementList = new StatementList(TokenFactory.create("y"));
     statementList.addChild(
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), yIdent, xIdent));
     statementList.addChild(new StatementReturn(TokenFactory.create(Keyword.RETURN), yIdent));
@@ -266,7 +266,10 @@ public class ParserTest {
                 ExpressionFactory.create(TokenFactory.create(Operator.EQUALS), variable, one),
                 new StatementList(returnTok, new StatementReturn(returnTok, one)),
                 new StatementList(returnTok, new StatementReturn(returnTok, two))));
-    assertEquals(expected.getConsequence(), ((StatementIf) parser.parse().get(0)).getConsequence());
+
+    ArrayList<Statement> result = parser.parse();
+
+    assertEquals(expected.getConsequence(), ((StatementIf) result.get(0)).getConsequence());
   }
 
   @Test
@@ -291,7 +294,7 @@ public class ParserTest {
             variable,
             new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "10")));
 
-    StatementList consequence = new StatementList();
+    StatementList consequence = new StatementList(tok);
     consequence.addChild(
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
@@ -305,7 +308,8 @@ public class ParserTest {
         new StatementWhile(TokenFactory.create(Keyword.WHILE), condition, consequence);
 
     expected.add(whileStatement);
-    assertIterableEquals(expected, parser.parse());
+    ArrayList<Statement> result = parser.parse();
+    assertIterableEquals(expected, result);
   }
 
   @Test

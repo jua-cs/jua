@@ -4,12 +4,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import token.Token;
+import token.TokenFactory;
 
 public class StatementList extends Statement {
 
   private ArrayList<Statement> children = new ArrayList<>();
 
-  public StatementList() {
+  public StatementList(Token token) {
+    super(token);
   }
 
   public StatementList(Token token, Statement statement) {

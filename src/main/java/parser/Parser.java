@@ -227,7 +227,7 @@ public class Parser {
   }
 
   protected StatementList parseListStatement() throws IllegalParseException {
-    StatementList list = new StatementList();
+    StatementList list = new StatementList(currentToken());
 
     while (currentTokenIsValid() && !isBlockEnd()) {
       Statement child = parseStatement();
@@ -359,16 +359,13 @@ public class Parser {
   // this argument tells parseIfStatement not to consume the only END keyword
   private StatementIf parseIfStatement(boolean nested) throws IllegalParseException {
 
+//  TODO: use consume(Keyword.IF);
     advanceTokens();
     Expression condition = parseExpression();
 
-    Token tok = currentToken();
-    if (!tok.isSubtype(Keyword.THEN)) {
-      throw new IllegalParseException(String.format("unexpected token %s, then expected", tok));
-    }
-    advanceTokens();
+    consume(Keyword.THEN);
     Statement consequence = parseListStatement();
-    tok = currentToken();
+    Token tok = currentToken();
     if (!isBlockEnd()) {
       throw new IllegalParseException(
           String.format("unexpected token %s, expected end, else or elseif", tok));

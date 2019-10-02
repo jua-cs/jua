@@ -12,7 +12,7 @@ public class ExpressionFunction extends Expression {
   ExpressionFunction(Token token) {
     super(token);
     this.args = new ArrayList<>();
-    this.statements = new StatementList();
+    this.statements = new StatementList(token);
   }
 
   ExpressionFunction(

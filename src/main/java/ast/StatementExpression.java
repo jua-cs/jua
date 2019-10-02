@@ -1,5 +1,7 @@
 package ast;
 
+import token.TokenFactory;
+
 import java.util.Objects;
 
 public class StatementExpression extends Statement {
@@ -7,7 +9,7 @@ public class StatementExpression extends Statement {
   private final Expression expr;
 
   public StatementExpression(Expression expr) {
-    super();
+    super(TokenFactory.create(expr.getLiteral()));
     this.expr = expr;
   }
 
