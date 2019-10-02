@@ -134,6 +134,16 @@ public class Lexer {
         break;
       case '\'':
       case '"':
+        // TODO more extended support for strings like:
+        // a = 'alo\n123"'
+        //     a = "alo\n123\""
+        //     a = '\97lo\10\04923"'
+        //     a = [[alo
+        //     123"]]
+        //     a = [==[
+        //     alo
+        //     123"]==]
+
         return TokenFactory.create(Literal.STRING, readStringLiteral(), currentLine, currentPos);
       case '.':
         token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
