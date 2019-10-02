@@ -21,7 +21,7 @@ public abstract class ExpressionUnary extends Expression {
 //  }
 @Override
 public String toString() {
-    return String.format("(%s %s)", toString(), value);
+    return String.format("(%s %s)", this.getLiteral(), value);
   }
 
   @Override

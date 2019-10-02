@@ -36,6 +36,6 @@ public abstract class ExpressionBinary extends Expression {
 
   @Override
   public String toString() {
-    return String.format("(%s %s %s)", lhs, toString(), rhs);
+    return String.format("(%s %s %s)", lhs, getLiteral(), rhs);
   }
 }
