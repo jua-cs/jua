@@ -41,7 +41,7 @@ public class Parser {
     register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(8));
 
     // Register the class which implements PrefixParser interface
-    register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser(7));
+    register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser());
     register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(7));
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(7));
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(7));
