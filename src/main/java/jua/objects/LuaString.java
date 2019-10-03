@@ -19,10 +19,6 @@ public class LuaString implements LuaObject {
     throw IllegalCastException.create(object, "LuaString");
   }
 
-  public void setValue(String value) {
-    this.value = value;
-  }
-
   public void append(LuaString str) {
     value = value + str.getValue();
   }
@@ -32,7 +28,16 @@ public class LuaString implements LuaObject {
     return value;
   }
 
+  @Override
+  public String toString() {
+    return value;
+  }
+
   public String getValue() {
     return value;
+  }
+
+  public void setValue(String value) {
+    this.value = value;
   }
 }
