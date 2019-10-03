@@ -1,8 +1,12 @@
 package ast;
 
+import evaluator.Evaluator;
+import evaluator.LuaRuntimeException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import objects.LuaNil;
+import objects.LuaObject;
 import token.Token;
 import util.Tuple;
 
@@ -36,5 +40,11 @@ public class ExpressionTableConstructor extends Expression {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), tuples);
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    // TODO: later
+    return new LuaNil();
   }
 }
