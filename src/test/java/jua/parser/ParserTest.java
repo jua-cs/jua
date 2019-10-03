@@ -2,11 +2,11 @@ package jua.parser;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import jua.ast.*;
 import java.util.ArrayList;
+import jua.ast.*;
 import jua.lexer.Lexer;
-import org.junit.jupiter.api.Test;
 import jua.token.*;
+import org.junit.jupiter.api.Test;
 import util.Tuple;
 
 public class ParserTest {

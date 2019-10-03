@@ -1,8 +1,8 @@
 package jua.parser;
 
-import jua.ast.*;
 import java.util.ArrayList;
 import java.util.HashMap;
+import jua.ast.*;
 import jua.token.*;
 
 public class Parser {
@@ -353,7 +353,8 @@ public class Parser {
 
     tok = currentToken();
     if (!tok.isSubtype(Keyword.END)) {
-      throw new IllegalParseException(String.format("unexpected jua.token %s, expected end", keyword));
+      throw new IllegalParseException(
+          String.format("unexpected jua.token %s, expected end", keyword));
     }
 
     if (!nested) {

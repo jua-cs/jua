@@ -1,7 +1,7 @@
 package jua.parser;
 
-import jua.ast.*;
 import java.util.ArrayList;
+import jua.ast.*;
 import jua.token.Keyword;
 import jua.token.Token;
 

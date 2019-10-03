@@ -3,8 +3,8 @@ package jua.lexer;
 import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 import java.util.ArrayList;
-import org.junit.jupiter.api.Test;
 import jua.token.*;
+import org.junit.jupiter.api.Test;
 
 public class LexerTest {
 

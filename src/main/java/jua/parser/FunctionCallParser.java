@@ -1,10 +1,10 @@
 package jua.parser;
 
+import java.util.ArrayList;
 import jua.ast.Expression;
 import jua.ast.ExpressionFactory;
 import jua.ast.ExpressionFunctionCall;
 import jua.ast.ExpressionIdentifier;
-import java.util.ArrayList;
 import jua.token.Delimiter;
 import jua.token.Token;
 

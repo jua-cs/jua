@@ -1,9 +1,9 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
-import jua.evaluator.LuaRuntimeException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.token.Token;

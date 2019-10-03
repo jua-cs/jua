@@ -1,7 +1,7 @@
 package jua.ast;
 
 import jua.evaluator.Evaluator;
-import jua.evaluator.IllegalCastException;
+import jua.evaluator.LuaRuntimeException;
 import jua.objects.LuaNumber;
 import jua.token.TokenOperator;
 
@@ -12,7 +12,7 @@ public class ExpressionSubtraction extends ExpressionBinary {
   }
 
   @Override
-  public LuaNumber evaluate(Evaluator evaluator) throws IllegalCastException {
+  public LuaNumber evaluate(Evaluator evaluator) throws LuaRuntimeException {
     Double number =
         LuaNumber.valueOf(lhs.evaluate(evaluator)).getValue()
             - LuaNumber.valueOf(rhs.evaluate(evaluator)).getValue();

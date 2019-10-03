@@ -1,6 +1,5 @@
 package jua.ast;
 
-
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
 import jua.objects.LuaNil;

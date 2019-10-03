@@ -1,7 +1,7 @@
 package jua.ast;
 
 import jua.evaluator.Evaluator;
-import jua.evaluator.IllegalCastException;
+import jua.evaluator.LuaRuntimeException;
 import jua.objects.LuaBoolean;
 import jua.token.Operator;
 import jua.token.TokenFactory;
@@ -14,7 +14,7 @@ public class ExpressionNot extends ExpressionUnary {
   }
 
   @Override
-  public LuaBoolean evaluate(Evaluator evaluator) throws IllegalCastException {
+  public LuaBoolean evaluate(Evaluator evaluator) throws LuaRuntimeException {
     return new LuaBoolean(!LuaBoolean.valueOf(value.evaluate(evaluator)).getValue());
   }
 }

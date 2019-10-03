@@ -1,11 +1,11 @@
 package jua.evaluator;
 
-import jua.ast.Statement;
 import java.util.ArrayList;
+import jua.ast.Statement;
 import jua.lexer.Lexer;
-import org.junit.jupiter.api.Test;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
+import org.junit.jupiter.api.Test;
 
 public class EvaluatorTest {
   private static ArrayList<Statement> setup(String in) throws IllegalParseException {
