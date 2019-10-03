@@ -23,6 +23,8 @@ public class ExpressionFactory {
       case ASSIGN:
         // TODO: figure out
         break;
+      case CONCAT:
+        return new ExpressionConcatenation(token, lhs, rhs);
       case LT:
         return new ExpressionLessThan(token, lhs, rhs);
       case GT:

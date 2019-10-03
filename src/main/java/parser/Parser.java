@@ -22,11 +22,12 @@ public class Parser {
     // Register the class which implements InfixParser interface
     // FIXME: ^ has greater precedence than unary operators, this is not handled at the moment
     registerBinaryOperator(Operator.PLUS, 4);
-    registerBinaryOperator(Operator.ASTERISK, 5);
-    registerBinaryOperator(Operator.SLASH, 5);
+    registerBinaryOperator(Operator.ASTERISK, 6);
+    registerBinaryOperator(Operator.SLASH, 6);
     registerBinaryOperator(Operator.MINUS, 4);
-    registerBinaryOperator(Operator.CARAT, 6);
-    registerBinaryOperator(Operator.PERCENT, 5);
+    registerBinaryOperator(Operator.CARAT, 7);
+    registerBinaryOperator(Operator.PERCENT, 6);
+    registerBinaryOperator(Operator.CONCAT, 5);
 
     registerBinaryOperator(Operator.AND, 2);
     registerBinaryOperator(Operator.OR, 1);
@@ -38,14 +39,14 @@ public class Parser {
     registerBinaryOperator(Operator.LT, 3);
     registerBinaryOperator(Operator.LTE, 3);
 
-    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(8));
+    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(9));
 
     // Register the class which implements PrefixParser interface
     register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser());
-    register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(7));
-    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(7));
-    register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(7));
-    register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(7));
+    register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(8));
+    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(8));
+    register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(8));
+    register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(8));
     register(TokenFactory.create(Keyword.FUNCTION), (PrefixParser) new FunctionExprParser());
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());

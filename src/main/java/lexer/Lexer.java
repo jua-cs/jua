@@ -146,7 +146,12 @@ public class Lexer {
 
         return TokenFactory.create(Literal.STRING, readStringLiteral(), currentLine, currentPos);
       case '.':
-        token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
+        if (peekChar() == '.') {
+          token = TokenFactory.create(Operator.CONCAT, currentLine, currentPos);
+          readChar();
+        } else {
+          token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
+        }
         break;
       case '~':
         if (peekChar() == '=') {

@@ -1,6 +1,6 @@
 package lexer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
 
 import java.util.ArrayList;
 import org.junit.jupiter.api.Test;
@@ -22,6 +22,20 @@ public class LexerTest {
     expected.add(TokenFactory.create(Operator.ASSIGN, 2, 9));
     expected.add(TokenFactory.create("bonsoir", 2, 11));
     expected.add(TokenFactory.create(Special.TokenEOF, 2, 18));
+
+    assertIterableEquals(expected, list);
+  }
+
+  @Test
+  void testConcatOperator() {
+    Lexer lex = new Lexer("'salut' .. 'cc'");
+
+    ArrayList<Token> list = lex.getNTokens(3);
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(TokenFactory.create(Literal.STRING, "salut", 1, 1));
+    expected.add(TokenFactory.create(Operator.CONCAT, 1, 9));
+    expected.add(TokenFactory.create(Literal.STRING, "cc", 1, 12));
 
     assertIterableEquals(expected, list);
   }
