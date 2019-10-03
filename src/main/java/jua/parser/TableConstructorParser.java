@@ -15,7 +15,7 @@ public class TableConstructorParser implements PrefixParser {
 
     Token token = parser.currentToken();
     ArrayList<Tuple<Expression, Expression>> tuples = new ArrayList<>();
-    while (true) {
+    while (!parser.currentToken().isSubtype(Delimiter.RBRACE)) {
       // Three cases:
 
       // [exp] = exp -> use the value of [exp] as the key

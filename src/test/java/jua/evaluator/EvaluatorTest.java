@@ -1,6 +1,7 @@
 package jua.evaluator;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 import jua.ast.Statement;
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import util.Tuple;
 
 public class EvaluatorTest {
+
   private static ArrayList<Statement> setup(String in) throws IllegalParseException {
     return new Parser((new Lexer(in)).getNTokens(0)).parse();
   }
@@ -45,5 +47,10 @@ public class EvaluatorTest {
       var obj = setupExpr(t.x);
       assertEquals(t.y, obj.toString());
     }
+
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. nil"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("5 .. {}"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. {}"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. (function() end)"));
   }
 }
