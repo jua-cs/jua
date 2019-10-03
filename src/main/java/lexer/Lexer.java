@@ -237,7 +237,7 @@ public class Lexer {
       do {
         tok = nextToken();
         tokens.add(tok);
-      } while (tok != null && tok.getType() != TokenType.EOF);
+      } while (tok != null && !(tok instanceof TokenEOF));
       return tokens;
     }
 

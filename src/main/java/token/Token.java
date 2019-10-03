@@ -3,13 +3,11 @@ package token;
 import java.util.Objects;
 
 public abstract class Token {
-  private TokenType type;
   private int line;
   private int position;
   private String literal;
 
-  Token(TokenType type, String literal, int line, int position) {
-    this.type = type;
+  Token(String literal, int line, int position) {
     this.line = line;
     this.position = position;
     this.literal = literal;
@@ -58,14 +56,6 @@ public abstract class Token {
     return literal;
   }
 
-  public void setLiteral(String literal) {
-    this.literal = literal;
-  }
-
-  public TokenType getType() {
-    return type;
-  }
-
   public boolean isSubtype(Delimiter delimiter) {
     if (!(this instanceof TokenDelimiter)) {
       return false;
@@ -96,11 +86,23 @@ public abstract class Token {
     return (tok.getKeyword() == kw);
   }
 
+  public boolean isLiteral() {
+    return this instanceof TokenLiteral;
+  }
+
+  public void setLiteral(String literal) {
+    this.literal = literal;
+  }
+
+  public boolean isIdentifier() {
+    return this instanceof TokenIdentifier;
+  }
+
   public boolean lightEquals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
     Token token = (Token) o;
-    return type == token.type && Objects.equals(literal, token.literal);
+    return Objects.equals(literal, token.literal);
   }
 
   @Override
@@ -112,22 +114,19 @@ public abstract class Token {
 
     if (line != token.line) return false;
     if (position != token.position) return false;
-    if (type != token.type) return false;
     return Objects.equals(literal, token.literal);
   }
 
   @Override
   public int hashCode() {
-    int result = type.hashCode();
-    result = 31 * result + (literal != null ? literal.hashCode() : 0);
-    return result;
+    return Objects.hash(literal);
   }
 
   @Override
   public String toString() {
     return "Token{"
         + "type="
-        + type
+        + getClass().toString()
         + ", line="
         + line
         + ", position="

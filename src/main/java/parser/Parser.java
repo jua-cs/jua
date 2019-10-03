@@ -88,7 +88,7 @@ public class Parser {
     advanceTokens();
   }
 
-  protected StatementAssignment parseAssignment() throws IllegalParseException {
+  private StatementAssignment parseAssignment() throws IllegalParseException {
     return parseAssignment(-1);
   }
 
@@ -114,7 +114,7 @@ public class Parser {
     return parseCommaSeparatedExpressions(precedence, -1);
   }
 
-  protected <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(
+  private <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(
       int precedence, int max) throws IllegalParseException {
     ArrayList<T> exprs = new ArrayList<>();
 
@@ -158,16 +158,16 @@ public class Parser {
     return parser != null ? parser.getPrecedence() : 0;
   }
 
-  protected void registerBinaryOperator(Operator op, int precedence) {
+  private void registerBinaryOperator(Operator op, int precedence) {
     tokenInfixParserHashMap.put(
         new TokenHashmMapKey(TokenFactory.create(op)), new OperatorParser(precedence));
   }
 
-  protected void register(Token type, PrefixParser parser) {
+  private void register(Token type, PrefixParser parser) {
     tokenPrefixParserHashMap.put(new TokenHashmMapKey(type), parser);
   }
 
-  protected void register(Token type, InfixParser parser) {
+  private void register(Token type, InfixParser parser) {
     tokenInfixParserHashMap.put(new TokenHashmMapKey(type), parser);
   }
 
@@ -190,14 +190,12 @@ public class Parser {
   }
 
   private PrefixParser getPrefixParser(Token token) {
-    switch (token.getType()) {
-      case IDENTIFIER:
-        return getPrefix(identifierKey);
-      case LITERAL:
-        return getPrefix(literalKey);
-      default:
-        PrefixParser prefixParser = getPrefix(token);
-        return prefixParser;
+    if (token.isLiteral()) {
+      return getPrefix(literalKey);
+    } else if (token.isIdentifier()) {
+      return getPrefix(identifierKey);
+    } else {
+      return getPrefix(token);
     }
   }
 
@@ -215,11 +213,10 @@ public class Parser {
   }
 
   private boolean isBlockStatement() {
-    Token tok = currentToken();
-    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.DO;
+    return currentToken().isSubtype(Keyword.DO);
   }
 
-  protected StatementList parseBlockStatement() throws IllegalParseException {
+  private StatementList parseBlockStatement() throws IllegalParseException {
 
     // consume the DO keyword
     consume(Keyword.DO);
@@ -232,7 +229,7 @@ public class Parser {
     return list;
   }
 
-  protected Statement parseStatement() throws IllegalParseException {
+  private Statement parseStatement() throws IllegalParseException {
     if (isAssignmentStatement()) {
       return parseAssignment();
     } else if (isFunctionStatement()) {
@@ -257,7 +254,7 @@ public class Parser {
     Token tok = currentToken();
     advanceTokens();
 
-    if (!(currentToken().getType() == TokenType.IDENTIFIER)) {
+    if (!currentToken().isIdentifier()) {
       throw new IllegalParseException(
           String.format("Expected identifier in function args but got: %s", currentToken()));
     }
@@ -276,7 +273,7 @@ public class Parser {
 
   private boolean isFunctionStatement() {
     boolean isFunc = currentToken().isSubtype(Keyword.FUNCTION);
-    boolean nextIsIdent = nextToken().getType() == TokenType.IDENTIFIER;
+    boolean nextIsIdent = nextToken().isIdentifier();
     return isFunc && nextIsIdent;
   }
 
@@ -295,8 +292,7 @@ public class Parser {
     int pos = 0;
 
     do {
-      TokenType currType = nextToken(pos).getType();
-      boolean isIdent = currType == TokenType.IDENTIFIER;
+      boolean isIdent = nextToken(pos).isIdentifier();
 
       if (!isIdent) {
         return false;
@@ -385,8 +381,7 @@ public class Parser {
   }
 
   private boolean isForStatement() {
-    Token tok = currentToken();
-    return tok.getType() == TokenType.KEYWORD && ((TokenKeyword) tok).getKeyword() == Keyword.FOR;
+    return currentToken().isSubtype(Keyword.FOR);
   }
 
   private StatementFor parseForStatement() throws IllegalParseException {
@@ -453,16 +448,14 @@ public class Parser {
   }
 
   private boolean currentTokenIsValid() {
-    return currentToken().getType() != TokenType.EOF
-        && currentToken().getType() != TokenType.INVALID;
+    return !(currentToken() instanceof TokenEOF || currentToken() instanceof TokenInvalid);
   }
 
   private boolean isBlockEnd() {
     Token tok = currentToken();
-    return tok.getType() == TokenType.KEYWORD
-        && (((TokenKeyword) tok).getKeyword() == Keyword.END
-            || ((TokenKeyword) tok).getKeyword() == Keyword.ELSE
-            || ((TokenKeyword) tok).getKeyword() == Keyword.ELSEIF);
+    return tok.isSubtype(Keyword.END)
+        || tok.isSubtype(Keyword.ELSE)
+        || tok.isSubtype(Keyword.ELSEIF);
   }
 
   protected ArrayList<Expression> parseFuncArgs() throws IllegalParseException {
@@ -474,7 +467,7 @@ public class Parser {
     while (!tok.isSubtype(Delimiter.RPAREN)) {
       // TODO: what if we have f(3+4, 5) ? I'm not sure we're looking for an identifier. Make a
       // test... (19)
-      if (tok.getType() != TokenType.IDENTIFIER) {
+      if (!tok.isIdentifier()) {
         throw new IllegalParseException(
             String.format("Expected identifier in function args but got: %s", tok));
       }
@@ -489,8 +482,8 @@ public class Parser {
     return args;
   }
 
-  // Used to access the HasmMap with Token, with still a functionning equals for Lexer
-  private class TokenHashmMapKey {
+  // Used to access the HasmMap with Token, with still a functioning equals for Lexer
+  private static class TokenHashmMapKey {
     private final Token token;
 
     public TokenHashmMapKey(Token token) {

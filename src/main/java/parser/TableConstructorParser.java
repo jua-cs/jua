@@ -67,7 +67,7 @@ public class TableConstructorParser implements PrefixParser {
     }
 
     // Consume the '}'
-    parser.advanceTokens();
+    parser.consume(Delimiter.RBRACE);
 
     return new ExpressionTableConstructor(tok, tuples);
   }
