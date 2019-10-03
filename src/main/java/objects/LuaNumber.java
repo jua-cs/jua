@@ -7,17 +7,17 @@ public class LuaNumber implements LuaObject {
     this.value = value;
   }
 
-  public static LuaNumber valueOf(LuaObject o) throws Exception {
+  public static LuaNumber valueOf(LuaObject o) throws IllegalCastException {
+    // http://www.lua.org/manual/5.1/manual.html#pdf-tonumber reference
     if (o instanceof LuaNumber)return (LuaNumber) o;
     if (o instanceof LuaString) {
       LuaString luaString = (LuaString) o;
       String str =  luaString.getValue();
-      // TODO; check difference with the builtin tonumber in lua
       Double number = Double.valueOf(str);
-      if (number.isNaN()) throw new Exception();
+      if (number.isNaN()) throw new IllegalCastException(String.format("The LuaString value %s is not a number.", str));
       return new LuaNumber(number);
     }
-    throw new Exception();
+    throw new IllegalCastException(String.format("Can only get LuaNumber from LuaNumber or LuaString, not %s", o.getClass() ));
   }
 
   @Override
