@@ -260,9 +260,6 @@ public class Parser {
 
   protected Statement parseStatement() throws IllegalParseException {
     if (isAssignmentStatement()) {
-      // TODO: fixme: Multi assignment is not supported
-      // Assignment
-      // Occurs when current token is literal and next token is the assign operator
       return parseAssignment();
     } else if (isFunctionStatement()) {
       return parseFunctionStatement();

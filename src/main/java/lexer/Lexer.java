@@ -42,7 +42,7 @@ public class Lexer {
     }
   }
 
-  public Token nextToken() {
+  private Token nextToken() {
     Token token;
 
     consumeWhitespace();
@@ -132,11 +132,23 @@ public class Lexer {
       case ':':
         token = TokenFactory.create(Delimiter.COLON, currentLine, currentPos);
         break;
+      case '\'':
+      case '"':
+        // TODO more extended support for strings like:
+        // a = 'alo\n123"'
+        //     a = "alo\n123\""
+        //     a = '\97lo\10\04923"'
+        //     a = [[alo
+        //     123"]]
+        //     a = [==[
+        //     alo
+        //     123"]==]
+
+        return TokenFactory.create(Literal.STRING, readStringLiteral(), currentLine, currentPos);
       case '.':
         token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
         break;
       case '~':
-        // TODO make sure this works correctly
         if (peekChar() == '=') {
           token = TokenFactory.create(Operator.NOT_EQUAL, currentLine, currentPos);
           readChar();
@@ -164,7 +176,7 @@ public class Lexer {
     return token;
   }
 
-  public String nextIdentifier() {
+  private String nextIdentifier() {
     // from Lua manual : Names (also called identifiers) in Lua can be any string of letters,
     // digits, and underscores, not beginning with a digit.
     StringBuilder identifier = new StringBuilder();
@@ -181,7 +193,7 @@ public class Lexer {
     return identifier.toString();
   }
 
-  public void nextLine() {
+  private void nextLine() {
     while (ch != '\n') {
       readChar();
     }
@@ -191,7 +203,22 @@ public class Lexer {
     consumeWhitespace();
   }
 
-  public String nextNumber() {
+  private String readStringLiteral() {
+    // Handle both ' and "
+    char sep = ch;
+    readChar();
+    StringBuilder str = new StringBuilder();
+
+    while (ch != sep && ch != 0) {
+      str.append(ch);
+      readChar();
+    }
+    readChar();
+
+    return str.toString();
+  }
+
+  private String nextNumber() {
     StringBuilder number = new StringBuilder();
     boolean dotSeen = false;
     while (Character.isDigit(ch) || (!dotSeen && ch == '.')) {

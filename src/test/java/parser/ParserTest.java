@@ -410,11 +410,35 @@ public class ParserTest {
 
   @Test
   void testTableConstructorWithString() throws IllegalParseException {
-    // TODO enable this test when strings are parsed
-    String in = "a = { [f(1)] = g; \"x\", \"y\"; x = 1, f(x), [30] = 23; 45 }";
+    String in = "{ [f(1)] = g; \"x\", \"y\"}";
 
-    // ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
-    // System.out.println(stmts);
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+
+    ExpressionIdentifier func =
+        ((ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("f")));
+
+    ArrayList<Tuple<Expression, Expression>> tuples = new ArrayList<>();
+    tuples.add(
+        new Tuple<>(
+            new ExpressionFunctionCall(
+                func,
+                util.Util.createArrayList(
+                    ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))),
+            ExpressionFactory.create(TokenFactory.create("g"))));
+    tuples.add(
+        new Tuple<>(
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
+            ExpressionFactory.create(TokenFactory.create(Literal.STRING, "x"))));
+    tuples.add(
+        new Tuple<>(
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")),
+            ExpressionFactory.create(TokenFactory.create(Literal.STRING, "y"))));
+
+    assertEquals(1, stmts.size());
+
+    var result =
+        ((ExpressionTableConstructor) ((StatementExpression) stmts.get(0)).getExpr()).getTuples();
+    assertIterableEquals(tuples, result);
   }
 
   @Test

@@ -110,4 +110,60 @@ public class LexerTest {
 
     assertIterableEquals(expected, list);
   }
+
+  @Test
+  void testStringAssignment() {
+    ArrayList<Token> list = new Lexer("x = \"hello how are you ?\"").getNTokens(3);
+    ArrayList<Token> listSimpleQuote = new Lexer("x = 'hello how are you ?'").getNTokens(3);
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(TokenFactory.create("x", 1, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
+    expected.add(TokenFactory.create(Literal.STRING, "hello how are you ?", 1, 5));
+
+    assertStrictEqual(expected, list);
+    assertStrictEqual(expected, listSimpleQuote);
+  }
+
+  @Test
+  void testUnterminatedString() {
+    Lexer lex = new Lexer("x = 'hello");
+
+    ArrayList<Token> list = lex.getNTokens(3);
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(TokenFactory.create("x", 1, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
+    expected.add(TokenFactory.create(Literal.STRING, "hello", 1, 5));
+
+    assertStrictEqual(expected, list);
+  }
+
+  @Test
+  void testNestedQuotes() {
+    Lexer lex = new Lexer("x = 'hello \"nested\"'");
+
+    ArrayList<Token> list = lex.getNTokens(3);
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(TokenFactory.create("x", 1, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
+    expected.add(TokenFactory.create(Literal.STRING, "hello \"nested\"", 1, 5));
+
+    assertStrictEqual(expected, list);
+  }
+
+  @Test
+  void testEscapeChars() {
+    Lexer lex = new Lexer("x = 'hello\t tab\r carriage\n world'");
+
+    ArrayList<Token> list = lex.getNTokens(3);
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(TokenFactory.create("x", 1, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
+    expected.add(TokenFactory.create(Literal.STRING, "hello\t tab\r carriage\n world", 1, 5));
+
+    assertStrictEqual(expected, list);
+  }
 }
