@@ -21,8 +21,7 @@ public class LuaNumber implements LuaObject {
             String.format("The LuaString value %s is not a number.", str));
       return new LuaNumber(number);
     }
-    throw new IllegalCastException(
-        String.format("Can only get LuaNumber from LuaNumber or LuaString, not %s", o.getClass()));
+    throw IllegalCastException.create(o, "LuaNumber");
   }
 
   public Double getValue() {
