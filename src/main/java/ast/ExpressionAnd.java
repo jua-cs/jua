@@ -1,8 +1,8 @@
 package ast;
 
 import evaluator.Evaluator;
+import evaluator.IllegalCastException;
 import objects.LuaBoolean;
-import objects.LuaObject;
 import token.TokenOperator;
 
 public class ExpressionAnd extends ExpressionBinary {
@@ -11,7 +11,7 @@ public class ExpressionAnd extends ExpressionBinary {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) {
+  public LuaBoolean evaluate(Evaluator evaluator) throws IllegalCastException {
     return new LuaBoolean(
         LuaBoolean.valueOf(lhs.evaluate(evaluator)).getValue()
             && LuaBoolean.valueOf(rhs.evaluate(evaluator)).getValue());

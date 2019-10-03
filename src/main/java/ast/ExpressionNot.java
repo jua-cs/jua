@@ -1,8 +1,8 @@
 package ast;
 
 import evaluator.Evaluator;
+import evaluator.IllegalCastException;
 import objects.LuaBoolean;
-import objects.LuaObject;
 import token.Operator;
 import token.TokenFactory;
 import token.TokenOperator;
@@ -14,7 +14,7 @@ public class ExpressionNot extends ExpressionUnary {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) {
+  public LuaBoolean evaluate(Evaluator evaluator) throws IllegalCastException {
     return new LuaBoolean(!LuaBoolean.valueOf(value.evaluate(evaluator)).getValue());
   }
 }
