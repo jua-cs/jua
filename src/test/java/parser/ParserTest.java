@@ -487,8 +487,9 @@ public class ParserTest {
 
     assertEquals(1, stmts.size());
 
-    var result =
-        ((ExpressionTableConstructor) ((StatementExpression) stmts.get(0)).getExpr()).getTuples();
-    assertIterableEquals(tuples, result);
+    StatementExpression statement = (StatementExpression) stmts.get(0);
+    Expression expression = statement.getExpr();
+    ExpressionTableConstructor expressionTableConstructor = (ExpressionTableConstructor) expression;
+    assertIterableEquals(tuples, expressionTableConstructor.getTuples());
   }
 }
