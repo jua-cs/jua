@@ -74,6 +74,14 @@ public class ExpressionFactory {
     return new ExpressionIdentifier(token);
   }
 
+  public static ExpressionIdentifier create(TokenIdentifier token) {
+    return new ExpressionIdentifier(token);
+  }
+
+  public static ExpressionLiteral create(TokenLiteral token) {
+    return new ExpressionLiteral(token);
+  }
+
   public static ExpressionFunctionCall create(ExpressionIdentifier identifier) {
     return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()));
   }

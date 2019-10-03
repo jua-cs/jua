@@ -249,11 +249,11 @@ public class ParserTest {
             + "  end\n";
 
     Token tok = TokenFactory.create("n");
-    ExpressionIdentifier variable = new ExpressionIdentifier(tok);
+    ExpressionIdentifier variable = ExpressionFactory.create((TokenIdentifier) tok);
 
-    Expression zero = new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "0"));
-    Expression one = new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1"));
-    Expression two = new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2"));
+    Expression zero = ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "0"));
+    Expression one = ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1"));
+    Expression two = ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2"));
 
     Token returnTok = TokenFactory.create(Keyword.RETURN);
 
@@ -282,19 +282,19 @@ public class ParserTest {
     Token tok = TokenFactory.create("n");
     ArrayList<Statement> expected = new ArrayList<>();
 
-    ExpressionIdentifier variable = new ExpressionIdentifier(tok);
+    ExpressionIdentifier variable = ExpressionFactory.create((TokenIdentifier) tok);
 
     expected.add(
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
             variable,
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "0"))));
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "0"))));
 
     Expression condition =
         ExpressionFactory.create(
             TokenFactory.create(Operator.LT),
             variable,
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "10")));
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "10")));
 
     StatementList consequence = new StatementList(tok);
     consequence.addChild(
@@ -304,7 +304,7 @@ public class ParserTest {
             ExpressionFactory.create(
                 TokenFactory.create(Operator.PLUS),
                 variable,
-                new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")))));
+                ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))));
 
     Statement whileStatement =
         new StatementWhile(TokenFactory.create(Keyword.WHILE), condition, consequence);
@@ -323,15 +323,15 @@ public class ParserTest {
     ArrayList<Statement> stmts2 = new Parser((new Lexer(in2)).getNTokens(0)).parse();
 
     ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
-    identifiers.add(new ExpressionIdentifier(TokenFactory.create("a")));
-    identifiers.add(new ExpressionIdentifier(TokenFactory.create("b")));
-    identifiers.add(new ExpressionIdentifier(TokenFactory.create("c")));
+    identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("a")));
+    identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("b")));
+    identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("c")));
 
     ArrayList<Expression> values =
         util.Util.createArrayList(
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")),
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "3")));
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "3")));
 
     StatementAssignment expected =
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
@@ -349,14 +349,14 @@ public class ParserTest {
     ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
 
     ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
-    identifiers.add(new ExpressionIdentifier(TokenFactory.create("a")));
-    identifiers.add(new ExpressionIdentifier(TokenFactory.create("b")));
-    identifiers.add(new ExpressionIdentifier(TokenFactory.create("c")));
+    identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("a")));
+    identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("b")));
+    identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("c")));
 
     ArrayList<Expression> values =
         util.Util.createArrayList(
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")));
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")));
 
     StatementAssignment expected =
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
@@ -371,16 +371,16 @@ public class ParserTest {
 
     ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
 
-    var identifiers =
+    ArrayList<ExpressionIdentifier> identifiers =
         util.Util.createArrayList(
-            new ExpressionIdentifier(TokenFactory.create("a")),
-            new ExpressionIdentifier(TokenFactory.create("b")));
+            ExpressionFactory.create((TokenIdentifier) TokenFactory.create("a")),
+            ExpressionFactory.create((TokenIdentifier) TokenFactory.create("b")));
 
     ArrayList<Expression> values =
         util.Util.createArrayList(
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "1")),
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "2")),
-            new ExpressionLiteral(TokenFactory.create(Literal.NUMBER, "3")));
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "3")));
 
     StatementAssignment expected =
         new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);

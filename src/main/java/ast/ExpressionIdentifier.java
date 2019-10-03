@@ -5,7 +5,7 @@ import token.Token;
 public class ExpressionIdentifier extends Expression {
   private String identifier;
 
-  public ExpressionIdentifier(Token token) {
+  ExpressionIdentifier(Token token) {
     super(token);
     this.identifier = token.getLiteral();
   }

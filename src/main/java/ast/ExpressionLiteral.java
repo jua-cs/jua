@@ -7,7 +7,7 @@ import token.TokenLiteral;
 public class ExpressionLiteral extends Expression {
   Literal type;
 
-  public ExpressionLiteral(Token token) {
+  ExpressionLiteral(Token token) {
     super(token);
     this.type = ((TokenLiteral) token).getLiteralType();
   }
