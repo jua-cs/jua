@@ -16,12 +16,12 @@ apply plugin: 'java'
 apply from: rootProject.file("gradle/install-git-hooks.gradle")
 
 application {
-    mainClassName = 'test.Main'
+    mainClassName = 'jua.Main'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'test.Main'
+        attributes 'Main-Class': 'jua.Main'
     }
 }
 
