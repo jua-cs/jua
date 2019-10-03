@@ -1,9 +1,9 @@
 package ast;
 
 import evaluator.Evaluator;
-import evaluator.IllegalCastException;
+import evaluator.LuaRuntimeException;
 import objects.LuaObject;
 
 public interface Evaluatable {
-  LuaObject evaluate(Evaluator evaluator) throws IllegalCastException;
+  LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException;
 }
