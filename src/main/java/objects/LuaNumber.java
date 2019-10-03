@@ -29,10 +29,6 @@ public class LuaNumber implements LuaObject {
     return value;
   }
 
-  public Double getValue() {
-    return value;
-  }
-
   @Override
   public String repr() {
     return value.toString();
