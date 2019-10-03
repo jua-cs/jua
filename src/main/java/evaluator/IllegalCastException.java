@@ -4,7 +4,7 @@ import objects.LuaObject;
 
 public class IllegalCastException extends LuaRuntimeException {
 
-  IllegalCastException(String message) {
+  public IllegalCastException(String message) {
     super(message);
   }
 
