@@ -1,5 +1,7 @@
 package objects;
 
+import evaluator.IllegalCastException;
+
 public class LuaString implements LuaObject {
   private String value;
 

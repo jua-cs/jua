@@ -1,6 +1,8 @@
-package objects;
+package evaluator;
 
-public class IllegalCastException extends Exception {
+import objects.LuaObject;
+
+public class IllegalCastException extends LuaRuntimeException {
 
   IllegalCastException(String message) {
     super(message);
