@@ -9,7 +9,7 @@ import objects.LuaNil;
 import objects.LuaObject;
 import token.Token;
 
-public class ExpressionFunctionCall extends ExpressionFunction {
+public class ExpressionFunctionCall extends Expression {
 
   private String functionName;
 

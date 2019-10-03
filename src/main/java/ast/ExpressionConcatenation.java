@@ -2,6 +2,7 @@ package ast;
 
 import evaluator.Evaluator;
 import evaluator.IllegalCastException;
+import evaluator.LuaRuntimeException;
 import objects.LuaObject;
 import objects.LuaString;
 import token.TokenOperator;
@@ -12,7 +13,7 @@ public class ExpressionConcatenation extends ExpressionBinary {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws IllegalCastException {
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
     LuaString res = LuaString.valueOf(lhs.evaluate(evaluator));
     res.append(LuaString.valueOf(rhs.evaluate(evaluator)));
     return res;
