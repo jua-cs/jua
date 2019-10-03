@@ -2,6 +2,7 @@ package ast;
 
 import evaluator.Evaluator;
 import evaluator.IllegalCastException;
+import objects.LuaNil;
 import objects.LuaObject;
 import token.Token;
 
@@ -19,6 +20,6 @@ public class ExpressionIdentifier extends Expression {
 
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws IllegalCastException {
-    throw new IllegalCastException("Identifiers not handled yet !");
+    return new LuaNil();
   }
 }

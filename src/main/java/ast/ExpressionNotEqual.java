@@ -3,7 +3,6 @@ package ast;
 import evaluator.Evaluator;
 import evaluator.IllegalCastException;
 import objects.LuaBoolean;
-import objects.LuaObject;
 import token.TokenOperator;
 
 public class ExpressionNotEqual extends ExpressionBinary {
@@ -13,6 +12,7 @@ public class ExpressionNotEqual extends ExpressionBinary {
 
   @Override
   public LuaBoolean evaluate(Evaluator evaluator) throws IllegalCastException {
-    return new LuaBoolean(LuaBoolean.valueOf(lhs.evaluate(evaluator)) != LuaBoolean.valueOf(rhs.evaluate(evaluator)));
+    return new LuaBoolean(
+        LuaBoolean.valueOf(lhs.evaluate(evaluator)) != LuaBoolean.valueOf(rhs.evaluate(evaluator)));
   }
 }

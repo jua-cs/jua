@@ -3,7 +3,6 @@ package ast;
 import evaluator.Evaluator;
 import evaluator.IllegalCastException;
 import objects.LuaNumber;
-import objects.LuaObject;
 import token.TokenOperator;
 
 public class ExpressionAddition extends ExpressionBinary {
@@ -12,10 +11,11 @@ public class ExpressionAddition extends ExpressionBinary {
     super(token, lhs, rhs);
   }
 
-
   @Override
   public LuaNumber evaluate(Evaluator evaluator) throws IllegalCastException {
-      Double number = LuaNumber.valueOf(lhs.evaluate(evaluator)).getValue() + LuaNumber.valueOf(rhs.evaluate(evaluator)).getValue();
-      return new LuaNumber(number);
+    Double number =
+        LuaNumber.valueOf(lhs.evaluate(evaluator)).getValue()
+            + LuaNumber.valueOf(rhs.evaluate(evaluator)).getValue();
+    return new LuaNumber(number);
   }
 }

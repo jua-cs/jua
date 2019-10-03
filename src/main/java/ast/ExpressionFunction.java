@@ -1,20 +1,24 @@
 package ast;
 
+import evaluator.Evaluator;
+import evaluator.LuaRuntimeException;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+import objects.LuaNil;
+import objects.LuaObject;
 import token.Token;
 
 public class ExpressionFunction extends Expression {
-  protected ArrayList<Expression> args;
+  protected ArrayList<ExpressionIdentifier> args;
   private StatementList statements;
 
   ExpressionFunction(Token token) {
     super(token);
-    this.args = new ArrayList<>();
+    this.args = new ArrayList<ExpressionIdentifier>();
     this.statements = new StatementList(token);
   }
 
-  ExpressionFunction(Token token, ArrayList<Expression> args, StatementList statements) {
+  ExpressionFunction(Token token, ArrayList<ExpressionIdentifier> args, StatementList statements) {
     super(token);
     this.args = args;
     this.statements = statements;
@@ -47,7 +51,7 @@ public class ExpressionFunction extends Expression {
     return result;
   }
 
-  public ArrayList<Expression> getArgs() {
+  public ArrayList<ExpressionIdentifier> getArgs() {
     return args;
   }
 
@@ -55,7 +59,17 @@ public class ExpressionFunction extends Expression {
     return statements;
   }
 
-  public void addArgument(Expression exp) {
+  public void addArgument(ExpressionIdentifier exp) {
     args.add(exp);
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    ArrayList<LuaObject> argValues = new ArrayList<>();
+    for (Expression arg : this.args) {
+      argValues.add(arg.evaluate(evaluator));
+    }
+    // TODO
+    return new LuaNil();
   }
 }

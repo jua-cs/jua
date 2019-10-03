@@ -69,7 +69,7 @@ public class ExpressionFactory {
     }
   }
 
-  public static Expression create(Token token) {
+  public static ExpressionIdentifier create(Token token) {
     if (token instanceof TokenLiteral) {
       return new ExpressionLiteral(token);
     }
@@ -89,12 +89,12 @@ public class ExpressionFactory {
   }
 
   public static ExpressionFunctionCall create(
-      ExpressionIdentifier identifier, ArrayList<Expression> args) {
+      ExpressionIdentifier identifier, ArrayList<ExpressionIdentifier> args) {
     return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()), args);
   }
 
   public static ExpressionFunction createExpressionFunction(
-      Token token, ArrayList<Expression> args, StatementList statements) {
+      Token token, ArrayList<ExpressionIdentifier> args, StatementList statements) {
     return new ExpressionFunction(token, args, statements);
   }
 }

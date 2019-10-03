@@ -1,8 +1,12 @@
 package ast;
 
+import evaluator.Evaluator;
+import evaluator.LuaRuntimeException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import objects.LuaNil;
+import objects.LuaObject;
 import token.Token;
 
 public class ExpressionFunctionCall extends ExpressionFunction {
@@ -14,13 +18,13 @@ public class ExpressionFunctionCall extends ExpressionFunction {
     functionName = token.getLiteral();
   }
 
-  ExpressionFunctionCall(Token token, ArrayList<Expression> args) {
+  ExpressionFunctionCall(Token token, ArrayList<ExpressionIdentifier> args) {
     super(token);
     functionName = token.getLiteral();
     this.args = args;
   }
 
-  public void addArgument(Expression arg) {
+  public void addArgument(ExpressionIdentifier arg) {
     args.add(arg);
   }
 
@@ -41,7 +45,7 @@ public class ExpressionFunctionCall extends ExpressionFunction {
     return result;
   }
 
-  public void setArgs(ArrayList<Expression> args) {
+  public void setArgs(ArrayList<ExpressionIdentifier> args) {
     this.args = args;
   }
 
@@ -53,5 +57,15 @@ public class ExpressionFunctionCall extends ExpressionFunction {
     str.append(args.stream().map(Objects::toString).collect(Collectors.joining(",")));
     str.append(")");
     return str.toString();
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    ArrayList<LuaObject> argValues = new ArrayList<>();
+    for (Expression arg : this.args) {
+      argValues.add(arg.evaluate(evaluator));
+    }
+    // TODO
+    return new LuaNil();
   }
 }

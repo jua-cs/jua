@@ -157,7 +157,7 @@ public class ParserTest {
     ExpressionIdentifier xIdent =
         (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x"));
 
-    ArrayList<Expression> args = new ArrayList<>();
+    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
     args.add(xIdent);
 
     StatementList statementList = new StatementList(TokenFactory.create("y"));
@@ -187,7 +187,7 @@ public class ParserTest {
     ExpressionIdentifier xIdent =
         (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x"));
 
-    ArrayList<Expression> args = new ArrayList<>();
+    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
     args.add(xIdent);
 
     StatementList statementList = new StatementList(TokenFactory.create("y"));

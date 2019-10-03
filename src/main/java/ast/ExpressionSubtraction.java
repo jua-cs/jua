@@ -13,8 +13,9 @@ public class ExpressionSubtraction extends ExpressionBinary {
 
   @Override
   public LuaNumber evaluate(Evaluator evaluator) throws IllegalCastException {
-    Double number = LuaNumber.valueOf(lhs.evaluate(evaluator)).getValue() - LuaNumber.valueOf(rhs.evaluate(evaluator)).getValue();
+    Double number =
+        LuaNumber.valueOf(lhs.evaluate(evaluator)).getValue()
+            - LuaNumber.valueOf(rhs.evaluate(evaluator)).getValue();
     return new LuaNumber(number);
   }
 }
-

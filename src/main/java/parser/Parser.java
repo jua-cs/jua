@@ -264,7 +264,7 @@ public class Parser {
     advanceTokens();
 
     // Parse args
-    ArrayList<Expression> args = parseFuncArgs();
+    ArrayList<ExpressionIdentifier> args = parseFuncArgs();
     StatementList stmts = parseListStatement();
 
     // consume END of function statement
@@ -460,9 +460,9 @@ public class Parser {
         || tok.isSubtype(Keyword.ELSEIF);
   }
 
-  protected ArrayList<Expression> parseFuncArgs() throws IllegalParseException {
+  protected ArrayList<ExpressionIdentifier> parseFuncArgs() throws IllegalParseException {
     advanceTokens();
-    ArrayList<Expression> args = new ArrayList<>();
+    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
     // if there is no args, we look for a ')'
 
     Token tok = currentToken();

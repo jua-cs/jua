@@ -3,7 +3,6 @@ package ast;
 import evaluator.Evaluator;
 import evaluator.IllegalCastException;
 import objects.LuaNumber;
-import objects.LuaObject;
 import token.Operator;
 import token.Token;
 import token.TokenFactory;
