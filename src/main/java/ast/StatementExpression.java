@@ -1,8 +1,7 @@
 package ast;
 
-import token.TokenFactory;
-
 import java.util.Objects;
+import token.TokenFactory;
 
 public class StatementExpression extends Statement {
 

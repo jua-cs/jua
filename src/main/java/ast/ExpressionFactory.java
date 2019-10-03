@@ -1,10 +1,7 @@
 package ast;
 
-import token.Token;
-import token.TokenFactory;
-import token.TokenOperator;
-
 import java.util.ArrayList;
+import token.*;
 
 public class ExpressionFactory {
   public static ExpressionBinary create(TokenOperator token, Expression lhs, Expression rhs) {
@@ -71,25 +68,23 @@ public class ExpressionFactory {
   }
 
   public static Expression create(Token token) {
-    switch (token.getType()) {
-      case LITERAL:
-        return new ExpressionLiteral(token);
-      case IDENTIFIER:
-        return new ExpressionIdentifier(token);
-      default:
-        return null;
+    if (token instanceof TokenLiteral) {
+      return new ExpressionLiteral(token);
     }
+    return new ExpressionIdentifier(token);
   }
 
   public static ExpressionFunctionCall create(ExpressionIdentifier identifier) {
     return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()));
   }
 
-  public static ExpressionFunctionCall create(ExpressionIdentifier identifier, ArrayList<Expression> args) {
+  public static ExpressionFunctionCall create(
+      ExpressionIdentifier identifier, ArrayList<Expression> args) {
     return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()), args);
   }
 
-  public static ExpressionFunction createExpressionFunction(Token token, ArrayList<Expression> args, StatementList statements) {
+  public static ExpressionFunction createExpressionFunction(
+      Token token, ArrayList<Expression> args, StatementList statements) {
     return new ExpressionFunction(token, args, statements);
   }
 }

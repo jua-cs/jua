@@ -1,10 +1,9 @@
 package ast;
 
-import token.Token;
-
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import token.Token;
 
 public class ExpressionFunctionCall extends ExpressionFunction {
 
@@ -15,16 +14,15 @@ public class ExpressionFunctionCall extends ExpressionFunction {
     functionName = token.getLiteral();
   }
 
-  ExpressionFunctionCall(
-          Token token, ArrayList<Expression> args) {
+  ExpressionFunctionCall(Token token, ArrayList<Expression> args) {
     super(token);
+    functionName = token.getLiteral();
     this.args = args;
   }
 
-
   public void addArgument(Expression arg) {
     args.add(arg);
-    }
+  }
 
   @Override
   public boolean equals(Object o) {
@@ -57,5 +55,4 @@ public class ExpressionFunctionCall extends ExpressionFunction {
     str.append(")");
     return str.toString();
   }
-
 }

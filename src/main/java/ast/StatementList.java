@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import token.Token;
-import token.TokenFactory;
 
 public class StatementList extends Statement {
 

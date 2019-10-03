@@ -16,11 +16,11 @@ public abstract class ExpressionUnary extends Expression {
     return value;
   }
 
-//  public String toString() {
-//    return String.format("(%s %s)", ((TokenOperator) this.token).getOperator(), value);
-//  }
-@Override
-public String toString() {
+  //  public String toString() {
+  //    return String.format("(%s %s)", ((TokenOperator) this.token).getOperator(), value);
+  //  }
+  @Override
+  public String toString() {
     return String.format("(%s %s)", this.getLiteral(), value);
   }
 

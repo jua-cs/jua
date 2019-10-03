@@ -7,7 +7,6 @@ import token.*;
 
 public class Parser {
 
-
   // Used to access the HasmMap with Token, with still a functionning equals for Lexer
   private class TokenHashmMapKey {
     private final Token token;
@@ -23,7 +22,9 @@ public class Parser {
 
       TokenHashmMapKey that = (TokenHashmMapKey) o;
 
-      return (token != null) && token.getClass() == that.token.getClass() && token.hashCode() == that.token.hashCode();
+      return (token != null)
+          && token.getClass() == that.token.getClass()
+          && token.hashCode() == that.token.hashCode();
     }
 
     @Override
@@ -184,7 +185,8 @@ public class Parser {
   }
 
   protected void registerBinaryOperator(Operator op, int precedence) {
-    tokenInfixParserHashMap.put(new TokenHashmMapKey(TokenFactory.create(op)), new OperatorParser(precedence));
+    tokenInfixParserHashMap.put(
+        new TokenHashmMapKey(TokenFactory.create(op)), new OperatorParser(precedence));
   }
 
   protected void register(Token type, PrefixParser parser) {
@@ -208,7 +210,6 @@ public class Parser {
   private PrefixParser getPrefix(Token token) {
     return tokenPrefixParserHashMap.get(new TokenHashmMapKey(token));
   }
-
 
   private InfixParser getInfix(Token tok) {
     return tokenInfixParserHashMap.get(new TokenHashmMapKey(tok));
@@ -287,8 +288,7 @@ public class Parser {
 
     if (!(currentToken().getType() == TokenType.IDENTIFIER)) {
       throw new IllegalParseException(
-              String.format("Expected identifier in function args but got: %s", currentToken())
-      );
+          String.format("Expected identifier in function args but got: %s", currentToken()));
     }
     ExpressionIdentifier funcName = (ExpressionIdentifier) ExpressionFactory.create(currentToken());
     advanceTokens();
@@ -299,12 +299,12 @@ public class Parser {
 
     // consume END of function statement
     consume(Keyword.END);
-    return new StatementFunction(tok, funcName, ExpressionFactory.createExpressionFunction(tok, args, stmts));
+    return new StatementFunction(
+        tok, funcName, ExpressionFactory.createExpressionFunction(tok, args, stmts));
   }
 
   private boolean isFunctionStatement() {
-    boolean isFunc =
-        currentToken().isSubtype(Keyword.FUNCTION);
+    boolean isFunc = currentToken().isSubtype(Keyword.FUNCTION);
     boolean nextIsIdent = nextToken().getType() == TokenType.IDENTIFIER;
     return isFunc && nextIsIdent;
   }
@@ -359,7 +359,7 @@ public class Parser {
   // this argument tells parseIfStatement not to consume the only END keyword
   private StatementIf parseIfStatement(boolean nested) throws IllegalParseException {
 
-//  TODO: use consume(Keyword.IF);
+    //  TODO: use consume(Keyword.IF);
     advanceTokens();
     Expression condition = parseExpression();
 
@@ -494,9 +494,6 @@ public class Parser {
             || ((TokenKeyword) tok).getKeyword() == Keyword.ELSEIF);
   }
 
-
-
-
   protected ArrayList<Expression> parseFuncArgs() throws IllegalParseException {
     advanceTokens();
     ArrayList<Expression> args = new ArrayList<>();
@@ -504,7 +501,8 @@ public class Parser {
 
     Token tok = currentToken();
     while (!tok.isSubtype(Delimiter.RPAREN)) {
-      // TODO: what if we have f(3+4, 5) ? I'm not sure we're looking for an identifier. Make a test... (19)
+      // TODO: what if we have f(3+4, 5) ? I'm not sure we're looking for an identifier. Make a
+      // test... (19)
       if (tok.getType() != TokenType.IDENTIFIER) {
         throw new IllegalParseException(
             String.format("Expected identifier in function args but got: %s", tok));

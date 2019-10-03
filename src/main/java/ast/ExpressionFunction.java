@@ -1,7 +1,6 @@
 package ast;
 
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.stream.Collectors;
 import token.Token;
 
@@ -15,8 +14,7 @@ public class ExpressionFunction extends Expression {
     this.statements = new StatementList(token);
   }
 
-  ExpressionFunction(
-      Token token, ArrayList<Expression> args, StatementList statements) {
+  ExpressionFunction(Token token, ArrayList<Expression> args, StatementList statements) {
     super(token);
     this.args = args;
     this.statements = statements;
@@ -60,5 +58,4 @@ public class ExpressionFunction extends Expression {
   public void addArgument(Expression exp) {
     args.add(exp);
   }
-
 }

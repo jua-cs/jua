@@ -1,6 +1,5 @@
 package ast;
 
-import java.util.Objects;
 import token.Token;
 
 public class StatementIf extends Statement {

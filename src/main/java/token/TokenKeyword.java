@@ -1,7 +1,5 @@
 package token;
 
-import java.util.Objects;
-
 public class TokenKeyword extends Token {
   private Keyword keyword;
 

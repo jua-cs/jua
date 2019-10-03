@@ -2,7 +2,6 @@ package parser;
 
 import ast.Expression;
 import ast.ExpressionFactory;
-import ast.ExpressionIdentifier;
 import token.Token;
 
 public class IdentifierParser implements PrefixParser {

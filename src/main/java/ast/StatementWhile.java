@@ -1,6 +1,5 @@
 package ast;
 
-import java.util.Objects;
 import token.Token;
 
 public class StatementWhile extends Statement {
@@ -38,7 +37,6 @@ public class StatementWhile extends Statement {
   public String toString() {
     return String.format("while %s do\n%s end", condition, consequence);
   }
-
 
   public Expression getCondition() {
     return condition;
