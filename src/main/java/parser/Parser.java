@@ -1,6 +1,8 @@
 package parser;
 
 import ast.*;
+
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import token.*;
@@ -114,6 +116,7 @@ public class Parser {
     return parseCommaSeparatedExpressions(precedence, -1);
   }
 
+  @SuppressWarnings(value = "unchecked")
   private <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(
       int precedence, int max) throws IllegalParseException {
     ArrayList<T> exprs = new ArrayList<>();
