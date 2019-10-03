@@ -228,8 +228,8 @@ public class Lexer {
     boolean dotSeen = false;
     while (Character.isDigit(ch) || (!dotSeen && ch == '.')) {
       number.append(ch);
-      readChar();
       dotSeen = ch == '.';
+      readChar();
     }
 
     return number.toString();

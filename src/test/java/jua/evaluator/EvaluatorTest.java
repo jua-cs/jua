@@ -36,6 +36,10 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("'abc' .. 'def'", "abcdef"));
     tests.add(new Tuple<>("'' .. ''", ""));
     tests.add(new Tuple<>("'a' .. \"b\"", "ab"));
+    tests.add(new Tuple<>("5 .. \"b\"", "5b"));
+    tests.add(new Tuple<>("100 .. 60", "10060"));
+    // TODO: this should be 3.0m and not 3m
+    tests.add(new Tuple<>("3.0 .. 'm'", "3m"));
 
     for (Tuple<String, String> t : tests) {
       var obj = setupExpr(t.x);

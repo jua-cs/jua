@@ -30,6 +30,10 @@ public class LuaNumber implements LuaObject {
 
   @Override
   public String repr() {
+    if (value == Math.floor(value)) {
+      return String.format("%d", value.intValue());
+    }
+
     return value.toString();
   }
 }
