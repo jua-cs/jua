@@ -17,5 +17,5 @@ public class ExpressionAddition extends ExpressionBinary {
         LuaNumber.valueOf(lhs.evaluate(evaluator)).getValue()
             + LuaNumber.valueOf(rhs.evaluate(evaluator)).getValue();
     return new LuaNumber(number);
-    }
+  }
 }
