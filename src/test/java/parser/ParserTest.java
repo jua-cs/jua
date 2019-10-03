@@ -23,7 +23,7 @@ public class ParserTest {
             TokenFactory.create(Operator.ASSIGN),
             (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x")),
             ExpressionFactory.create(
-                (TokenOperator) TokenFactory.create(Operator.NOT),
+                TokenFactory.create(Operator.NOT),
                 ExpressionFactory.create(TokenFactory.create(Literal.BOOLEAN, "true")))));
 
     assertIterableEquals(expected, statements);

@@ -3,6 +3,7 @@ package objects;
 import evaluator.IllegalCastException;
 
 public class LuaString implements LuaObject {
+
   private String value;
 
   public LuaString(String value) {
@@ -20,6 +21,10 @@ public class LuaString implements LuaObject {
 
   @Override
   public String repr() {
+    return value;
+  }
+
+  public String getValue() {
     return value;
   }
 }
