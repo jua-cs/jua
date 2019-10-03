@@ -7,32 +7,6 @@ import token.*;
 
 public class Parser {
 
-  // Used to access the HasmMap with Token, with still a functionning equals for Lexer
-  private class TokenHashmMapKey {
-    private final Token token;
-
-    public TokenHashmMapKey(Token token) {
-      this.token = token;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-
-      TokenHashmMapKey that = (TokenHashmMapKey) o;
-
-      return (token != null)
-          && token.getClass() == that.token.getClass()
-          && token.hashCode() == that.token.hashCode();
-    }
-
-    @Override
-    public int hashCode() {
-      return token != null ? token.hashCode() : 0;
-    }
-  }
-
   private static final Token identifierKey = TokenFactory.create("", 0, 0);
   private static final Token literalKey = TokenFactory.create(Literal.BOOLEAN, "0", 0, 0);
   private ArrayList<Token> tokens;
@@ -429,7 +403,7 @@ public class Parser {
     advanceTokens();
 
     if (!isAssignmentStatement()) {
-      throw new IllegalParseException(String.format("expected assignment in for loop"));
+      throw new IllegalParseException("expected assignment in for loop");
     }
     StatementAssignment assignment = parseAssignment();
     ExpressionIdentifier variable = assignment.getLhs().get(0);
@@ -513,5 +487,31 @@ public class Parser {
     consume(Delimiter.RPAREN);
 
     return args;
+  }
+
+  // Used to access the HasmMap with Token, with still a functionning equals for Lexer
+  private class TokenHashmMapKey {
+    private final Token token;
+
+    public TokenHashmMapKey(Token token) {
+      this.token = token;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      TokenHashmMapKey that = (TokenHashmMapKey) o;
+
+      return (token != null)
+          && token.getClass() == that.token.getClass()
+          && token.hashCode() == that.token.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+      return token != null ? token.hashCode() : 0;
+    }
   }
 }

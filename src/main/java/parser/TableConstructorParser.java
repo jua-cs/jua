@@ -5,10 +5,7 @@ import ast.ExpressionFactory;
 import ast.ExpressionTableConstructor;
 import ast.StatementAssignment;
 import java.util.ArrayList;
-import token.Delimiter;
-import token.Literal;
-import token.Token;
-import token.TokenFactory;
+import token.*;
 import util.Tuple;
 
 public class TableConstructorParser implements PrefixParser {
@@ -32,15 +29,9 @@ public class TableConstructorParser implements PrefixParser {
         parser.advanceTokens();
         Expression key = parser.parseExpression(0);
 
-        // Consume the ']'
-        if (!parser.currentToken().isSubtype(Delimiter.RBRACK)) {
-          throw new IllegalParseException(
-              String.format("Expected ']' but got: %s", parser.currentToken()));
-        }
-        parser.advanceTokens();
-
-        // TODO ensure '='
-        parser.advanceTokens();
+        // Consume ] =
+        parser.consume(Delimiter.RBRACK);
+        parser.consume(Operator.ASSIGN);
 
         Tuple<Expression, Expression> tup = new Tuple<>(key, parser.parseExpression(0));
         tuples.add(tup);

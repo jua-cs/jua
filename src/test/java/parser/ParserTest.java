@@ -420,7 +420,7 @@ public class ParserTest {
     ArrayList<Tuple<Expression, Expression>> tuples = new ArrayList<>();
     tuples.add(
         new Tuple<>(
-            new ExpressionFunctionCall(
+            ExpressionFactory.create(
                 func,
                 util.Util.createArrayList(
                     ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))),

@@ -121,8 +121,8 @@ public class LexerTest {
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
     expected.add(TokenFactory.create(Literal.STRING, "hello how are you ?", 1, 5));
 
-    assertStrictEqual(expected, list);
-    assertStrictEqual(expected, listSimpleQuote);
+    assertIterableEquals(expected, list);
+    assertIterableEquals(expected, listSimpleQuote);
   }
 
   @Test
@@ -136,7 +136,7 @@ public class LexerTest {
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
     expected.add(TokenFactory.create(Literal.STRING, "hello", 1, 5));
 
-    assertStrictEqual(expected, list);
+    assertIterableEquals(expected, list);
   }
 
   @Test
@@ -150,7 +150,7 @@ public class LexerTest {
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
     expected.add(TokenFactory.create(Literal.STRING, "hello \"nested\"", 1, 5));
 
-    assertStrictEqual(expected, list);
+    assertIterableEquals(expected, list);
   }
 
   @Test
@@ -164,6 +164,6 @@ public class LexerTest {
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
     expected.add(TokenFactory.create(Literal.STRING, "hello\t tab\r carriage\n world", 1, 5));
 
-    assertStrictEqual(expected, list);
+    assertIterableEquals(expected, list);
   }
 }

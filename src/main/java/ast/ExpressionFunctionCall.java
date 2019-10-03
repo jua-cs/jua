@@ -31,7 +31,6 @@ public class ExpressionFunctionCall extends ExpressionFunction {
     if (!super.equals(o)) return false;
 
     ExpressionFunctionCall that = (ExpressionFunctionCall) o;
-
     return functionName.equals(that.functionName);
   }
 
