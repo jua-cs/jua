@@ -89,7 +89,7 @@ public class ExpressionFactory {
   }
 
   public static ExpressionFunctionCall create(
-      ExpressionIdentifier identifier, ArrayList<ExpressionIdentifier> args) {
+      ExpressionIdentifier identifier, ArrayList<Expression> args) {
     return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()), args);
   }
 

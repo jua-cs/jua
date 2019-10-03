@@ -1,30 +1,33 @@
 package jua.ast;
 
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.stream.Collectors;
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.token.Token;
 
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
+
+
 public class ExpressionFunctionCall extends Expression {
 
   private String functionName;
+  private ArrayList<Expression> args;
 
   ExpressionFunctionCall(Token token) {
     super(token);
     functionName = token.getLiteral();
   }
 
-  ExpressionFunctionCall(Token token, ArrayList<ExpressionIdentifier> args) {
+  ExpressionFunctionCall(Token token, ArrayList<Expression> args) {
     super(token);
     functionName = token.getLiteral();
     this.args = args;
   }
 
-  public void addArgument(ExpressionIdentifier arg) {
+  public void addArgument(Expression arg) {
     args.add(arg);
   }
 
@@ -45,7 +48,7 @@ public class ExpressionFunctionCall extends Expression {
     return result;
   }
 
-  public void setArgs(ArrayList<ExpressionIdentifier> args) {
+  public void setArgs(ArrayList<Expression> args) {
     this.args = args;
   }
 
