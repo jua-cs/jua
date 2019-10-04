@@ -4,18 +4,35 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import jua.ast.*;
 import jua.token.*;
+import util.BufferedChannel;
 
 public class Parser {
-
   private static final Token identifierKey = TokenFactory.create("", 0, 0);
   private static final Token literalKey = TokenFactory.create(Literal.BOOLEAN, "0", 0, 0);
-  private ArrayList<Token> tokens;
-  private int currentPos;
+  private BufferedChannel<Token> tokens;
   private HashMap<TokenHashmMapKey, PrefixParser> tokenPrefixParserHashMap;
   private HashMap<TokenHashmMapKey, InfixParser> tokenInfixParserHashMap;
 
-  public Parser(ArrayList<Token> tokens) {
+  public Parser(ArrayList<Token> tokenList) {
+    this.tokens = new BufferedChannel<Token>();
+    tokenList.forEach(
+        tok -> {
+          try {
+            this.tokens.add(tok);
+          } catch (InterruptedException e) {
+            // TODO: handle this
+            e.printStackTrace();
+          }
+        });
+    registerParsers();
+  }
+
+  public Parser(BufferedChannel<Token> tokens) {
     this.tokens = tokens;
+    registerParsers();
+  }
+
+  private void registerParsers() {
     this.tokenInfixParserHashMap = new HashMap<>();
     this.tokenPrefixParserHashMap = new HashMap<>();
 
@@ -53,7 +70,13 @@ public class Parser {
   }
 
   private Token nextToken(int i) {
-    return tokens.get(i + currentPos);
+    try {
+      return tokens.peek(i);
+    } catch (InterruptedException e) {
+      // TODO: handle this
+      e.printStackTrace();
+    }
+    return null;
   }
 
   private Token nextToken() {
@@ -65,7 +88,12 @@ public class Parser {
   }
 
   void advanceTokens() {
-    currentPos++;
+    try {
+      tokens.skip();
+    } catch (InterruptedException e) {
+      // TODO: handle this
+      e.printStackTrace();
+    }
   }
 
   void consume(Delimiter delimiter) throws IllegalParseException {
@@ -176,7 +204,7 @@ public class Parser {
   public ArrayList<Statement> parse() throws IllegalParseException {
     ArrayList<Statement> statements = new ArrayList<>();
 
-    while (currentPos < tokens.size() && currentTokenIsValid()) {
+    while (currentTokenIsValid()) {
       statements.add(parseStatement());
     }
 
