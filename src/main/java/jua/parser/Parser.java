@@ -127,6 +127,11 @@ public class Parser {
   }
 
   protected StatementAssignment parseAssignment(int max) throws IllegalParseException {
+    boolean isLocal = false;
+    if (currentToken().isSubtype(Keyword.LOCAL)) {
+      isLocal = true;
+      advanceTokens();
+    }
     // At least one identifier
     ArrayList<ExpressionIdentifier> identifiers = parseCommaSeparatedExpressions(0, max);
 
@@ -136,7 +141,7 @@ public class Parser {
     consume(Operator.ASSIGN);
 
     ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0, max);
-    return new StatementAssignment(assignTok, identifiers, exprs);
+    return new StatementAssignment(assignTok, identifiers, exprs, isLocal);
   }
 
   private Expression parseExpression() throws IllegalParseException {
@@ -327,6 +332,10 @@ public class Parser {
 
   protected boolean isAssignmentStatement() {
     int pos = 0;
+
+    if (currentToken().isSubtype(Keyword.LOCAL)) {
+      return true;
+    }
 
     do {
       boolean isIdent = nextToken(pos).isIdentifier();

@@ -10,6 +10,7 @@ import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementAssignment extends Statement {
+  boolean isLocal;
   private ArrayList<ExpressionIdentifier> lhs = new ArrayList<>();
   private ArrayList<Expression> rhs = new ArrayList<>();
 
@@ -20,10 +21,14 @@ public class StatementAssignment extends Statement {
   }
 
   public StatementAssignment(
-      Token token, ArrayList<ExpressionIdentifier> lhs, ArrayList<Expression> rhs) {
+      Token token,
+      ArrayList<ExpressionIdentifier> lhs,
+      ArrayList<Expression> rhs,
+      boolean isLocal) {
     super(token);
     this.lhs = lhs;
     this.rhs = rhs;
+    this.isLocal = isLocal;
   }
 
   @Override
@@ -69,7 +74,13 @@ public class StatementAssignment extends Statement {
     }
 
     for (int i = 0; i < lhs.size() && i < rhs.size(); i++) {
-      scope.assignGlobal(lhs.get(i).getIdentifier(), values.get(i));
+      String ident = lhs.get(i).getIdentifier();
+      LuaObject value = values.get(i);
+      if (isLocal) {
+        scope.assign(ident, value);
+      } else {
+        scope.assignGlobal(ident, value);
+      }
     }
     return LuaNil.getInstance();
   }
