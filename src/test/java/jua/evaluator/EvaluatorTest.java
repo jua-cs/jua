@@ -48,7 +48,7 @@ public class EvaluatorTest {
 
     for (Tuple<String, String> t : tests) {
       var obj = setupExpr(t.x);
-      assertEquals(t.y, obj.toString(), t.x);
+      assertEquals(t.y, obj.repr(), t.x);
     }
 
     assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. nil"));
@@ -74,7 +74,7 @@ public class EvaluatorTest {
 
     for (Tuple<String, String> t : tests) {
       var obj = setupExpr(t.x);
-      assertEquals(t.y, obj.toString());
+      assertEquals(t.y, obj.repr());
     }
 
     assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' + 3"));
