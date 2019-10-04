@@ -1,9 +1,8 @@
 package jua.evaluator;
 
+import java.util.HashMap;
 import jua.objects.LuaObject;
 
-import java.util.HashMap;
-
 public class Evaluator {
-    HashMap<String, LuaObject> globalState = new HashMap<>();
+  HashMap<String, LuaObject> globalState = new HashMap<>();
 }
