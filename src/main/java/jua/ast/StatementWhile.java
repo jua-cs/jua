@@ -2,10 +2,7 @@ package jua.ast;
 
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
-import jua.objects.LuaBoolean;
-import jua.objects.LuaBreak;
-import jua.objects.LuaNil;
-import jua.objects.LuaObject;
+import jua.objects.*;
 import jua.token.Token;
 
 public class StatementWhile extends Statement {
@@ -58,7 +55,7 @@ public class StatementWhile extends Statement {
     while (LuaBoolean.valueOf(condition.evaluate(evaluator)).getValue()) {
       ret = consequence.evaluate(evaluator);
 
-      if (ret instanceof LuaBreak) {
+      if (ret instanceof LuaBreak || ret instanceof LuaReturn) {
         break;
       }
     }

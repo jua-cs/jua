@@ -14,6 +14,8 @@ public class LuaBoolean implements LuaObject {
       return (LuaBoolean) object;
     } else if (object instanceof LuaNil) {
       return new LuaBoolean(false);
+    } else if (object instanceof LuaReturn) {
+      return LuaBoolean.valueOf(((LuaReturn) object).getValue());
     } else {
       return new LuaBoolean(true);
     }

@@ -8,6 +8,7 @@ import jua.evaluator.LuaRuntimeException;
 import jua.objects.LuaBreak;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
+import jua.objects.LuaReturn;
 import jua.token.Token;
 
 public class StatementList extends Statement {
@@ -57,7 +58,7 @@ public class StatementList extends Statement {
     for (Statement statement : children) {
       ret = statement.evaluate(evaluator);
 
-      if (ret instanceof LuaBreak) {
+      if (ret instanceof LuaBreak || ret instanceof LuaReturn) {
         break;
       }
     }

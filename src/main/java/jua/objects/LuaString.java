@@ -15,6 +15,8 @@ public class LuaString implements LuaObject {
     // Only types allowed to be casted to a string in lua
     if (object instanceof LuaString || object instanceof LuaNumber) {
       return new LuaString(object.repr());
+    } else if (object instanceof LuaReturn) {
+      return LuaString.valueOf(((LuaReturn) object).getValue());
     }
 
     throw IllegalCastException.create(object, "LuaString");

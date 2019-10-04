@@ -11,6 +11,10 @@ public class LuaNumber implements LuaObject {
   }
 
   public static LuaNumber valueOf(LuaObject o) throws IllegalCastException {
+
+    if (o instanceof LuaReturn) {
+      return LuaNumber.valueOf(((LuaReturn) o).getValue());
+    }
     // http://www.lua.org/manual/5.1/manual.html#pdf-tonumber reference
     if (o instanceof LuaNumber) return (LuaNumber) o;
     if (o instanceof LuaString) {
