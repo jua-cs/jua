@@ -15,10 +15,14 @@ public class LuaNumber implements LuaObject {
     if (o instanceof LuaString) {
       LuaString luaString = (LuaString) o;
       String str = luaString.getValue();
-      Double number = Double.valueOf(str);
-      if (number.isNaN())
+      Double number;
+      try {
+        number = Double.valueOf(str);
+      } catch (NumberFormatException e) {
         throw new IllegalCastException(
             String.format("The LuaString value %s is not a number.", str));
+      }
+
       return new LuaNumber(number);
     }
     throw IllegalCastException.create(o, "LuaNumber");
@@ -34,6 +38,11 @@ public class LuaNumber implements LuaObject {
       return String.format("%d", value.intValue());
     }
 
-    return value.toString();
+    return ((Float) ((float) ((double) value))).toString();
+  }
+
+  @Override
+  public String toString() {
+    return repr();
   }
 }

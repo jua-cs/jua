@@ -55,4 +55,38 @@ public class EvaluatorTest {
     assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. {}"));
     assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. (function() end)"));
   }
+
+  @Test
+  void testArithmeticExpr() throws IllegalParseException, LuaRuntimeException {
+    // TODO: test with identifiers
+
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("1 + 1", "2"));
+    tests.add(new Tuple<>("1 + '1'", "2"));
+    tests.add(new Tuple<>("1 - '1'", "0"));
+    tests.add(new Tuple<>("2 * '2'", "4"));
+    tests.add(new Tuple<>("4 / 2", "2"));
+    tests.add(new Tuple<>("3 / '2'", "1.5"));
+    tests.add(new Tuple<>("3 % 2", "1"));
+    tests.add(new Tuple<>("3.7 % 1.5", "0.7"));
+    tests.add(new Tuple<>("-3", "-3"));
+
+    for (Tuple<String, String> t : tests) {
+      var obj = setupExpr(t.x);
+      assertEquals(t.y, obj.toString());
+    }
+
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' + 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil + 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' - 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil - 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' * 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil * 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' / 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil / 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' % 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil % 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("-'a'"));
+    assertThrows(LuaRuntimeException.class, () -> setupExpr("-nil"));
+  }
 }
