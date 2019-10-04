@@ -1,5 +1,6 @@
 package jua.objects;
 
+import java.util.Objects;
 import jua.evaluator.IllegalCastException;
 
 public class LuaString implements LuaObject {
@@ -39,5 +40,18 @@ public class LuaString implements LuaObject {
 
   public void setValue(String value) {
     this.value = value;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    LuaString luaString = (LuaString) o;
+    return Objects.equals(value, luaString.value);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(value);
   }
 }

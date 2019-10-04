@@ -3,6 +3,7 @@ package jua.ast;
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
 import jua.objects.LuaBoolean;
+import jua.objects.LuaObject;
 import jua.token.TokenOperator;
 
 public class ExpressionNotEqual extends ExpressionBinary {
@@ -12,7 +13,8 @@ public class ExpressionNotEqual extends ExpressionBinary {
 
   @Override
   public LuaBoolean evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    return new LuaBoolean(
-        LuaBoolean.valueOf(lhs.evaluate(evaluator)) != LuaBoolean.valueOf(rhs.evaluate(evaluator)));
+    LuaObject o1 = lhs.evaluate(evaluator);
+    LuaObject o2 = rhs.evaluate(evaluator);
+    return new LuaBoolean(!o1.equals(o2));
   }
 }

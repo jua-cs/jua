@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import jua.ast.Statement;
 import jua.ast.StatementExpression;
 import jua.lexer.Lexer;
+import jua.objects.LuaBoolean;
 import jua.objects.LuaObject;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
@@ -47,7 +48,7 @@ public class EvaluatorTest {
 
     for (Tuple<String, String> t : tests) {
       var obj = setupExpr(t.x);
-      assertEquals(t.y, obj.toString());
+      assertEquals(t.y, obj.toString(), t.x);
     }
 
     assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. nil"));
@@ -88,5 +89,31 @@ public class EvaluatorTest {
     assertThrows(LuaRuntimeException.class, () -> setupExpr("nil % 3"));
     assertThrows(LuaRuntimeException.class, () -> setupExpr("-'a'"));
     assertThrows(LuaRuntimeException.class, () -> setupExpr("-nil"));
+  }
+
+  void testEqualAndNotEquals() throws IllegalParseException, LuaRuntimeException {
+    // TODO: test with identifiers
+
+    ArrayList<Tuple<String, Boolean>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("'abc' == 'def'", false));
+    tests.add(new Tuple<>("'abc' ~= 'def'", true));
+    tests.add(new Tuple<>("'' == ''", true));
+    tests.add(new Tuple<>("'a' == \"a\"", true));
+    tests.add(new Tuple<>("'a' == \"b\"", false));
+    tests.add(new Tuple<>("100 == 60", false));
+    tests.add(new Tuple<>("100 ~= 60", true));
+    tests.add(new Tuple<>("0 == false", false));
+    tests.add(new Tuple<>("0 == nil", false));
+    tests.add(new Tuple<>("nil == nil", true));
+    tests.add(new Tuple<>("3 * 2 == 12 / 2", true));
+    tests.add(new Tuple<>("true == true", true));
+    tests.add(new Tuple<>("not true == false", true));
+    tests.add(new Tuple<>("not true ~= not false", true));
+    tests.add(new Tuple<>("not not not true", false));
+
+    for (Tuple<String, Boolean> t : tests) {
+      var obj = setupExpr(t.x);
+      assertEquals(t.y, ((LuaBoolean) obj).getValue(), t.x);
+    }
   }
 }

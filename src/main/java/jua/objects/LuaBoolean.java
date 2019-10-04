@@ -1,7 +1,13 @@
 package jua.objects;
 
+import java.util.Objects;
+
 public class LuaBoolean implements LuaObject {
   private boolean value;
+
+  public LuaBoolean(boolean value) {
+    this.value = value;
+  }
 
   public static LuaBoolean valueOf(LuaObject object) {
     if (object instanceof LuaBoolean) {
@@ -13,12 +19,26 @@ public class LuaBoolean implements LuaObject {
     }
   }
 
-  public LuaBoolean(boolean value) {
-    this.value = value;
-  }
-
   public boolean getValue() {
     return value;
+  }
+
+  @Override
+  public String toString() {
+    return "LuaBoolean{" + "value=" + value + '}';
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    LuaBoolean that = (LuaBoolean) o;
+    return value == that.value;
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(value);
   }
 
   @Override
