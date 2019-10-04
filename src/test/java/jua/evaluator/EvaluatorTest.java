@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
-
 import jua.ast.Statement;
 import jua.lexer.Lexer;
 import jua.objects.LuaBoolean;
@@ -26,8 +25,7 @@ public class EvaluatorTest {
 
   private LuaObject setupEval(String in, Evaluator evaluator)
       throws LuaRuntimeException, IllegalParseException {
-    var expr =
-        ((Evaluable) new Parser((new Lexer(in)).getNTokens(0)).parse().get(0));
+    var expr = ((Evaluable) new Parser((new Lexer(in)).getNTokens(0)).parse().get(0));
     return expr.evaluate(evaluator);
   }
 
@@ -125,10 +123,10 @@ public class EvaluatorTest {
     // TODO: test with identifiers
 
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
-      tests.add(new Tuple<>("if 1 then 1 else 2 end", "1"));
-      tests.add(new Tuple<>("if false then 1 else 2 end", "2"));
-      tests.add(new Tuple<>("if 1 == '1' then 1 elseif 1 == 1 then  2 end", "2"));
-      tests.add(new Tuple<>("if false then 1 end", "nil"));
+    tests.add(new Tuple<>("if 1 then 1 else 2 end", "1"));
+    tests.add(new Tuple<>("if false then 1 else 2 end", "2"));
+    tests.add(new Tuple<>("if 1 == '1' then 1 elseif 1 == 1 then  2 end", "2"));
+    tests.add(new Tuple<>("if false then 1 end", "nil"));
 
     for (Tuple<String, String> t : tests) {
       var obj = setupEval(t.x);
@@ -136,18 +134,18 @@ public class EvaluatorTest {
     }
   }
 
-    @Test
-    void testWhile() throws LuaRuntimeException, IllegalParseException {
-        // TODO: test with identifiers
+  @Test
+  void testWhile() throws LuaRuntimeException, IllegalParseException {
+    // TODO: test with identifiers
 
-        ArrayList<Tuple<String, String>> tests = new ArrayList<>();
-        tests.add(new Tuple<>("while true do break end", "nil"));
-        tests.add(new Tuple<>("while 1 < 2 do return 1 end", "1"));
-        tests.add(new Tuple<>("while 1 == 2 do return 1 end", "nil"));
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("while true do break end", "nil"));
+    tests.add(new Tuple<>("while 1 < 2 do return 1 end", "1"));
+    tests.add(new Tuple<>("while 1 == 2 do return 1 end", "nil"));
 
-        for (Tuple<String, String> t : tests) {
-            var obj = setupEval(t.x);
-            assertEquals(t.y, obj.repr());
-        }
+    for (Tuple<String, String> t : tests) {
+      var obj = setupEval(t.x);
+      assertEquals(t.y, obj.repr());
     }
+  }
 }
