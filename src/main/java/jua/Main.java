@@ -2,6 +2,9 @@ package jua;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import jua.ast.StatementExpression;
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
 import jua.lexer.Lexer;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
@@ -24,7 +27,21 @@ public class Main {
     System.out.println("---");
     System.out.println("Parsing:");
     Parser parser = new Parser(tokens);
-    parser.parse().forEach(System.out::println);
+    var stmts = parser.parse();
+    stmts.forEach(System.out::println);
+    System.out.println("---");
+    System.out.println("Evaluation:");
+    var eval = new Evaluator();
+    stmts.forEach(
+        stmt -> {
+          if (stmt instanceof StatementExpression) {
+            try {
+              System.out.printf("> %s\n", ((StatementExpression) stmt).getExpr().evaluate(eval));
+            } catch (LuaRuntimeException e) {
+              e.printStackTrace();
+            }
+          }
+        });
     System.out.println("---");
   }
 }

@@ -44,11 +44,6 @@ public class LuaNumber implements LuaObject {
 
   @Override
   public String toString() {
-    return repr();
-  }
-
-  @Override
-  public String toString() {
     return "LuaNumber{" + "value=" + value + '}';
   }
 
