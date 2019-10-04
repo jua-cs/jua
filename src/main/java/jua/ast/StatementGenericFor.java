@@ -2,6 +2,9 @@ package jua.ast;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+
 import jua.token.Token;
 
 public class StatementGenericFor extends StatementFor {
@@ -12,10 +15,10 @@ public class StatementGenericFor extends StatementFor {
   public StatementGenericFor(
       Token token,
       ArrayList<ExpressionIdentifier> variables,
-      Statement block,
       Expression iterator,
       Expression state,
-      Expression var) {
+      Expression var,
+      Statement block) {
     super(token, variables, block);
     this.iterator = iterator;
     this.state = state;
@@ -36,5 +39,17 @@ public class StatementGenericFor extends StatementFor {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), iterator, state, var);
+  }
+
+
+  @Override
+  public String toString() {
+    return String.format(
+        "for %s in %s, %s, %s do\n %s\nend",
+        variables.stream().map(Object::toString).collect(Collectors.joining(",")),
+        iterator,
+        state,
+        var,
+        block);
   }
 }

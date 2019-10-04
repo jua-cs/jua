@@ -12,10 +12,10 @@ public class StatementNumericFor extends StatementFor {
   public StatementNumericFor(
       Token token,
       ExpressionIdentifier variable,
-      Statement block,
       Expression var,
       Expression limit,
-      Expression step) {
+      Expression step,
+      Statement block) {
 
     super(token, util.Util.createArrayList(variable), block);
     this.var = var;
@@ -37,5 +37,11 @@ public class StatementNumericFor extends StatementFor {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), var, limit, step);
+  }
+
+  @Override
+  public String toString() {
+    return String.format(
+        "for %s = %s, %s, %s do\n %s\nend", variables.get(0), var, limit, step, block);
   }
 }

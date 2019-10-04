@@ -315,6 +315,97 @@ public class ParserTest {
   }
 
   @Test
+  void testNumericFor() throws IllegalParseException {
+    String in = "for i = 0,10 do break end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    StatementNumericFor expected =
+        new StatementNumericFor(
+            TokenFactory.create(Keyword.FOR),
+            (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("i")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "0")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "10")),
+            null,
+            new StatementList(
+                TokenFactory.create(Keyword.BREAK),
+                new StatementBreak(TokenFactory.create(Keyword.BREAK))));
+
+    Statement result = parser.parse().get(0);
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void testNumericForStep() throws IllegalParseException {
+    String in = "for i = 0,10,2 do break end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    StatementNumericFor expected =
+        new StatementNumericFor(
+            TokenFactory.create(Keyword.FOR),
+            (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("i")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "0")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "10")),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")),
+            new StatementList(
+                TokenFactory.create(Keyword.BREAK),
+                new StatementBreak(TokenFactory.create(Keyword.BREAK))));
+
+    Statement result = parser.parse().get(0);
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void testNumericForException() {
+    String in = "for i = 0 do break end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+
+    assertThrows(IllegalParseException.class, parser::parse);
+  }
+
+  @Test
+  void testGenericFor() throws IllegalParseException {
+    String in = "for e in l do break end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    StatementGenericFor expected =
+        new StatementGenericFor(
+            TokenFactory.create(Keyword.FOR),
+            util.Util.createArrayList(
+                (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("e"))),
+            ExpressionFactory.create(TokenFactory.create("l")),
+            null,
+            null,
+            new StatementList(
+                TokenFactory.create(Keyword.BREAK),
+                new StatementBreak(TokenFactory.create(Keyword.BREAK))));
+
+    Statement result = parser.parse().get(0);
+    assertEquals(expected, result);
+  }
+
+  @Test
+  void testGenericForFull() throws IllegalParseException {
+    String in = "for e in l,s,var do break end";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+    StatementGenericFor expected =
+        new StatementGenericFor(
+            TokenFactory.create(Keyword.FOR),
+            util.Util.createArrayList(
+                (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("e"))),
+            ExpressionFactory.create(TokenFactory.create("l")),
+            ExpressionFactory.create(TokenFactory.create("s")),
+            ExpressionFactory.create(TokenFactory.create("var")),
+            new StatementList(
+                TokenFactory.create(Keyword.BREAK),
+                new StatementBreak(TokenFactory.create(Keyword.BREAK))));
+
+    Statement result = parser.parse().get(0);
+    assertEquals(expected, result);
+  }
+
+  @Test
   void testSameSizeMultiAssignment() throws IllegalParseException {
     String in1 = "a, b, c = 1, 2, 3";
     String in2 = "a, b, c = 1, 2,\n3";

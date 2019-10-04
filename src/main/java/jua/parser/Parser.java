@@ -246,6 +246,8 @@ public class Parser {
       return parseWhileStatement();
     } else if (isForStatement()) {
       return parseForStatement();
+    } else if (isBreakStatement()) {
+      return parseBreakStatement();
     } else {
       return new StatementExpression(parseExpression());
     }
@@ -388,18 +390,18 @@ public class Parser {
   }
 
   private StatementFor parseForStatement() throws IllegalParseException {
-    Token next = nextToken(3);
-    if (next.isSubtype(Operator.ASSIGN)) {
-      return parseNumericForStatement();
-    }
-
-    return parseGenericForStatement();
-  }
-
-  private StatementFor parseNumericForStatement() throws IllegalParseException {
+    // consume FOR keyword
     Token tok = currentToken();
     advanceTokens();
 
+    if (isAssignmentStatement()) {
+      return parseNumericForStatement(tok);
+    }
+
+    return parseGenericForStatement(tok);
+  }
+
+  private StatementFor parseNumericForStatement(Token tok) throws IllegalParseException {
     if (!isAssignmentStatement()) {
       throw new IllegalParseException("expected assignment in for loop");
     }
@@ -421,18 +423,17 @@ public class Parser {
 
     Statement block = parseBlockStatement();
 
-    return new StatementNumericFor(tok, variable, block, var, limit, step);
+    return new StatementNumericFor(tok, variable, var, limit, step, block);
   }
 
-  private StatementFor parseGenericForStatement() throws IllegalParseException {
+  private StatementFor parseGenericForStatement(Token tok) throws IllegalParseException {
     ArrayList<ExpressionIdentifier> variables = parseCommaSeparatedExpressions(0);
 
-    Token tok = currentToken();
-
     // Check if we are on equal jua.token
-    if (!tok.isSubtype(Keyword.IN)) {
+    if (!currentToken().isSubtype(Keyword.IN)) {
       throw new IllegalParseException(String.format("Expected in keyword but got %s", tok));
     }
+    advanceTokens();
 
     ArrayList<Expression> explist = parseCommaSeparatedExpressions(0);
     Expression iterator = explist.get(0);
@@ -447,7 +448,19 @@ public class Parser {
 
     Statement block = parseBlockStatement();
 
-    return new StatementGenericFor(tok, variables, block, iterator, state, var);
+    return new StatementGenericFor(tok, variables, iterator, state, var, block);
+  }
+
+  private boolean isBreakStatement() {
+    return currentToken().isSubtype(Keyword.BREAK);
+  }
+
+  private StatementBreak parseBreakStatement() {
+    // consume BREAK keyword
+    Token tok = currentToken();
+    advanceTokens();
+
+    return new StatementBreak(tok);
   }
 
   private boolean currentTokenIsValid() {
