@@ -70,11 +70,13 @@ public class StatementIf extends Statement {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    if (LuaBoolean.valueOf(condition.evaluate(scope)).getValue()) {
-      return consequence.evaluate(scope);
+    Scope ifScope = scope.createChild();
+
+    if (LuaBoolean.valueOf(condition.evaluate(ifScope)).getValue()) {
+      return consequence.evaluate(ifScope);
     }
     if (alternative != null) {
-      return alternative.evaluate(scope);
+      return alternative.evaluate(ifScope);
     }
 
     return LuaNil.getInstance();

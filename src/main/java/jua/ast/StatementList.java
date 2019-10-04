@@ -58,7 +58,7 @@ public class StatementList extends Statement {
       ret = statement.evaluate(scope);
 
       if (ret instanceof LuaReturn) {
-        break;
+        return ((LuaReturn) ret).getValue();
       }
     }
 

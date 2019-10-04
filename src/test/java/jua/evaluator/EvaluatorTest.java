@@ -4,7 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
-import jua.ast.Statement;
 import jua.lexer.Lexer;
 import jua.objects.LuaBoolean;
 import jua.objects.LuaNumber;
@@ -16,10 +15,6 @@ import org.junit.jupiter.api.Test;
 import util.Tuple;
 
 public class EvaluatorTest {
-
-  private static ArrayList<Statement> setup(String in) throws IllegalParseException {
-    return new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
-  }
 
   private LuaObject setupEval(String in) throws LuaRuntimeException, IllegalParseException {
     return setupEval(in, new Scope());
@@ -188,13 +183,33 @@ public class EvaluatorTest {
     }
   }
 
+  @Test
   void testLocalAssignment() throws LuaRuntimeException, IllegalParseException {
 
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
     tests.add(new Tuple<>("a = 1 if true then local a = 0 end a", "1"));
+    // Test local scope in while
+    tests.add(new Tuple<>("a = 1 while (a == 1) do local b = 2 a = 0 end b", "nil"));
+    // Test local scope in while expression
+    tests.add(
+        new Tuple<>(
+            "a = 1\n"
+                + "while (b == nil) do\n"
+                + "    if (b == nil) then\n"
+                + "        a = 3\n"
+                + "    end\n"
+                + "    local b = 2\n"
+                + "    if (b == 2) then\n"
+                + "        break\n"
+                + "    end\n"
+                + "end\n"
+                + "a",
+            "3"));
+
+    var s = new Scope();
 
     for (Tuple<String, String> t : tests) {
-      var obj = setupEval(t.x);
+      var obj = setupEval(t.x, s);
       assertEquals(t.y, obj.repr());
     }
   }

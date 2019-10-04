@@ -54,12 +54,14 @@ public class StatementWhile extends Statement {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    Scope whileScope = scope.createChild();
+
     LuaObject ret = LuaNil.getInstance();
-    while (LuaBoolean.valueOf(condition.evaluate(scope)).getValue()) {
-      ret = consequence.evaluate(scope);
+    while (LuaBoolean.valueOf(condition.evaluate(whileScope)).getValue()) {
+      ret = consequence.evaluate(whileScope.createChild());
 
       if (ret instanceof LuaReturn) {
-        break;
+        return ((LuaReturn) ret).getValue();
       }
     }
     return ret;

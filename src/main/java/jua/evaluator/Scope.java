@@ -38,4 +38,9 @@ public class Scope {
     }
     assign(identifier, value);
   }
+
+  @Override
+  public String toString() {
+    return "Scope{" + "scope=" + scope + ", parent=" + parent + '}';
+  }
 }
