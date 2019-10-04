@@ -31,7 +31,7 @@ public class LuaString implements LuaObject {
 
   @Override
   public String toString() {
-    return value;
+    return "LuaString{" + "value='" + value + '\'' + '}';
   }
 
   public String getValue() {
