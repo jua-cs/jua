@@ -1,7 +1,7 @@
 package jua.objects;
 
 public class LuaReturn implements LuaObject {
-  private LuaObject value = new LuaNil();
+  private LuaObject value = LuaNil.getInstance();
 
   public LuaReturn(LuaObject value) {
     this.value = value;

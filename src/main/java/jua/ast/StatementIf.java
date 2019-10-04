@@ -77,6 +77,6 @@ public class StatementIf extends Statement {
       return alternative.evaluate(evaluator);
     }
 
-    return new LuaNil();
+    return LuaNil.getInstance();
   }
 }

@@ -15,6 +15,6 @@ public class ExpressionEquals extends ExpressionBinary {
   public LuaBoolean evaluate(Evaluator evaluator) throws LuaRuntimeException {
     LuaObject o1 = lhs.evaluate(evaluator);
     LuaObject o2 = rhs.evaluate(evaluator);
-    return new LuaBoolean(o1.equals(o2));
+    return LuaBoolean.getLuaBool(o1.equals(o2));
   }
 }

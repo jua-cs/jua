@@ -15,6 +15,6 @@ public class ExpressionNot extends ExpressionUnary {
 
   @Override
   public LuaBoolean evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    return new LuaBoolean(!LuaBoolean.valueOf(value.evaluate(evaluator)).getValue());
+    return LuaBoolean.getLuaBool(!LuaBoolean.valueOf(value.evaluate(evaluator)).getValue());
   }
 }

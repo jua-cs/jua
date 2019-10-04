@@ -54,7 +54,7 @@ public class StatementNumericFor extends StatementFor {
     LuaNumber limitValue = LuaNumber.valueOf(limit.evaluate(evaluator));
     LuaNumber stepValue = LuaNumber.valueOf(step.evaluate(evaluator));
 
-    LuaObject ret = new LuaNil();
+    LuaObject ret = LuaNil.getInstance();
 
     while ((stepValue.getValue() > 0 && varValue.getValue() <= limitValue.getValue())
         || (stepValue.getValue() <= 0 && varValue.getValue() >= limitValue.getValue())) {
@@ -62,7 +62,7 @@ public class StatementNumericFor extends StatementFor {
       ret = block.evaluate(evaluator);
       // TODO: local var = var + step
 
-      if (ret instanceof LuaBreak || ret instanceof LuaReturn) {
+      if (ret instanceof LuaReturn) {
         break;
       }
     }

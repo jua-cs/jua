@@ -18,7 +18,7 @@ public class ExpressionLiteral extends Expression {
   public LuaObject evaluate(Evaluator evaluator) throws IllegalTypeException {
     switch (type) {
       case NIL:
-        return new LuaNil();
+        return LuaNil.getInstance();
       case NUMBER:
         return new LuaNumber(Double.valueOf(this.getLiteral()));
       case STRING:
@@ -26,14 +26,14 @@ public class ExpressionLiteral extends Expression {
       case BOOLEAN:
         String raw = getLiteral();
         if (raw.equals("true")) {
-          return new LuaBoolean(true);
+          return LuaBoolean.getLuaBool(true);
         } else if (raw.equals("false")) {
-          return new LuaBoolean(false);
+          return LuaBoolean.getLuaBool(false);
         }
         throw new IllegalTypeException(
             String.format("Expected %s to be boolean but isn't true or false", raw));
       default:
-        return new LuaNil();
+        return LuaNil.getInstance();
     }
   }
 }

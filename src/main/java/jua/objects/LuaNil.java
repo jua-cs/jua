@@ -2,6 +2,13 @@ package jua.objects;
 
 public class LuaNil implements LuaObject {
   private static final String value = "nil";
+  private static LuaNil instance = new LuaNil();
+
+  private LuaNil() {}
+
+  public static LuaNil getInstance() {
+    return instance;
+  }
 
   @Override
   public String repr() {

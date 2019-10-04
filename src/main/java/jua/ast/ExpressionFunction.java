@@ -70,6 +70,6 @@ public class ExpressionFunction extends Expression {
       argValues.add(arg.evaluate(evaluator));
     }
     // TODO
-    return new LuaNil();
+    return LuaNil.getInstance();
   }
 }

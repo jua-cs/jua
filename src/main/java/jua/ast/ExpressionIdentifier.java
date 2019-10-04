@@ -20,6 +20,6 @@ public class ExpressionIdentifier extends Expression {
 
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws IllegalCastException {
-    return new LuaNil();
+    return LuaNil.getInstance();
   }
 }

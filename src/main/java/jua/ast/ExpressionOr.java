@@ -12,7 +12,7 @@ public class ExpressionOr extends ExpressionBinary {
 
   @Override
   public LuaBoolean evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    return new LuaBoolean(
+    return LuaBoolean.getLuaBool(
         LuaBoolean.valueOf(lhs.evaluate(evaluator)).getValue()
             || LuaBoolean.valueOf(rhs.evaluate(evaluator)).getValue());
   }

@@ -26,6 +26,6 @@ public class ExpressionIndex extends ExpressionBinary {
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
     // TODO: later on
-    return new LuaNil();
+    return LuaNil.getInstance();
   }
 }

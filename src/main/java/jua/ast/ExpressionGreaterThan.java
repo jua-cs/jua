@@ -20,12 +20,12 @@ public class ExpressionGreaterThan extends ExpressionBinary {
     LuaObject.ensureSameType(o1, o2);
 
     if (o1 instanceof LuaNumber) {
-      return new LuaBoolean(((LuaNumber) o1).getValue() > ((LuaNumber) o2).getValue());
+      return LuaBoolean.getLuaBool(((LuaNumber) o1).getValue() > ((LuaNumber) o2).getValue());
     }
 
     if (o1 instanceof LuaString) {
       boolean val = ((LuaString) o1).getValue().compareTo(((LuaString) o2).getValue()) > 0;
-      return new LuaBoolean(val);
+      return LuaBoolean.getLuaBool(val);
     }
 
     throw new LuaRuntimeException(String.format("Could not evaluate %s > %s", o1, o2));

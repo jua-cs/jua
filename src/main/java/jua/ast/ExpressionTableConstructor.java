@@ -45,6 +45,6 @@ public class ExpressionTableConstructor extends Expression {
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
     // TODO: later
-    return new LuaNil();
+    return LuaNil.getInstance();
   }
 }

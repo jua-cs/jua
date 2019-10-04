@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
-import jua.objects.LuaBreak;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
@@ -54,11 +53,11 @@ public class StatementList extends Statement {
 
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    LuaObject ret = new LuaNil();
+    LuaObject ret = LuaNil.getInstance();
     for (Statement statement : children) {
       ret = statement.evaluate(evaluator);
 
-      if (ret instanceof LuaBreak || ret instanceof LuaReturn) {
+      if (ret instanceof LuaReturn) {
         break;
       }
     }

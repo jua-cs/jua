@@ -5,7 +5,6 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
-import jua.objects.LuaBreak;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
@@ -62,7 +61,7 @@ public class StatementGenericFor extends StatementFor {
     LuaObject stateValue = state.evaluate(evaluator);
     LuaObject varValue = var.evaluate(evaluator);
 
-    LuaObject ret = new LuaNil();
+    LuaObject ret = LuaNil.getInstance();
     while (true) {
       // TODO:          local var_1, ···, var_n = f(s, var)
       //         var = var_1
@@ -73,7 +72,7 @@ public class StatementGenericFor extends StatementFor {
 
       ret = block.evaluate(evaluator);
 
-      if (ret instanceof LuaBreak || ret instanceof LuaReturn) {
+      if (ret instanceof LuaReturn) {
         break;
       }
     }

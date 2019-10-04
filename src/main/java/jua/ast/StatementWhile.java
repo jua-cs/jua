@@ -51,11 +51,11 @@ public class StatementWhile extends Statement {
 
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    LuaObject ret = new LuaNil();
+    LuaObject ret = LuaNil.getInstance();
     while (LuaBoolean.valueOf(condition.evaluate(evaluator)).getValue()) {
       ret = consequence.evaluate(evaluator);
 
-      if (ret instanceof LuaBreak || ret instanceof LuaReturn) {
+      if (ret instanceof LuaReturn) {
         break;
       }
     }

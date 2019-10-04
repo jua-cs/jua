@@ -4,9 +4,18 @@ import java.util.Objects;
 
 public class LuaBoolean implements LuaObject {
   private boolean value;
+  private static LuaBoolean luaTrue = new LuaBoolean(true);
+  private static LuaBoolean luaFalse = new LuaBoolean(false);
 
-  public LuaBoolean(boolean value) {
+  private LuaBoolean(boolean value) {
     this.value = value;
+  }
+
+  public static LuaBoolean getLuaBool(boolean value) {
+    if (value) {
+      return luaTrue;
+    }
+    return luaFalse;
   }
 
   public static LuaBoolean valueOf(LuaObject object) {
