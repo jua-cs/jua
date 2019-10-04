@@ -3,6 +3,11 @@ package jua.ast;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaBreak;
+import jua.objects.LuaNil;
+import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementList extends Statement {
@@ -44,5 +49,19 @@ public class StatementList extends Statement {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), children);
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    LuaObject ret = new LuaNil();
+    for (Statement statement : children) {
+      ret = statement.evaluate(evaluator);
+
+      if (ret instanceof LuaBreak) {
+        break;
+      }
+    }
+
+    return ret;
   }
 }

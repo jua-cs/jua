@@ -35,6 +35,14 @@ public abstract class Node {
     return Objects.equals(literal, node.literal);
   }
 
+  public int getLine() {
+    return line;
+  }
+
+  public int getPosition() {
+    return position;
+  }
+
   @Override
   public int hashCode() {
     return literal != null ? literal.hashCode() : 0;

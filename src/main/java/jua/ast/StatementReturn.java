@@ -1,5 +1,8 @@
 package jua.ast;
 
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementReturn extends Statement {
@@ -31,5 +34,10 @@ public class StatementReturn extends Statement {
   @Override
   public String toString() {
     return String.format("return %s", value);
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    return value.evaluate(evaluator);
   }
 }

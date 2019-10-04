@@ -1,6 +1,9 @@
 package jua.ast;
 
 import java.util.stream.Collectors;
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementFunction extends Statement {
@@ -40,5 +43,11 @@ public class StatementFunction extends Statement {
         name,
         func.getArgs().stream().map(Object::toString).collect(Collectors.joining("\n")),
         func.getStatements());
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    // TODO
+    return null;
   }
 }

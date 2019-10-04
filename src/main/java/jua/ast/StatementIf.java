@@ -1,5 +1,9 @@
 package jua.ast;
 
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaBoolean;
+import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementIf extends Statement {
@@ -61,5 +65,13 @@ public class StatementIf extends Statement {
 
   public Statement getAlternative() {
     return alternative;
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    if (LuaBoolean.valueOf(condition.evaluate(evaluator)).getValue()) {
+      return consequence.evaluate(evaluator);
+    }
+    return alternative.evaluate(evaluator);
   }
 }

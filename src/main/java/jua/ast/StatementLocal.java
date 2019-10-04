@@ -1,5 +1,8 @@
 package jua.ast;
 
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementLocal extends Statement {
@@ -26,5 +29,11 @@ public class StatementLocal extends Statement {
     int result = super.hashCode();
     result = 31 * result + assignment.hashCode();
     return result;
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    // TODO
+    return null;
   }
 }

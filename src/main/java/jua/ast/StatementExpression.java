@@ -1,6 +1,9 @@
 package jua.ast;
 
 import java.util.Objects;
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaObject;
 import jua.token.TokenFactory;
 
 public class StatementExpression extends Statement {
@@ -33,5 +36,10 @@ public class StatementExpression extends Statement {
   @Override
   public int hashCode() {
     return Objects.hash(super.hashCode(), expr);
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    return expr.evaluate(evaluator);
   }
 }

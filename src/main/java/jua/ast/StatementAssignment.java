@@ -3,6 +3,9 @@ package jua.ast;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementAssignment extends Statement {
@@ -55,5 +58,11 @@ public class StatementAssignment extends Statement {
     result = 31 * result + lhs.hashCode();
     result = 31 * result + rhs.hashCode();
     return result;
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    // TODO
+    return null;
   }
 }

@@ -1,6 +1,12 @@
 package jua.ast;
 
 import java.util.Objects;
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaBreak;
+import jua.objects.LuaNil;
+import jua.objects.LuaNumber;
+import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementNumericFor extends StatementFor {
@@ -43,5 +49,27 @@ public class StatementNumericFor extends StatementFor {
   public String toString() {
     return String.format(
         "for %s = %s, %s, %s do\n %s\nend", variables.get(0), var, limit, step, block);
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    LuaNumber varValue = LuaNumber.valueOf(var.evaluate(evaluator));
+    LuaNumber limitValue = LuaNumber.valueOf(limit.evaluate(evaluator));
+    LuaNumber stepValue = LuaNumber.valueOf(step.evaluate(evaluator));
+
+    LuaObject ret = new LuaNil();
+
+    while ((stepValue.getValue() > 0 && varValue.getValue() <= limitValue.getValue())
+        || (stepValue.getValue() <= 0 && varValue.getValue() >= limitValue.getValue())) {
+      // TODO: local v = var
+      ret = block.evaluate(evaluator);
+      // TODO: local var = var + step
+
+      if (ret instanceof LuaBreak) {
+        break;
+      }
+    }
+
+    return ret;
   }
 }

@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Objects;
 import jua.token.Token;
 
-public class StatementFor extends Statement {
+public abstract class StatementFor extends Statement {
   ArrayList<ExpressionIdentifier> variables;
   Statement block;
 

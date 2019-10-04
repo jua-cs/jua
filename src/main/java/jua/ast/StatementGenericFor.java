@@ -2,9 +2,12 @@ package jua.ast;
 
 import java.util.ArrayList;
 import java.util.Objects;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-
+import jua.evaluator.Evaluator;
+import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaBreak;
+import jua.objects.LuaNil;
+import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementGenericFor extends StatementFor {
@@ -41,7 +44,6 @@ public class StatementGenericFor extends StatementFor {
     return Objects.hash(super.hashCode(), iterator, state, var);
   }
 
-
   @Override
   public String toString() {
     return String.format(
@@ -51,5 +53,30 @@ public class StatementGenericFor extends StatementFor {
         state,
         var,
         block);
+  }
+
+  @Override
+  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+    LuaObject iteratorValue = iterator.evaluate(evaluator);
+    LuaObject stateValue = state.evaluate(evaluator);
+    LuaObject varValue = var.evaluate(evaluator);
+
+    LuaObject ret = new LuaNil();
+    while (true) {
+      // TODO:          local var_1, ···, var_n = f(s, var)
+      //         var = var_1
+
+      if (varValue instanceof LuaNil) {
+        break;
+      }
+
+      ret = block.evaluate(evaluator);
+
+      if (ret instanceof LuaBreak) {
+        break;
+      }
+    }
+
+    return ret;
   }
 }
