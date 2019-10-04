@@ -2,7 +2,6 @@ package jua.ast;
 
 import jua.evaluator.Evaluator;
 import jua.evaluator.IllegalCastException;
-import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.token.Token;
 
@@ -20,6 +19,6 @@ public class ExpressionIdentifier extends Expression {
 
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws IllegalCastException {
-    return LuaNil.getInstance();
+    return evaluator.getVariable(identifier);
   }
 }

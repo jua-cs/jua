@@ -206,11 +206,11 @@ public class Parser {
     tokenInfixParserHashMap.put(new TokenHashmMapKey(type), parser);
   }
 
-  public ArrayList<Statement> parse() throws IllegalParseException {
-    ArrayList<Statement> statements = new ArrayList<>();
+  public StatementList parse() throws IllegalParseException {
+    StatementList statements = new StatementList(currentToken());
 
     while (currentTokenIsValid()) {
-      statements.add(parseStatement());
+      statements.addChild(parseStatement());
     }
 
     return statements;

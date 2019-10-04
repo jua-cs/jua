@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.stream.Collectors;
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
-import jua.objects.LuaNil;
+import jua.objects.LuaFunction;
 import jua.objects.LuaObject;
 import jua.token.Token;
 
@@ -70,6 +70,6 @@ public class ExpressionFunction extends Expression {
       argValues.add(arg.evaluate(evaluator));
     }
     // TODO
-    return LuaNil.getInstance();
+    return new LuaFunction();
   }
 }

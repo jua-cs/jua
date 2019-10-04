@@ -15,7 +15,7 @@ public class ParserTest {
   void testCorrectNotExpression() throws IllegalParseException {
     Parser parser = new Parser((new Lexer("x = not true")).getNTokens(0));
 
-    ArrayList<Statement> statements = parser.parse();
+    ArrayList<Statement> statements = parser.parse().getChildren();
     ArrayList<Statement> expected = new ArrayList<>();
 
     expected.add(
@@ -54,7 +54,7 @@ public class ParserTest {
   void testAdditionAssignment() throws IllegalParseException {
     Parser parser = new Parser((new Lexer("x = (1 + 5)")).getNTokens(0));
 
-    ArrayList<Statement> statements = parser.parse();
+    ArrayList<Statement> statements = parser.parse().getChildren();
     assertEquals(1, statements.size());
 
     Statement expected =
@@ -71,7 +71,7 @@ public class ParserTest {
   @Test
   void testAdditionAndMultiplicationAssignment() throws IllegalParseException {
     Parser parser = new Parser((new Lexer("x = 1 + 5 * a")).getNTokens(0));
-    ArrayList<Statement> statements = parser.parse();
+    ArrayList<Statement> statements = parser.parse().getChildren();
     assertEquals(1, statements.size());
 
     Statement expected =
@@ -109,7 +109,7 @@ public class ParserTest {
 
     for (Tuple<String, String> t : tests) {
       Parser parser = new Parser((new Lexer(t.x)).getNTokens(0));
-      ArrayList<Statement> statements = parser.parse();
+      ArrayList<Statement> statements = parser.parse().getChildren();
       assertEquals(1, statements.size());
       assertEquals(t.y, statements.get(0).toString(), String.format("Test: %s", t.x));
     }
@@ -119,7 +119,7 @@ public class ParserTest {
   void testMultilineExpressions() throws IllegalParseException {
     Parser parser = new Parser((new Lexer("x = 3 * 2\nx + 5 / 7")).getNTokens(0));
 
-    ArrayList<Statement> statements = parser.parse();
+    ArrayList<Statement> statements = parser.parse().getChildren();
     assertEquals(2, statements.size());
     System.out.println(statements.get(0).toString());
     assertEquals("x = (3 * 2)", statements.get(0).toString());
@@ -149,7 +149,7 @@ public class ParserTest {
     String in = "function identity(x)\n" + "y = x\n" + "return y\n" + "end";
 
     Parser parser = new Parser((new Lexer(in)).getNTokens(0));
-    ArrayList<Statement> statements = parser.parse();
+    ArrayList<Statement> statements = parser.parse().getChildren();
     assertEquals(1, statements.size());
 
     ExpressionIdentifier yIdent =
@@ -179,7 +179,7 @@ public class ParserTest {
     String in = "identity = function (x)\n" + "y = x\n" + "return y\n" + "end";
 
     Parser parser = new Parser((new Lexer(in)).getNTokens(0));
-    ArrayList<Statement> statements = parser.parse();
+    ArrayList<Statement> statements = parser.parse().getChildren();
     assertEquals(1, statements.size());
 
     ExpressionIdentifier yIdent =
@@ -269,7 +269,7 @@ public class ParserTest {
                 new StatementList(returnTok, new StatementReturn(returnTok, one)),
                 new StatementList(returnTok, new StatementReturn(returnTok, two))));
 
-    ArrayList<Statement> result = parser.parse();
+    ArrayList<Statement> result = parser.parse().getChildren();
 
     assertEquals(expected.getConsequence(), ((StatementIf) result.get(0)).getConsequence());
   }
@@ -310,7 +310,7 @@ public class ParserTest {
         new StatementWhile(TokenFactory.create(Keyword.WHILE), condition, consequence);
 
     expected.add(whileStatement);
-    ArrayList<Statement> result = parser.parse();
+    ArrayList<Statement> result = parser.parse().getChildren();
     assertIterableEquals(expected, result);
   }
 
@@ -330,7 +330,7 @@ public class ParserTest {
                 TokenFactory.create(Keyword.BREAK),
                 new StatementBreak(TokenFactory.create(Keyword.BREAK))));
 
-    Statement result = parser.parse().get(0);
+    Statement result = parser.parse().getChildren().get(0);
     assertEquals(expected, result);
   }
 
@@ -350,7 +350,7 @@ public class ParserTest {
                 TokenFactory.create(Keyword.BREAK),
                 new StatementBreak(TokenFactory.create(Keyword.BREAK))));
 
-    Statement result = parser.parse().get(0);
+    Statement result = parser.parse().getChildren().get(0);
     assertEquals(expected, result);
   }
 
@@ -380,7 +380,7 @@ public class ParserTest {
                 TokenFactory.create(Keyword.BREAK),
                 new StatementBreak(TokenFactory.create(Keyword.BREAK))));
 
-    Statement result = parser.parse().get(0);
+    Statement result = parser.parse().getChildren().get(0);
     assertEquals(expected, result);
   }
 
@@ -401,7 +401,7 @@ public class ParserTest {
                 TokenFactory.create(Keyword.BREAK),
                 new StatementBreak(TokenFactory.create(Keyword.BREAK))));
 
-    Statement result = parser.parse().get(0);
+    Statement result = parser.parse().getChildren().get(0);
     assertEquals(expected, result);
   }
 
@@ -410,8 +410,8 @@ public class ParserTest {
     String in1 = "a, b, c = 1, 2, 3";
     String in2 = "a, b, c = 1, 2,\n3";
 
-    ArrayList<Statement> stmts1 = new Parser((new Lexer(in1)).getNTokens(0)).parse();
-    ArrayList<Statement> stmts2 = new Parser((new Lexer(in2)).getNTokens(0)).parse();
+    ArrayList<Statement> stmts1 = new Parser((new Lexer(in1)).getNTokens(0)).parse().getChildren();
+    ArrayList<Statement> stmts2 = new Parser((new Lexer(in2)).getNTokens(0)).parse().getChildren();
 
     ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
     identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("a")));
@@ -437,7 +437,7 @@ public class ParserTest {
   void testMultiAssignmentWithLessValues() throws IllegalParseException {
     String in = "a, b, c = 1, 2";
 
-    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
 
     ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
     identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("a")));
@@ -460,7 +460,7 @@ public class ParserTest {
   void testMultiAssignmentWithLessIdentifiers() throws IllegalParseException {
     String in = "a, b = 1, 2, 3";
 
-    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
 
     ArrayList<ExpressionIdentifier> identifiers =
         util.Util.createArrayList(
@@ -484,7 +484,7 @@ public class ParserTest {
   void testBracketExpr() throws IllegalParseException {
     String in = "a[x * 2]";
 
-    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
 
     StatementExpression expected =
         new StatementExpression(
@@ -503,7 +503,7 @@ public class ParserTest {
   void testTableConstructorWithString() throws IllegalParseException {
     String in = "{ [f(1)] = g; \"x\", \"y\"}";
 
-    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
 
     ExpressionIdentifier func =
         ((ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("f")));
@@ -536,7 +536,7 @@ public class ParserTest {
   void testTableConstructor() throws IllegalParseException {
     String in = "{ [f(1)] = g; x, y; x = 1, f(x), [30] = 23; 45 }";
 
-    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse();
+    ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
 
     ExpressionIdentifier func =
         ((ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("f")));

@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.token.Token;
 
@@ -62,7 +63,14 @@ public class StatementAssignment extends Statement {
 
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    // TODO
-    return null;
+    ArrayList<LuaObject> values = new ArrayList<>();
+    for (Expression expr : rhs) {
+      values.add(expr.evaluate(evaluator));
+    }
+
+    for (int i = 0; i < lhs.size() && i < rhs.size(); i++) {
+      evaluator.assignGlobal(lhs.get(i).getIdentifier(), values.get(i));
+    }
+    return LuaNil.getInstance();
   }
 }

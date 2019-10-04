@@ -16,7 +16,7 @@ import util.Tuple;
 public class EvaluatorTest {
 
   private static ArrayList<Statement> setup(String in) throws IllegalParseException {
-    return new Parser((new Lexer(in)).getNTokens(0)).parse();
+    return new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
   }
 
   private LuaObject setupEval(String in) throws LuaRuntimeException, IllegalParseException {
@@ -25,8 +25,8 @@ public class EvaluatorTest {
 
   private LuaObject setupEval(String in, Evaluator evaluator)
       throws LuaRuntimeException, IllegalParseException {
-    var expr = ((Evaluable) new Parser((new Lexer(in)).getNTokens(0)).parse().get(0));
-    return expr.evaluate(evaluator);
+    Evaluable program = new Parser((new Lexer(in)).getNTokens(0)).parse();
+    return program.evaluate(evaluator);
   }
 
   @Test
@@ -142,6 +142,19 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("while true do break end", "nil"));
     tests.add(new Tuple<>("while 1 < 2 do return 1 end", "1"));
     tests.add(new Tuple<>("while 1 == 2 do return 1 end", "nil"));
+
+    for (Tuple<String, String> t : tests) {
+      var obj = setupEval(t.x);
+      assertEquals(t.y, obj.repr());
+    }
+  }
+
+  @Test
+  void testAssignment() throws LuaRuntimeException, IllegalParseException {
+    // TODO: test with identifiers
+
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("n = 0 while n < 10 do n = n + 1 end n", "10"));
 
     for (Tuple<String, String> t : tests) {
       var obj = setupEval(t.x);

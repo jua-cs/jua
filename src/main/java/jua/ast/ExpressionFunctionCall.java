@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.objects.LuaFunction;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.token.Token;
@@ -62,11 +63,16 @@ public class ExpressionFunctionCall extends Expression {
 
   @Override
   public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    ArrayList<LuaObject> argValues = new ArrayList<>();
+    LuaFunction func = (LuaFunction) evaluator.getVariable(functionName);
+    Evaluator funcEvaluator = new Evaluator(evaluator);
+
     for (Expression arg : this.args) {
-      argValues.add(arg.evaluate(evaluator));
+      LuaObject argValue = arg.evaluate(evaluator);
+      funcEvaluator.assign("arg", argValue);
     }
+
     // TODO
+
     return LuaNil.getInstance();
   }
 }

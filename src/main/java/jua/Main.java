@@ -32,20 +32,23 @@ public class Main {
     System.out.println("Parsing:");
     Parser parser = new Parser(tokens);
     var stmts = parser.parse();
-    stmts.forEach(System.out::println);
+    stmts.getChildren().forEach(System.out::println);
     System.out.println("---");
     System.out.println("Evaluation:");
     var eval = new Evaluator();
-    stmts.forEach(
-        stmt -> {
-          if (stmt instanceof StatementExpression) {
-            try {
-              System.out.printf("> %s\n", ((StatementExpression) stmt).getExpr().evaluate(eval));
-            } catch (LuaRuntimeException e) {
-              e.printStackTrace();
-            }
-          }
-        });
+    stmts
+        .getChildren()
+        .forEach(
+            stmt -> {
+              if (stmt instanceof StatementExpression) {
+                try {
+                  System.out.printf(
+                      "> %s\n", ((StatementExpression) stmt).getExpr().evaluate(eval));
+                } catch (LuaRuntimeException e) {
+                  e.printStackTrace();
+                }
+              }
+            });
     System.out.println("---");
   }
 }
