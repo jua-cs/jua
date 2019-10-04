@@ -1,7 +1,9 @@
 package util;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.stream.Collectors;
 
 public class Util {
 
@@ -11,5 +13,10 @@ public class Util {
     Collections.addAll(a, elements);
 
     return a;
+  }
+
+  public static String indent(String str) {
+    return new ArrayList<String>(Arrays.asList(str.split("\n")))
+        .stream().map(s -> "\t" + s).collect(Collectors.joining("\n"));
   }
 }

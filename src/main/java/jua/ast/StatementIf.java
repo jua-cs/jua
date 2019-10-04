@@ -51,9 +51,14 @@ public class StatementIf extends Statement {
   @Override
   public String toString() {
     if (alternative != null) {
-      return String.format("if %s\nthen %s\nelse\n%s\nend", condition, consequence, alternative);
+      return String.format(
+          "if %s then\n%s\nelse\n%s\nend",
+          condition,
+          util.Util.indent(consequence.toString()),
+          util.Util.indent(alternative.toString()));
     }
-    return String.format("if %s\nthen %s\nend", condition, consequence);
+    return String.format(
+        "if %s then\n%s\nend", condition, util.Util.indent(consequence.toString()));
   }
 
   public Expression getCondition() {

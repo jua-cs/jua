@@ -41,7 +41,8 @@ public class StatementWhile extends Statement {
 
   @Override
   public String toString() {
-    return String.format("while %s do\n%s end", condition, consequence);
+    return String.format(
+        "while %s do\n%s end", condition, util.Util.indent(consequence.toString()));
   }
 
   public Expression getCondition() {
