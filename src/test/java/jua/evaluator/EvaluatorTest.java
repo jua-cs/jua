@@ -5,9 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
 
-import jua.ast.Evaluatable;
 import jua.ast.Statement;
-import jua.ast.StatementExpression;
 import jua.lexer.Lexer;
 import jua.objects.LuaBoolean;
 import jua.objects.LuaObject;
@@ -29,7 +27,7 @@ public class EvaluatorTest {
   private LuaObject setupEval(String in, Evaluator evaluator)
       throws LuaRuntimeException, IllegalParseException {
     var expr =
-        ((Evaluatable) new Parser((new Lexer(in)).getNTokens(0)).parse().get(0));
+        ((Evaluable) new Parser((new Lexer(in)).getNTokens(0)).parse().get(0));
     return expr.evaluate(evaluator);
   }
 
