@@ -13,6 +13,10 @@ import jua.token.Token;
 public class Main {
 
   public static void main(String[] args) throws IllegalParseException {
+    debug();
+  }
+
+  private static void debug() throws IllegalParseException {
     String text = null;
     try {
       text = new String(System.in.readAllBytes());

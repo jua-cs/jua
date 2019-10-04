@@ -44,6 +44,7 @@ public class EvaluatorTest {
     // TODO: this should be 3.0m and not 3m
     tests.add(new Tuple<>("3.0 .. 'm'", "3m"));
     tests.add(new Tuple<>("'a' .. ('b' .. 'c')", "abc"));
+    // TODO: this should be a250.0
     tests.add(new Tuple<>("'a' .. 50 * 30 / 2 % 4 ^ 7.2 / 3", "a250"));
 
     for (Tuple<String, String> t : tests) {

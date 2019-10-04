@@ -1,13 +1,12 @@
 package jua.lexer;
 
 import java.util.ArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import jua.token.*;
+import util.BufferedChannel;
 
 public class Lexer {
 
-  private String in;
+  private BufferedChannel<Character> in;
   private char ch;
   private int readPosition;
   private int currentLine;
@@ -15,20 +14,27 @@ public class Lexer {
 
   public Lexer(String in) {
     this.currentLine = 1;
-    this.in = in;
+    this.in = BufferedChannel.fromString(in);
     readChar();
   }
 
   private char peekChar() {
-    if (readPosition >= in.length()) {
-      return 0; // char 0 != char '0'
+    try {
+      return in.peek();
+    } catch (InterruptedException e) {
+      // TODO: handle this
+      e.printStackTrace();
     }
-    return in.charAt(readPosition);
+    return 0;
   }
 
   private void readChar() {
-    ch = peekChar();
-    readPosition++;
+    try {
+      ch = in.read();
+    } catch (InterruptedException e) {
+      // TODO: handle this
+      e.printStackTrace();
+    }
     currentPosInLine++;
   }
 
@@ -52,8 +58,8 @@ public class Lexer {
 
     switch (ch) {
       case 0:
-        token = TokenFactory.create(Special.TokenEOF, currentLine, currentPos);
-        break;
+        // Stop on EOF
+        return TokenFactory.create(Special.TokenEOF, currentLine, currentPos);
       case '=':
         if (peekChar() == '=') {
           token = TokenFactory.create(Operator.EQUALS, currentLine, currentPos);
@@ -236,17 +242,13 @@ public class Lexer {
   }
 
   public ArrayList<Token> getNTokens(int n) {
-    if (n <= 0) {
-      ArrayList<Token> tokens = new ArrayList<>();
-      Token tok;
-      do {
-        tok = nextToken();
-        tokens.add(tok);
-      } while (tok != null && !(tok instanceof TokenEOF));
-      return tokens;
-    }
+    ArrayList<Token> tokens = new ArrayList<>();
+    Token tok;
 
-    Stream<Token> stream = Stream.generate(this::nextToken).limit(n);
-    return stream.collect(Collectors.toCollection(ArrayList::new));
+    do {
+      tok = nextToken();
+      tokens.add(tok);
+    } while ((tok != null && !(tok instanceof TokenEOF) && (n <= 0 || n > tokens.size())));
+    return tokens;
   }
 }
