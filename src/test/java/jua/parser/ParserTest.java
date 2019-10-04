@@ -425,7 +425,7 @@ public class ParserTest {
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "3")));
 
     StatementAssignment expected =
-        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
+        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values, false);
 
     assertEquals(1, stmts1.size());
     assertEquals(1, stmts2.size());
@@ -450,7 +450,7 @@ public class ParserTest {
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")));
 
     StatementAssignment expected =
-        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
+        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values, false);
 
     assertEquals(1, stmts.size());
     assertEquals(expected, stmts.get(0));
@@ -474,7 +474,7 @@ public class ParserTest {
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "3")));
 
     StatementAssignment expected =
-        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values);
+        new StatementAssignment(TokenFactory.create(Operator.ASSIGN), identifiers, values, false);
 
     assertEquals(1, stmts.size());
     assertEquals(expected, stmts.get(0));

@@ -39,17 +39,6 @@ public class StatementAssignment extends Statement {
         rhs.stream().map(Objects::toString).collect(Collectors.joining(", ")));
   }
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) return true;
-    if (o == null || getClass() != o.getClass()) return false;
-    if (!super.equals(o)) return false;
-
-    StatementAssignment that = (StatementAssignment) o;
-    if (!lhs.equals(that.lhs)) return false;
-    return rhs.equals(that.rhs);
-  }
-
   public ArrayList<ExpressionIdentifier> getLhs() {
     return lhs;
   }
@@ -59,11 +48,19 @@ public class StatementAssignment extends Statement {
   }
 
   @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+    if (!super.equals(o)) return false;
+    StatementAssignment that = (StatementAssignment) o;
+    return isLocal == that.isLocal
+        && Objects.equals(lhs, that.lhs)
+        && Objects.equals(rhs, that.rhs);
+  }
+
+  @Override
   public int hashCode() {
-    int result = super.hashCode();
-    result = 31 * result + lhs.hashCode();
-    result = 31 * result + rhs.hashCode();
-    return result;
+    return Objects.hash(super.hashCode(), isLocal, lhs, rhs);
   }
 
   @Override

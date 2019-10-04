@@ -15,6 +15,10 @@ public class Scope {
     this.parent = parent;
   }
 
+  public Scope createChild() {
+    return new Scope(this);
+  }
+
   public LuaObject getVariable(String identifier) {
     LuaObject variable = scope.getOrDefault(identifier, LuaNil.getInstance());
     if (variable == LuaNil.getInstance() && parent != null) {

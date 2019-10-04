@@ -60,17 +60,22 @@ public class ExpressionFunctionCall extends Expression {
     return str.toString();
   }
 
-  @Override
-  public LuaObject evaluate(Scope evaluator) throws LuaRuntimeException {
-    LuaFunction func = (LuaFunction) evaluator.getVariable(functionName);
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    LuaFunction func = (LuaFunction) scope.getVariable(functionName);
     if (args.size() != func.getArgNames().size()) {
       throw new LuaRuntimeException(
           String.format("invalid argument number when calling %s", functionName));
     }
+    Scope funcScope = scope.createChild();
+
+    for (Expression arg : this.args) {
+      LuaObject argValue = arg.evaluate(scope);
+      funcScope.assign("arg", argValue);
+    }
     Scope funcEvaluator = new Scope(func.getEnvironment());
 
     for (int i = 0; i < args.size(); i++) {
-      funcEvaluator.assign(func.getArgNames().get(i), args.get(i).evaluate(evaluator));
+      funcEvaluator.assign(func.getArgNames().get(i), args.get(i).evaluate(scope));
     }
 
     return func.getBlock().evaluate(funcEvaluator);

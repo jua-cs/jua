@@ -7,7 +7,9 @@ import java.util.ArrayList;
 import jua.ast.Statement;
 import jua.lexer.Lexer;
 import jua.objects.LuaBoolean;
+import jua.objects.LuaNumber;
 import jua.objects.LuaObject;
+import jua.objects.LuaString;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
 import org.junit.jupiter.api.Test;
@@ -31,10 +33,13 @@ public class EvaluatorTest {
 
   @Test
   void testConcatExpr() throws IllegalParseException, LuaRuntimeException {
-    // TODO: test with identifiers
+
+    Scope scope = new Scope();
+    scope.assign("x", new LuaString("hi"));
 
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
     tests.add(new Tuple<>("'abc' .. 'def'", "abcdef"));
+    tests.add(new Tuple<>("x .. 'def'", "hidef"));
     tests.add(new Tuple<>("'' .. ''", ""));
     tests.add(new Tuple<>("'a' .. \"b\"", "ab"));
     tests.add(new Tuple<>("5 .. \"b\"", "5b"));
@@ -46,7 +51,7 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("'a' .. 50 * 30 / 2 % 4 ^ 7.2 / 3", "a250"));
 
     for (Tuple<String, String> t : tests) {
-      var obj = setupEval(t.x);
+      var obj = setupEval(t.x, scope);
       assertEquals(t.y, obj.repr(), t.x);
     }
 
@@ -58,9 +63,12 @@ public class EvaluatorTest {
 
   @Test
   void testArithmeticExpr() throws IllegalParseException, LuaRuntimeException {
-    // TODO: test with identifiers
+
+    Scope scope = new Scope();
+    scope.assign("x", new LuaNumber(5.0));
 
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("x + 9", "14"));
     tests.add(new Tuple<>("1 + 1", "2"));
     tests.add(new Tuple<>("1 + '1'", "2"));
     tests.add(new Tuple<>("1 - '1'", "0"));
@@ -72,7 +80,7 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("-3", "-3"));
 
     for (Tuple<String, String> t : tests) {
-      var obj = setupEval(t.x);
+      var obj = setupEval(t.x, scope);
       assertEquals(t.y, obj.repr());
     }
 
@@ -92,8 +100,6 @@ public class EvaluatorTest {
 
   @Test
   void testEqualAndNotEquals() throws IllegalParseException, LuaRuntimeException {
-    // TODO: test with identifiers
-
     ArrayList<Tuple<String, Boolean>> tests = new ArrayList<>();
     tests.add(new Tuple<>("'abc' == 'def'", false));
     tests.add(new Tuple<>("'abc' ~= 'def'", true));
@@ -106,6 +112,8 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("0 == false", false));
     tests.add(new Tuple<>("0 == nil", false));
     tests.add(new Tuple<>("nil == nil", true));
+    // Undefined variable
+    tests.add(new Tuple<>("undef == nil", true));
     tests.add(new Tuple<>("3 * 2 == 12 / 2", true));
     tests.add(new Tuple<>("true == true", true));
     tests.add(new Tuple<>("not true == false", true));
@@ -151,8 +159,6 @@ public class EvaluatorTest {
 
   @Test
   void testAssignment() throws LuaRuntimeException, IllegalParseException {
-    // TODO: test with identifiers
-
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
     tests.add(new Tuple<>("n = 0 while n < 10 do n = n + 1 end n", "10"));
 
@@ -175,6 +181,17 @@ public class EvaluatorTest {
         new Tuple<>(
             "function fact(n) if n == 0 then return 1 else return n * fact(n-1) end end fact(4)",
             "24"));
+
+    for (Tuple<String, String> t : tests) {
+      var obj = setupEval(t.x);
+      assertEquals(t.y, obj.repr());
+    }
+  }
+
+  void testLocalAssignment() throws LuaRuntimeException, IllegalParseException {
+
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("a = 1 if true then local a = 0 end a", "1"));
 
     for (Tuple<String, String> t : tests) {
       var obj = setupEval(t.x);
