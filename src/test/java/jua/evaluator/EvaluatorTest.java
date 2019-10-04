@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
+
+import jua.ast.Evaluatable;
 import jua.ast.Statement;
 import jua.ast.StatementExpression;
 import jua.lexer.Lexer;
@@ -20,14 +22,14 @@ public class EvaluatorTest {
     return new Parser((new Lexer(in)).getNTokens(0)).parse();
   }
 
-  private LuaObject setupExpr(String in) throws LuaRuntimeException, IllegalParseException {
-    return setupExpr(in, new Evaluator());
+  private LuaObject setupEval(String in) throws LuaRuntimeException, IllegalParseException {
+    return setupEval(in, new Evaluator());
   }
 
-  private LuaObject setupExpr(String in, Evaluator evaluator)
+  private LuaObject setupEval(String in, Evaluator evaluator)
       throws LuaRuntimeException, IllegalParseException {
     var expr =
-        ((StatementExpression) new Parser((new Lexer(in)).getNTokens(0)).parse().get(0)).getExpr();
+        ((Evaluatable) new Parser((new Lexer(in)).getNTokens(0)).parse().get(0));
     return expr.evaluate(evaluator);
   }
 
@@ -48,14 +50,14 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("'a' .. 50 * 30 / 2 % 4 ^ 7.2 / 3", "a250"));
 
     for (Tuple<String, String> t : tests) {
-      var obj = setupExpr(t.x);
+      var obj = setupEval(t.x);
       assertEquals(t.y, obj.repr(), t.x);
     }
 
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. nil"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("5 .. {}"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. {}"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("'abc' .. (function() end)"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("'abc' .. nil"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("5 .. {}"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("'abc' .. {}"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("'abc' .. (function() end)"));
   }
 
   @Test
@@ -74,22 +76,22 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("-3", "-3"));
 
     for (Tuple<String, String> t : tests) {
-      var obj = setupExpr(t.x);
+      var obj = setupEval(t.x);
       assertEquals(t.y, obj.repr());
     }
 
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' + 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil + 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' - 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil - 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' * 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil * 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' / 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil / 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("'a' % 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("nil % 3"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("-'a'"));
-    assertThrows(LuaRuntimeException.class, () -> setupExpr("-nil"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("'a' + 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("nil + 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("'a' - 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("nil - 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("'a' * 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("nil * 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("'a' / 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("nil / 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("'a' % 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("nil % 3"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("-'a'"));
+    assertThrows(LuaRuntimeException.class, () -> setupEval("-nil"));
   }
 
   @Test
@@ -115,8 +117,39 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("not not not true", false));
 
     for (Tuple<String, Boolean> t : tests) {
-      var obj = setupExpr(t.x);
+      var obj = setupEval(t.x);
       assertEquals(t.y, ((LuaBoolean) obj).getValue(), t.x);
     }
   }
+
+  @Test
+  void testIf() throws LuaRuntimeException, IllegalParseException {
+    // TODO: test with identifiers
+
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+      tests.add(new Tuple<>("if 1 then 1 else 2 end", "1"));
+      tests.add(new Tuple<>("if false then 1 else 2 end", "2"));
+      tests.add(new Tuple<>("if 1 == '1' then 1 elseif 1 == 1 then  2 end", "2"));
+      tests.add(new Tuple<>("if false then 1 end", "nil"));
+
+    for (Tuple<String, String> t : tests) {
+      var obj = setupEval(t.x);
+      assertEquals(t.y, obj.repr());
+    }
+  }
+
+    @Test
+    void testWhile() throws LuaRuntimeException, IllegalParseException {
+        // TODO: test with identifiers
+
+        ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+        tests.add(new Tuple<>("while true do break end", "nil"));
+        tests.add(new Tuple<>("while 1 < 2 do return 1 end", "1"));
+        tests.add(new Tuple<>("while 1 == 2 do return 1 end", "nil"));
+
+        for (Tuple<String, String> t : tests) {
+            var obj = setupEval(t.x);
+            assertEquals(t.y, obj.repr());
+        }
+    }
 }
