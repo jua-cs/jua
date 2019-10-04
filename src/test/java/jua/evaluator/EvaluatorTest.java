@@ -161,4 +161,24 @@ public class EvaluatorTest {
       assertEquals(t.y, obj.repr());
     }
   }
+
+  @Test
+  void testFunction() throws LuaRuntimeException, IllegalParseException {
+    // TODO: test with identifiers
+
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("function f() return 3 end f()", "3"));
+    tests.add(new Tuple<>("f = function() return 3 end f()", "3"));
+    tests.add(new Tuple<>("f = function(n) return n end f(3)", "3"));
+    tests.add(new Tuple<>("f = function(n,m) return n*m end f(3,5)", "15"));
+    tests.add(
+        new Tuple<>(
+            "function fact(n) if n == 0 then return 1 else return n * fact(n-1) end end fact(4)",
+            "24"));
+
+    for (Tuple<String, String> t : tests) {
+      var obj = setupEval(t.x);
+      assertEquals(t.y, obj.repr());
+    }
+  }
 }

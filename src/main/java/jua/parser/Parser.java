@@ -517,22 +517,15 @@ public class Parser {
   }
 
   protected ArrayList<ExpressionIdentifier> parseFuncArgs() throws IllegalParseException {
+    // consume the left parenthesis
     advanceTokens();
     ArrayList<ExpressionIdentifier> args = new ArrayList<>();
     // if there is no args, we look for a ')'
-
-    Token tok = currentToken();
-    while (!tok.isSubtype(Delimiter.RPAREN)) {
-      // TODO: what if we have f(3+4, 5) ? I'm not sure we're looking for an identifier. Make a
-      // test... (19)
-      if (!tok.isIdentifier()) {
-        throw new IllegalParseException(
-            String.format("Expected identifier in function args but got: %s", tok));
-      }
-      args.add(ExpressionFactory.create((TokenIdentifier) tok));
-      advanceTokens();
-      tok = currentToken();
+    if (currentToken().isSubtype(Delimiter.RPAREN)) {
+      consume(Delimiter.RPAREN);
+      return args;
     }
+    args = parseCommaSeparatedExpressions(0);
 
     // Consume ')'
     consume(Delimiter.RPAREN);

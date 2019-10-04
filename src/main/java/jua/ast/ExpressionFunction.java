@@ -65,11 +65,11 @@ public class ExpressionFunction extends Expression {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    ArrayList<LuaObject> argValues = new ArrayList<>();
-    for (Expression arg : this.args) {
-      argValues.add(arg.evaluate(scope));
+    ArrayList<String> argNames = new ArrayList<>();
+    for (ExpressionIdentifier arg : this.args) {
+      argNames.add(arg.getIdentifier());
     }
-    // TODO
-    return new LuaFunction();
+
+    return new LuaFunction(argNames, scope, statements);
   }
 }

@@ -6,14 +6,13 @@ import java.util.stream.Collectors;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaFunction;
-import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class ExpressionFunctionCall extends Expression {
 
   private String functionName;
-  private ArrayList<Expression> args;
+  private ArrayList<Expression> args = new ArrayList<>();
 
   ExpressionFunctionCall(Token token) {
     super(token);
@@ -62,17 +61,18 @@ public class ExpressionFunctionCall extends Expression {
   }
 
   @Override
-  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    LuaFunction func = (LuaFunction) scope.getVariable(functionName);
-    Scope funcScope = new Scope(scope);
+  public LuaObject evaluate(Scope evaluator) throws LuaRuntimeException {
+    LuaFunction func = (LuaFunction) evaluator.getVariable(functionName);
+    if (args.size() != func.getArgNames().size()) {
+      throw new LuaRuntimeException(
+          String.format("invalid argument number when calling %s", functionName));
+    }
+    Scope funcEvaluator = new Scope(func.getEnvironment());
 
-    for (Expression arg : this.args) {
-      LuaObject argValue = arg.evaluate(scope);
-      funcScope.assign("arg", argValue);
+    for (int i = 0; i < args.size(); i++) {
+      funcEvaluator.assign(func.getArgNames().get(i), args.get(i).evaluate(evaluator));
     }
 
-    // TODO
-
-    return LuaNil.getInstance();
+    return func.getBlock().evaluate(funcEvaluator);
   }
 }
