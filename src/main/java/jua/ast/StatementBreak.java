@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
@@ -13,7 +13,7 @@ public class StatementBreak extends Statement {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     return new LuaReturn(LuaNil.getInstance());
   }
 }

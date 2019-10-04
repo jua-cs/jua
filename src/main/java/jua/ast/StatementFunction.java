@@ -1,8 +1,8 @@
 package jua.ast;
 
 import java.util.stream.Collectors;
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.token.Token;
@@ -47,8 +47,8 @@ public class StatementFunction extends Statement {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    evaluator.assignGlobal(name.getIdentifier(), func.evaluate(evaluator));
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    scope.assignGlobal(name.getIdentifier(), func.evaluate(scope));
 
     return LuaNil.getInstance();
   }

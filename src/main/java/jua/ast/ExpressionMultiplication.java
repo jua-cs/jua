@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaNumber;
 import jua.token.TokenOperator;
 
@@ -12,9 +12,9 @@ public class ExpressionMultiplication extends ExpressionBinary {
   }
 
   @Override
-  public LuaNumber evaluate(Evaluator evaluator) throws LuaRuntimeException {
+  public LuaNumber evaluate(Scope scope) throws LuaRuntimeException {
     return new LuaNumber(
-        LuaNumber.valueOf(lhs.evaluate(evaluator)).getValue()
-            * LuaNumber.valueOf(rhs.evaluate(evaluator)).getValue());
+        LuaNumber.valueOf(lhs.evaluate(scope)).getValue()
+            * LuaNumber.valueOf(rhs.evaluate(scope)).getValue());
   }
 }

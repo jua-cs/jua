@@ -20,13 +20,13 @@ public class EvaluatorTest {
   }
 
   private LuaObject setupEval(String in) throws LuaRuntimeException, IllegalParseException {
-    return setupEval(in, new Evaluator());
+    return setupEval(in, new Scope());
   }
 
-  private LuaObject setupEval(String in, Evaluator evaluator)
+  private LuaObject setupEval(String in, Scope scope)
       throws LuaRuntimeException, IllegalParseException {
     Evaluable program = new Parser((new Lexer(in)).getNTokens(0)).parse();
-    return program.evaluate(evaluator);
+    return program.evaluate(scope);
   }
 
   @Test

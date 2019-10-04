@@ -1,8 +1,8 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.IllegalTypeException;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaNumber;
 import jua.objects.LuaObject;
 import jua.objects.LuaString;
@@ -18,8 +18,8 @@ public class ExpressionHash extends ExpressionUnary {
   }
 
   @Override
-  public LuaNumber evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    LuaObject o = value.evaluate(evaluator);
+  public LuaNumber evaluate(Scope scope) throws LuaRuntimeException {
+    LuaObject o = value.evaluate(scope);
 
     if (o instanceof LuaString) {
       return new LuaNumber((double) ((LuaString) o).getValue().length());

@@ -3,8 +3,8 @@ package jua.ast;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaFunction;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
@@ -62,13 +62,13 @@ public class ExpressionFunctionCall extends Expression {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    LuaFunction func = (LuaFunction) evaluator.getVariable(functionName);
-    Evaluator funcEvaluator = new Evaluator(evaluator);
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    LuaFunction func = (LuaFunction) scope.getVariable(functionName);
+    Scope funcScope = new Scope(scope);
 
     for (Expression arg : this.args) {
-      LuaObject argValue = arg.evaluate(evaluator);
-      funcEvaluator.assign("arg", argValue);
+      LuaObject argValue = arg.evaluate(scope);
+      funcScope.assign("arg", argValue);
     }
 
     // TODO

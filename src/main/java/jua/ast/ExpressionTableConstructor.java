@@ -3,8 +3,8 @@ package jua.ast;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.token.Token;
@@ -43,7 +43,7 @@ public class ExpressionTableConstructor extends Expression {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     // TODO: later
     return LuaNil.getInstance();
   }

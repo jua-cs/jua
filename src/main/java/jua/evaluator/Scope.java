@@ -4,14 +4,14 @@ import java.util.HashMap;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 
-public class Evaluator {
+public class Scope {
   HashMap<String, LuaObject> scope = new HashMap<>();
 
-  Evaluator parent;
+  Scope parent;
 
-  public Evaluator() {}
+  public Scope() {}
 
-  public Evaluator(Evaluator parent) {
+  public Scope(Scope parent) {
     this.parent = parent;
   }
 
@@ -28,10 +28,10 @@ public class Evaluator {
     scope.put(identifier, value);
   }
 
-  public void assignGlobal(String identifer, LuaObject value) {
+  public void assignGlobal(String identifier, LuaObject value) {
     if (parent != null) {
-      parent.assignGlobal(identifer, value);
+      parent.assignGlobal(identifier, value);
     }
-    assign(identifer, value);
+    assign(identifier, value);
   }
 }

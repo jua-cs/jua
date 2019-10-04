@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaBoolean;
 import jua.objects.LuaNumber;
 import jua.objects.LuaObject;
@@ -14,9 +14,9 @@ public class ExpressionGreaterThanOrEqual extends ExpressionBinary {
   }
 
   @Override
-  public LuaBoolean evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    LuaObject o1 = lhs.evaluate(evaluator);
-    LuaObject o2 = rhs.evaluate(evaluator);
+  public LuaBoolean evaluate(Scope scope) throws LuaRuntimeException {
+    LuaObject o1 = lhs.evaluate(scope);
+    LuaObject o2 = rhs.evaluate(scope);
     LuaObject.ensureSameType(o1, o2);
 
     if (o1 instanceof LuaNumber) {

@@ -3,8 +3,8 @@ package jua.ast;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
@@ -52,10 +52,10 @@ public class StatementList extends Statement {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     LuaObject ret = LuaNil.getInstance();
     for (Statement statement : children) {
-      ret = statement.evaluate(evaluator);
+      ret = statement.evaluate(scope);
 
       if (ret instanceof LuaReturn) {
         break;

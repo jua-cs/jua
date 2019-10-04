@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaBoolean;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
@@ -69,12 +69,12 @@ public class StatementIf extends Statement {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    if (LuaBoolean.valueOf(condition.evaluate(evaluator)).getValue()) {
-      return consequence.evaluate(evaluator);
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    if (LuaBoolean.valueOf(condition.evaluate(scope)).getValue()) {
+      return consequence.evaluate(scope);
     }
     if (alternative != null) {
-      return alternative.evaluate(evaluator);
+      return alternative.evaluate(scope);
     }
 
     return LuaNil.getInstance();

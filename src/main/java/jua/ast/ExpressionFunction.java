@@ -2,8 +2,8 @@ package jua.ast;
 
 import java.util.ArrayList;
 import java.util.stream.Collectors;
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaFunction;
 import jua.objects.LuaObject;
 import jua.token.Token;
@@ -64,10 +64,10 @@ public class ExpressionFunction extends Expression {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     ArrayList<LuaObject> argValues = new ArrayList<>();
     for (Expression arg : this.args) {
-      argValues.add(arg.evaluate(evaluator));
+      argValues.add(arg.evaluate(scope));
     }
     // TODO
     return new LuaFunction();

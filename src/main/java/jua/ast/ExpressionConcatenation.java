@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaObject;
 import jua.objects.LuaString;
 import jua.token.TokenOperator;
@@ -12,9 +12,9 @@ public class ExpressionConcatenation extends ExpressionBinary {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    LuaString res = LuaString.valueOf(lhs.evaluate(evaluator));
-    res.append(LuaString.valueOf(rhs.evaluate(evaluator)));
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    LuaString res = LuaString.valueOf(lhs.evaluate(scope));
+    res.append(LuaString.valueOf(rhs.evaluate(scope)));
     return res;
   }
 }

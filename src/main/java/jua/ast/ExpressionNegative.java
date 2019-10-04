@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaNumber;
 import jua.token.Operator;
 import jua.token.Token;
@@ -14,8 +14,8 @@ public class ExpressionNegative extends ExpressionUnary {
   }
 
   @Override
-  public LuaNumber evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    Double number = LuaNumber.valueOf(value.evaluate(evaluator)).getValue();
+  public LuaNumber evaluate(Scope scope) throws LuaRuntimeException {
+    Double number = LuaNumber.valueOf(value.evaluate(scope)).getValue();
     return new LuaNumber(-number);
   }
 }

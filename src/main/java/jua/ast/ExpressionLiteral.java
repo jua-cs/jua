@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.IllegalTypeException;
+import jua.evaluator.Scope;
 import jua.objects.*;
 import jua.token.Literal;
 import jua.token.Token;
@@ -15,7 +15,7 @@ public class ExpressionLiteral extends Expression {
     this.type = ((TokenLiteral) token).getLiteralType();
   }
 
-  public LuaObject evaluate(Evaluator evaluator) throws IllegalTypeException {
+  public LuaObject evaluate(Scope scope) throws IllegalTypeException {
     switch (type) {
       case NIL:
         return LuaNil.getInstance();

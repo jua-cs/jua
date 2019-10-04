@@ -1,9 +1,12 @@
 package jua.ast;
 
 import java.util.Objects;
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
-import jua.objects.*;
+import jua.evaluator.Scope;
+import jua.objects.LuaNil;
+import jua.objects.LuaNumber;
+import jua.objects.LuaObject;
+import jua.objects.LuaReturn;
 import jua.token.Token;
 
 public class StatementNumericFor extends StatementFor {
@@ -49,17 +52,17 @@ public class StatementNumericFor extends StatementFor {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    LuaNumber varValue = LuaNumber.valueOf(var.evaluate(evaluator));
-    LuaNumber limitValue = LuaNumber.valueOf(limit.evaluate(evaluator));
-    LuaNumber stepValue = LuaNumber.valueOf(step.evaluate(evaluator));
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    LuaNumber varValue = LuaNumber.valueOf(var.evaluate(scope));
+    LuaNumber limitValue = LuaNumber.valueOf(limit.evaluate(scope));
+    LuaNumber stepValue = LuaNumber.valueOf(step.evaluate(scope));
 
     LuaObject ret = LuaNil.getInstance();
 
     while ((stepValue.getValue() > 0 && varValue.getValue() <= limitValue.getValue())
         || (stepValue.getValue() <= 0 && varValue.getValue() >= limitValue.getValue())) {
       // TODO: local v = var
-      ret = block.evaluate(evaluator);
+      ret = block.evaluate(scope);
       // TODO: local var = var + step
 
       if (ret instanceof LuaReturn) {

@@ -3,8 +3,8 @@ package jua.ast;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
@@ -56,10 +56,10 @@ public class StatementGenericFor extends StatementFor {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    LuaObject iteratorValue = iterator.evaluate(evaluator);
-    LuaObject stateValue = state.evaluate(evaluator);
-    LuaObject varValue = var.evaluate(evaluator);
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    LuaObject iteratorValue = iterator.evaluate(scope);
+    LuaObject stateValue = state.evaluate(scope);
+    LuaObject varValue = var.evaluate(scope);
 
     LuaObject ret = LuaNil.getInstance();
     while (true) {
@@ -70,7 +70,7 @@ public class StatementGenericFor extends StatementFor {
         break;
       }
 
-      ret = block.evaluate(evaluator);
+      ret = block.evaluate(scope);
 
       if (ret instanceof LuaReturn) {
         break;

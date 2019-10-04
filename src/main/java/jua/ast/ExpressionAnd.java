@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaBoolean;
 import jua.token.TokenOperator;
 
@@ -11,9 +11,9 @@ public class ExpressionAnd extends ExpressionBinary {
   }
 
   @Override
-  public LuaBoolean evaluate(Evaluator evaluator) throws LuaRuntimeException {
+  public LuaBoolean evaluate(Scope scope) throws LuaRuntimeException {
     return LuaBoolean.getLuaBool(
-        LuaBoolean.valueOf(lhs.evaluate(evaluator)).getValue()
-            && LuaBoolean.valueOf(rhs.evaluate(evaluator)).getValue());
+        LuaBoolean.valueOf(lhs.evaluate(scope)).getValue()
+            && LuaBoolean.valueOf(rhs.evaluate(scope)).getValue());
   }
 }

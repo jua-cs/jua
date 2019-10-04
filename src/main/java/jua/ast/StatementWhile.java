@@ -1,8 +1,11 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
-import jua.objects.*;
+import jua.evaluator.Scope;
+import jua.objects.LuaBoolean;
+import jua.objects.LuaNil;
+import jua.objects.LuaObject;
+import jua.objects.LuaReturn;
 import jua.token.Token;
 
 public class StatementWhile extends Statement {
@@ -50,10 +53,10 @@ public class StatementWhile extends Statement {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     LuaObject ret = LuaNil.getInstance();
-    while (LuaBoolean.valueOf(condition.evaluate(evaluator)).getValue()) {
-      ret = consequence.evaluate(evaluator);
+    while (LuaBoolean.valueOf(condition.evaluate(scope)).getValue()) {
+      ret = consequence.evaluate(scope);
 
       if (ret instanceof LuaReturn) {
         break;

@@ -1,7 +1,7 @@
 package jua.ast;
 
-import jua.evaluator.Evaluator;
 import jua.evaluator.LuaRuntimeException;
+import jua.evaluator.Scope;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
 import jua.token.Token;
@@ -38,7 +38,7 @@ public class StatementReturn extends Statement {
   }
 
   @Override
-  public LuaObject evaluate(Evaluator evaluator) throws LuaRuntimeException {
-    return new LuaReturn(value.evaluate(evaluator));
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+    return new LuaReturn(value.evaluate(scope));
   }
 }
