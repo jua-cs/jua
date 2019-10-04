@@ -91,6 +91,7 @@ public class EvaluatorTest {
     assertThrows(LuaRuntimeException.class, () -> setupExpr("-nil"));
   }
 
+  @Test
   void testEqualAndNotEquals() throws IllegalParseException, LuaRuntimeException {
     // TODO: test with identifiers
 
@@ -101,6 +102,7 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("'a' == \"a\"", true));
     tests.add(new Tuple<>("'a' == \"b\"", false));
     tests.add(new Tuple<>("100 == 60", false));
+    tests.add(new Tuple<>("1.0 == 1", true));
     tests.add(new Tuple<>("100 ~= 60", true));
     tests.add(new Tuple<>("0 == false", false));
     tests.add(new Tuple<>("0 == nil", false));
