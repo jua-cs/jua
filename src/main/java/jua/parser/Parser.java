@@ -13,21 +13,26 @@ public class Parser {
   private HashMap<TokenHashmMapKey, PrefixParser> tokenPrefixParserHashMap;
   private HashMap<TokenHashmMapKey, InfixParser> tokenInfixParserHashMap;
 
+  public Parser(BufferedChannel<Token> tokens) {
+    init(tokens);
+  }
+
   public Parser(ArrayList<Token> tokenList) {
-    this.tokens = new BufferedChannel<Token>();
+    BufferedChannel<Token> tokens = new BufferedChannel<Token>();
     tokenList.forEach(
         tok -> {
           try {
-            this.tokens.add(tok);
+            tokens.add(tok);
           } catch (InterruptedException e) {
             // TODO: handle this
             e.printStackTrace();
           }
         });
-    registerParsers();
+
+    init(tokens);
   }
 
-  public Parser(BufferedChannel<Token> tokens) {
+  private void init(BufferedChannel<Token> tokens) {
     this.tokens = tokens;
     registerParsers();
   }
