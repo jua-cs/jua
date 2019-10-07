@@ -5,6 +5,7 @@ import java.util.HashMap;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.builtins.Print;
+import jua.objects.builtins.Tables;
 
 public class Scope {
   HashMap<String, LuaObject> scope = new HashMap<>();
@@ -25,6 +26,7 @@ public class Scope {
 
   private void registerBuiltins(OutputStream out) {
     scope.put("print", new Print(this, out));
+    scope.put("table", Tables.create(this));
   }
 
   public Scope createChild() {

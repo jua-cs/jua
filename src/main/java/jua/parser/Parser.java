@@ -60,6 +60,7 @@ public class Parser {
     registerBinaryOperator(Operator.GTE, 3);
     registerBinaryOperator(Operator.LT, 3);
     registerBinaryOperator(Operator.LTE, 3);
+    registerBinaryOperator(Operator.DOT, 1);
 
     register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(9));
 

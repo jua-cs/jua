@@ -19,7 +19,7 @@ public class ExpressionFactory {
       case PERCENT:
         return new ExpressionModulo(token, lhs, rhs);
       case DOT:
-        break;
+        return new ExpressionAccess(token, lhs, rhs);
       case ASSIGN:
         // TODO: figure out
         break;

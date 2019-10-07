@@ -24,6 +24,10 @@ public class LuaTable implements LuaObject {
     map.put(key, value);
   }
 
+  public LuaObject remove(LuaObject key) {
+    return map.remove(key);
+  }
+
   public int size() {
     return map.size();
   }
