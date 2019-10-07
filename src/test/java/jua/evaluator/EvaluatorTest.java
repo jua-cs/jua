@@ -3,18 +3,25 @@ package jua.evaluator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import jua.lexer.Lexer;
-import jua.objects.LuaBoolean;
-import jua.objects.LuaNumber;
-import jua.objects.LuaObject;
-import jua.objects.LuaString;
+import jua.objects.*;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
+import jua.token.Token;
 import org.junit.jupiter.api.Test;
 import util.Tuple;
 
 public class EvaluatorTest {
+
+  static final Path testdata = Paths.get("src", "test", "java", "jua", "evaluator", "testdata");
 
   private LuaObject setupEval(String in) throws LuaRuntimeException, IllegalParseException {
     return setupEval(in, new Scope());
@@ -212,5 +219,47 @@ public class EvaluatorTest {
       var obj = setupEval(t.x, s);
       assertEquals(t.y, obj.repr());
     }
+  }
+
+  @Test
+  void testLuaScript() throws IOException {
+    Stream<Path> walk = Files.walk(testdata);
+    var files =
+        walk.map(Objects::toString).filter(f -> f.endsWith(".lua")).collect(Collectors.toList());
+
+    files.forEach(
+        f -> {
+          try {
+            String res = runLuaScript(f);
+            String expected =
+                new String(Files.readAllBytes(Paths.get(f.replace(".lua", ".expected"))));
+            assertEquals(expected.strip(), res.strip());
+
+          } catch (IOException | IllegalParseException e) {
+            e.printStackTrace();
+          }
+        });
+  }
+
+  String runLuaScript(String name) throws IOException, IllegalParseException {
+    String text = new String(Files.readAllBytes(Paths.get(name)));
+    ArrayList<Token> tokens = (new Lexer(text)).getNTokens(0);
+    Parser parser = new Parser(tokens);
+    var stmts = parser.parse();
+    var scope = new Scope();
+    return stmts.getChildren().stream()
+        .map(
+            stmt -> {
+              try {
+                return stmt.evaluate(scope);
+              } catch (LuaRuntimeException e) {
+                e.printStackTrace();
+              }
+              return null;
+            })
+        .filter(Objects::nonNull)
+        .filter(o -> !o.equals(LuaNil.getInstance()))
+        .map(LuaObject::repr)
+        .collect(Collectors.joining("\n"));
   }
 }

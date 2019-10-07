@@ -43,7 +43,7 @@ public class StatementFunction extends Statement {
         "function %s(%s)\n%s\nend",
         name,
         func.getArgs().stream().map(Object::toString).collect(Collectors.joining("\n")),
-        func.getStatements());
+        util.Util.indent(func.getStatements().toString()));
   }
 
   @Override
