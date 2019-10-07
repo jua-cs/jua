@@ -3,7 +3,9 @@ package jua.evaluator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -11,11 +13,14 @@ import java.util.ArrayList;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import jua.Interpreter;
 import jua.lexer.Lexer;
-import jua.objects.*;
+import jua.objects.LuaBoolean;
+import jua.objects.LuaNumber;
+import jua.objects.LuaObject;
+import jua.objects.LuaString;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
-import jua.token.Token;
 import org.junit.jupiter.api.Test;
 import util.Tuple;
 
@@ -230,10 +235,11 @@ public class EvaluatorTest {
     files.forEach(
         f -> {
           try {
-            String res = runLuaScript(f);
+            var sb = new ByteArrayOutputStream();
+            runLuaScript(f, sb);
             String expected =
                 new String(Files.readAllBytes(Paths.get(f.replace(".lua", ".expected"))));
-            assertEquals(expected.strip(), res.strip());
+            assertEquals(expected.strip(), sb.toString().strip());
 
           } catch (IOException | IllegalParseException e) {
             e.printStackTrace();
@@ -241,25 +247,9 @@ public class EvaluatorTest {
         });
   }
 
-  String runLuaScript(String name) throws IOException, IllegalParseException {
+  void runLuaScript(String name, OutputStream out) throws IOException, IllegalParseException {
     String text = new String(Files.readAllBytes(Paths.get(name)));
-    ArrayList<Token> tokens = (new Lexer(text)).getNTokens(0);
-    Parser parser = new Parser(tokens);
-    var stmts = parser.parse();
-    var scope = new Scope();
-    return stmts.getChildren().stream()
-        .map(
-            stmt -> {
-              try {
-                return stmt.evaluate(scope);
-              } catch (LuaRuntimeException e) {
-                e.printStackTrace();
-              }
-              return null;
-            })
-        .filter(Objects::nonNull)
-        .filter(o -> !o.equals(LuaNil.getInstance()))
-        .map(LuaObject::repr)
-        .collect(Collectors.joining("\n"));
+    Interpreter interpreter = new Interpreter(text, out);
+    interpreter.run();
   }
 }

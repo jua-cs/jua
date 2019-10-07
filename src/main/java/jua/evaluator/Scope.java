@@ -1,18 +1,30 @@
 package jua.evaluator;
 
+import java.io.OutputStream;
 import java.util.HashMap;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
+import jua.objects.builtins.Print;
 
 public class Scope {
   HashMap<String, LuaObject> scope = new HashMap<>();
 
   Scope parent;
 
-  public Scope() {}
+  public Scope() {
+    registerBuiltins(System.out);
+  }
+
+  public Scope(OutputStream out) {
+    registerBuiltins(out);
+  }
 
   public Scope(Scope parent) {
     this.parent = parent;
+  }
+
+  private void registerBuiltins(OutputStream out) {
+    scope.put("print", new Print(this, out));
   }
 
   public Scope createChild() {
