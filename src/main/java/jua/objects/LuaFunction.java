@@ -30,7 +30,8 @@ public class LuaFunction implements LuaObject {
     return value;
   }
 
-  public LuaReturn evaluateNoUnwrap(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
+  public LuaReturn evaluateNoUnwrap(Scope scope, ArrayList<Expression> args)
+      throws LuaRuntimeException {
     Scope funcScope = this.environment.createChild();
 
     // Init args to nil

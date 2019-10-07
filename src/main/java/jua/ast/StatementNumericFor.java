@@ -50,17 +50,20 @@ public class StatementNumericFor extends StatementFor {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    LuaNumber varValue = LuaNumber.valueOf(var.evaluate(scope));
-    LuaNumber limitValue = LuaNumber.valueOf(limit.evaluate(scope));
-    LuaNumber stepValue = LuaNumber.valueOf(step.evaluate(scope));
+    Scope forScope = scope.createChild();
+
+    LuaNumber varValue = LuaNumber.valueOf(var.evaluate(forScope));
+    LuaNumber limitValue = LuaNumber.valueOf(limit.evaluate(forScope));
+    LuaNumber stepValue = LuaNumber.valueOf(step.evaluate(forScope));
 
     LuaObject ret = LuaNil.getInstance();
 
     while ((stepValue.getValue() > 0 && varValue.getValue() <= limitValue.getValue())
         || (stepValue.getValue() <= 0 && varValue.getValue() >= limitValue.getValue())) {
-      // TODO: local v = var
-      ret = block.evaluate(scope);
-      // TODO: local var = var + step
+
+      forScope.assign(variables.get(0).getIdentifier(), varValue);
+      ret = block.evaluate(forScope);
+      varValue = new LuaNumber(varValue.getValue() + stepValue.getValue());
 
       if (ret instanceof LuaReturn) {
         return ret;

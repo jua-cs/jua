@@ -1,14 +1,13 @@
 package jua.ast;
 
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
 import jua.token.Token;
-
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class StatementReturn extends Statement {
   private ArrayList<Expression> values = new ArrayList<>();
@@ -55,7 +54,7 @@ public class StatementReturn extends Statement {
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     ArrayList<LuaObject> returnValues = new ArrayList<>();
     for (Expression value : values) {
-        returnValues.add(value.evaluate(scope));
+      returnValues.add(value.evaluate(scope));
     }
     return new LuaReturn(returnValues);
   }
