@@ -8,7 +8,7 @@ import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaFunction;
 import jua.objects.LuaNil;
-import jua.objects.LuaObject;
+import jua.objects.LuaReturn;
 
 public class Print extends LuaFunction {
   private final OutputStream out;
@@ -18,7 +18,7 @@ public class Print extends LuaFunction {
     this.out = out;
   }
 
-  public LuaObject evaluate(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
+  public LuaReturn evaluate(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
     for (Expression arg : args) {
       try {
         out.write(arg.evaluate(environment).repr().getBytes());
@@ -28,6 +28,6 @@ public class Print extends LuaFunction {
       }
     }
 
-    return LuaNil.getInstance();
+    return new LuaReturn();
   }
 }

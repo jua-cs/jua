@@ -63,12 +63,12 @@ public class ExpressionFunctionCall extends Expression {
 
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     LuaFunction func = (LuaFunction) scope.getVariable(functionName);
-    return func.evaluate(scope, args);
+    return func.evaluateUnwrap(scope, args);
   }
 
   // This is used publicly only in assignment to support multiple return values
   public LuaReturn evaluateNoUnwrap(Scope scope) throws LuaRuntimeException {
     LuaFunction func = (LuaFunction) scope.getVariable(functionName);
-    return func.evaluateNoUnwrap(scope, args);
+    return func.evaluate(scope, args);
   }
 }

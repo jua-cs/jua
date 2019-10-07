@@ -5,10 +5,9 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
-import jua.objects.LuaNil;
-import jua.objects.LuaObject;
-import jua.objects.LuaReturn;
+import jua.objects.*;
 import jua.token.Token;
+import jua.token.TokenFactory;
 
 public class StatementGenericFor extends StatementFor {
   Expression iterator;
@@ -57,26 +56,39 @@ public class StatementGenericFor extends StatementFor {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    LuaObject iteratorValue = iterator.evaluate(scope);
+    Scope forScope = scope.createChild();
+
+    LuaFunction iteratorValue = LuaFunction.valueOf(iterator.evaluate(scope));
     LuaObject stateValue = state.evaluate(scope);
     LuaObject varValue = var.evaluate(scope);
 
     LuaObject ret = LuaNil.getInstance();
     while (true) {
-      // TODO:          local var_1, ···, var_n = f(s, var)
-      //         var = var_1
+      ArrayList<LuaObject> values =
+          iteratorValue.evaluate(util.Util.createArrayList(stateValue, varValue)).getValues();
 
-      if (varValue instanceof LuaNil) {
-        break;
+      for (int i = 0; i < variables.size(); i++) {
+        String ident = variables.get(i).getIdentifier();
+        LuaObject value = LuaNil.getInstance();
+        if (i < values.size()) {
+          value = values.get(i);
+        }
+        scope.assign(ident, value);
+      }
+
+      varValue = values.get(0);
+      if (varValue == LuaNil.getInstance()) {
+        return ret;
       }
 
       ret = block.evaluate(scope);
 
       if (ret instanceof LuaReturn) {
-        break;
+        return ret;
+      }
+      if (ret instanceof LuaBreak) {
+        return LuaNil.getInstance();
       }
     }
-
-    return ret;
   }
 }

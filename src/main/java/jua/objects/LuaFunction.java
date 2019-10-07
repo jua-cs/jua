@@ -3,6 +3,7 @@ package jua.objects;
 import java.util.ArrayList;
 import jua.ast.Expression;
 import jua.ast.StatementList;
+import jua.evaluator.IllegalCastException;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 
@@ -22,30 +23,43 @@ public class LuaFunction implements LuaObject {
     return String.format("function(%s) %s", argNames, block);
   }
 
-  public LuaObject evaluate(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
-    LuaReturn ret = evaluateNoUnwrap(scope, args);
+
+  public static LuaFunction valueOf(LuaObject o) throws IllegalCastException {
+    if (o instanceof LuaFunction) {
+      return (LuaFunction) o;
+    }
+    throw new IllegalCastException(String.format("%s is not a function", o.repr()));
+  }
+
+  public LuaObject evaluateUnwrap(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
+    LuaReturn ret = evaluate(scope, args);
 
     // only unwrap a LuaReturn if we reach a function call
     LuaObject value = ret.getValues().get(0);
     return value;
   }
 
-  public LuaReturn evaluateNoUnwrap(Scope scope, ArrayList<Expression> args)
+  public LuaReturn evaluate(Scope scope, ArrayList<Expression> args)
       throws LuaRuntimeException {
-    Scope funcScope = this.environment.createChild();
-
-    // Init args to nil
-    argNames.forEach(arg -> funcScope.assign(arg, LuaNil.getInstance()));
-
     // Evaluate each arg
     ArrayList<LuaObject> evaluatedArgs = new ArrayList<>();
     for (Expression arg : args) {
       evaluatedArgs.add(arg.evaluate(scope));
     }
 
+    return evaluate(evaluatedArgs);
+  }
+
+  public LuaReturn evaluate(ArrayList<LuaObject> args)
+          throws LuaRuntimeException {
+    Scope funcScope = this.environment.createChild();
+
+    // Init args to nil
+    argNames.forEach(arg -> funcScope.assign(arg, LuaNil.getInstance()));
+
     // Assign evaluated args to arg names
     for (int i = 0; i < Math.min(argNames.size(), args.size()); i++) {
-      funcScope.assign(argNames.get(i), evaluatedArgs.get(i));
+      funcScope.assign(argNames.get(i), args.get(i));
     }
 
     LuaObject ret = block.evaluate(funcScope);
