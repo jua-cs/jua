@@ -5,8 +5,8 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
-import jua.objects.LuaNil;
 import jua.objects.LuaObject;
+import jua.objects.LuaTable;
 import jua.token.Token;
 import util.Tuple;
 
@@ -44,7 +44,10 @@ public class ExpressionTableConstructor extends Expression {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    // TODO: later
-    return LuaNil.getInstance();
+    LuaTable table = new LuaTable();
+    for (Tuple<Expression, Expression> tup : tuples) {
+      table.put(tup.x.evaluate(scope), tup.y.evaluate(scope));
+    }
+    return table;
   }
 }
