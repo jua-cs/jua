@@ -7,6 +7,7 @@ import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaFunction;
 import jua.objects.LuaObject;
+import jua.objects.LuaReturn;
 import jua.token.Token;
 
 public class ExpressionFunctionCall extends Expression {
@@ -72,6 +73,12 @@ public class ExpressionFunctionCall extends Expression {
       funcScope.assign(func.getArgNames().get(i), args.get(i).evaluate(scope));
     }
 
-    return func.getBlock().evaluate(funcScope);
+    LuaObject ret =  func.getBlock().evaluate(funcScope);
+    if (ret instanceof LuaReturn) {
+      //only unwrap a LuaReturn if we reach a function call
+      ret = ((LuaReturn) ret).getValue();
+    }
+
+    return ret;
   }
 }

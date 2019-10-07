@@ -5,6 +5,7 @@ import java.util.Objects;
 import java.util.stream.Collectors;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
+import jua.objects.LuaBreak;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
@@ -57,8 +58,9 @@ public class StatementList extends Statement {
     for (Statement statement : children) {
       ret = statement.evaluate(scope);
 
-      if (ret instanceof LuaReturn) {
-        return ((LuaReturn) ret).getValue();
+      if (ret instanceof LuaReturn || ret instanceof LuaBreak) {
+        //TODO: if we are not actually in a loop here, the behavior is undefined, maybe crash instead in the future.
+        return ret;
       }
     }
 

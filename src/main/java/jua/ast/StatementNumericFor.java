@@ -3,10 +3,7 @@ package jua.ast;
 import java.util.Objects;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
-import jua.objects.LuaNil;
-import jua.objects.LuaNumber;
-import jua.objects.LuaObject;
-import jua.objects.LuaReturn;
+import jua.objects.*;
 import jua.token.Token;
 
 public class StatementNumericFor extends StatementFor {
@@ -66,7 +63,10 @@ public class StatementNumericFor extends StatementFor {
       // TODO: local var = var + step
 
       if (ret instanceof LuaReturn) {
-        break;
+        return ret;
+      }
+      if (ret instanceof LuaBreak) {
+        return LuaNil.getInstance();
       }
     }
 
