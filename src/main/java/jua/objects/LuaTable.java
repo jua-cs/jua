@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LuaTable implements LuaObject {
-  HashMap<LuaObject, LuaObject> map = new HashMap<>();
+  private HashMap<LuaObject, LuaObject> map = new HashMap<>();
 
   @Override
   public String toString() {

@@ -10,7 +10,7 @@ import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementAssignment extends Statement {
-  boolean isLocal;
+  private boolean isLocal;
   private ArrayList<ExpressionIdentifier> lhs = new ArrayList<>();
   private ArrayList<Expression> rhs = new ArrayList<>();
 
