@@ -1,20 +1,26 @@
 package jua.objects;
 
-public class LuaReturn implements LuaObject {
-  private LuaObject value = LuaNil.getInstance();
+import java.util.ArrayList;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
-  public LuaReturn(LuaObject value) {
-    this.value = value;
+public class LuaReturn implements LuaObject {
+  private ArrayList<LuaObject> values = util.Util.createArrayList(LuaNil.getInstance());
+
+  public LuaReturn(ArrayList<LuaObject> values) {
+    if (values.size() > 0) {
+      this.values = values;
+    }
   }
 
   public LuaReturn() {}
 
-  public LuaObject getValue() {
-    return value;
+  public ArrayList<LuaObject> getValues() {
+    return values;
   }
 
   @Override
   public String repr() {
-    return value.repr();
+    return values.stream().map(LuaObject::repr).collect(Collectors.joining(","));
   }
 }

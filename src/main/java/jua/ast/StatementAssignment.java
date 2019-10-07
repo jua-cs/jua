@@ -65,14 +65,22 @@ public class StatementAssignment extends Statement {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    ArrayList<LuaObject> values = new ArrayList<>();
-    for (Expression expr : rhs) {
-      values.add(expr.evaluate(scope));
+    ArrayList<LuaObject> values;
+    if (rhs.size() == 1 && rhs.get(0) instanceof ExpressionFunctionCall) {
+      values = ((ExpressionFunctionCall) rhs.get(0)).evaluateNoUnwrap(scope).getValues();
+    } else {
+      values = new ArrayList<>();
+      for (Expression expr : rhs) {
+        values.add(expr.evaluate(scope));
+      }
     }
 
-    for (int i = 0; i < lhs.size() && i < rhs.size(); i++) {
+    for (int i = 0; i < lhs.size(); i++) {
       String ident = lhs.get(i).getIdentifier();
-      LuaObject value = values.get(i);
+      LuaObject value = LuaNil.getInstance();
+      if (i < values.size()) {
+        value = values.get(i);
+      }
       if (isLocal) {
         scope.assign(ident, value);
       } else {

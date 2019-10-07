@@ -184,6 +184,7 @@ public class EvaluatorTest {
     tests.add(new Tuple<>("f = function() return 3 end f()", "3"));
     tests.add(new Tuple<>("f = function(n) return n end f(3)", "3"));
     tests.add(new Tuple<>("f = function(n,m) return n*m end f(3,5)", "15"));
+    tests.add(new Tuple<>("f = function(n,m) return n,m end a,b = f(3,5) a*b", "15"));
     tests.add(
         new Tuple<>(
             "function fact(n) if n == 0 then return 1 else return n * fact(n-1) end end fact(4)",

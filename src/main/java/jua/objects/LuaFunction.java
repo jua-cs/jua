@@ -23,6 +23,14 @@ public class LuaFunction implements LuaObject {
   }
 
   public LuaObject evaluate(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
+    LuaReturn ret = evaluateNoUnwrap(scope, args);
+
+    // only unwrap a LuaReturn if we reach a function call
+    LuaObject value = ret.getValues().get(0);
+    return value;
+  }
+
+  public LuaReturn evaluateNoUnwrap(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
     Scope funcScope = this.environment.createChild();
 
     // Init args to nil
@@ -41,10 +49,9 @@ public class LuaFunction implements LuaObject {
 
     LuaObject ret = block.evaluate(funcScope);
     if (ret instanceof LuaReturn) {
-      // only unwrap a LuaReturn if we reach a function call
-      ret = ((LuaReturn) ret).getValue();
+      return (LuaReturn) ret;
     }
 
-    return ret;
+    return new LuaReturn(util.Util.createArrayList(ret));
   }
 }

@@ -322,7 +322,7 @@ public class Parser {
   private StatementReturn parseReturnStatement() throws IllegalParseException {
     Token tok = currentToken();
     advanceTokens();
-    StatementReturn stmt = new StatementReturn(tok, parseExpression());
+    StatementReturn stmt = new StatementReturn(tok, parseCommaSeparatedExpressions(0));
     return stmt;
   }
 

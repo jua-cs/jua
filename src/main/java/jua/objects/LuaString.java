@@ -16,7 +16,7 @@ public class LuaString implements LuaObject {
     if (object instanceof LuaString || object instanceof LuaNumber) {
       return new LuaString(object.repr());
     } else if (object instanceof LuaReturn) {
-      return LuaString.valueOf(((LuaReturn) object).getValue());
+      return LuaString.valueOf(((LuaReturn) object).getValues().get(0));
     }
 
     throw IllegalCastException.create(object, "LuaString");
