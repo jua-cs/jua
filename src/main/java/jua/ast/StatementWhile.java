@@ -58,12 +58,11 @@ public class StatementWhile extends Statement {
     while (LuaBoolean.valueOf(condition.evaluate(whileScope)).getValue()) {
       ret = consequence.evaluate(whileScope.createChild());
 
-
       if (ret instanceof LuaReturn) {
         return ret;
       }
       if (ret instanceof LuaBreak) {
-        //when we encounter a break, "unwrap" it to prevent it from propagating
+        // when we encounter a break, "unwrap" it to prevent it from propagating
         return LuaNil.getInstance();
       }
     }

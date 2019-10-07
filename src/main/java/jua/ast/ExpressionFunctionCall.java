@@ -7,7 +7,6 @@ import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaFunction;
 import jua.objects.LuaObject;
-import jua.objects.LuaReturn;
 import jua.token.Token;
 
 public class ExpressionFunctionCall extends Expression {
@@ -63,22 +62,6 @@ public class ExpressionFunctionCall extends Expression {
 
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     LuaFunction func = (LuaFunction) scope.getVariable(functionName);
-    if (args.size() != func.getArgNames().size()) {
-      throw new LuaRuntimeException(
-          String.format("invalid argument number when calling %s", functionName));
-    }
-
-    Scope funcScope = func.getEnvironment().createChild();
-    for (int i = 0; i < args.size(); i++) {
-      funcScope.assign(func.getArgNames().get(i), args.get(i).evaluate(scope));
-    }
-
-    LuaObject ret =  func.getBlock().evaluate(funcScope);
-    if (ret instanceof LuaReturn) {
-      //only unwrap a LuaReturn if we reach a function call
-      ret = ((LuaReturn) ret).getValue();
-    }
-
-    return ret;
+    return func.evaluate(scope, args);
   }
 }

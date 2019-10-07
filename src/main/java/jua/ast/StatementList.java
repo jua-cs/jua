@@ -59,7 +59,8 @@ public class StatementList extends Statement {
       ret = statement.evaluate(scope);
 
       if (ret instanceof LuaReturn || ret instanceof LuaBreak) {
-        //TODO: if we are not actually in a loop here, the behavior is undefined, maybe crash instead in the future.
+        // TODO: if we are not actually in a loop here, the behavior is undefined, maybe crash
+        // instead in the future.
         return ret;
       }
     }

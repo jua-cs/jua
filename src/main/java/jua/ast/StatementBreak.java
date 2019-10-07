@@ -3,9 +3,7 @@ package jua.ast;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaBreak;
-import jua.objects.LuaNil;
 import jua.objects.LuaObject;
-import jua.objects.LuaReturn;
 import jua.token.Token;
 
 public class StatementBreak extends Statement {
