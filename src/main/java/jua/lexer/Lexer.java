@@ -25,7 +25,11 @@ public class Lexer {
   }
 
   private char peekChar() {
-    return in.peek();
+     var c = in.peek();
+     if (c != null) {
+         return c;
+     }
+     return 0;
   }
 
   private void readChar() {
