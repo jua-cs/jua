@@ -33,44 +33,45 @@ public class BufferedChannel<T> {
   }
 
   public T peek(int pos) throws InterruptedException {
-    if (pos < 0) {
-      return null;
-    }
+    synchronized (buffer) {
+      if (pos < 0) {
+        return null;
+      }
 
-    if (pos < buffer.size()) {
+      if (pos < buffer.size()) {
+        return buffer.get(pos);
+      }
+
+      // Else read until pos and buffer it
+      while (buffer.size() <= pos) {
+        buffer.add(queue.take());
+      }
       return buffer.get(pos);
     }
-
-    // Else read until pos and buffer it
-    for (int i = 0; i <= pos - buffer.size(); i++) {
-      buffer.add(queue.take());
-    }
-
-    return buffer.get(pos);
   }
 
-  public T peek() {
-    if (buffer.isEmpty()) {
-      return queue.peek();
-    }
-
-    return buffer.get(0);
+  public T peek() throws InterruptedException {
+    return peek(0);
   }
 
   public T read() throws InterruptedException {
-    if (buffer.isEmpty()) {
-      return queue.take();
-    }
 
-    return buffer.remove(0);
+    synchronized (buffer) {
+      if (!buffer.isEmpty()) {
+        return buffer.remove(0);
+      }
+    }
+    return queue.take();
   }
 
   public void skip() throws InterruptedException {
-    if (buffer.isEmpty()) {
-      queue.take();
-    } else {
-      buffer.remove(0);
+    synchronized (buffer) {
+      if (!buffer.isEmpty()) {
+        buffer.remove(0);
+        return;
+      }
     }
+    queue.take();
   }
 
   public final void add(T element) throws InterruptedException {

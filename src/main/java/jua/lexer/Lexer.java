@@ -25,11 +25,16 @@ public class Lexer {
   }
 
   private char peekChar() {
-     var c = in.peek();
-     if (c != null) {
-         return c;
-     }
-     return 0;
+    Character c = null;
+    try {
+      c = in.peek();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    if (c != null) {
+      return c;
+    }
+    return 0;
   }
 
   private void readChar() {
