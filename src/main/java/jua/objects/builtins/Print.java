@@ -3,16 +3,15 @@ package jua.objects.builtins;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.ArrayList;
-import jua.ast.Expression;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaFunction;
-import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
 
 public class Print extends LuaFunction {
   private final OutputStream out;
+  public static final String name = "print";
 
   public Print(Scope environment, OutputStream out) {
     super(null, environment, null);

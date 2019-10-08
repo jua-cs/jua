@@ -23,7 +23,6 @@ public class LuaFunction implements LuaObject {
     return String.format("function(%s) %s", argNames, block);
   }
 
-
   public static LuaFunction valueOf(LuaObject o) throws IllegalCastException {
     if (o instanceof LuaFunction) {
       return (LuaFunction) o;
@@ -31,7 +30,8 @@ public class LuaFunction implements LuaObject {
     throw new IllegalCastException(String.format("%s is not a function", o.repr()));
   }
 
-  public LuaObject evaluateUnwrap(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
+  public LuaObject evaluateUnwrap(Scope scope, ArrayList<Expression> args)
+      throws LuaRuntimeException {
     LuaReturn ret = evaluate(scope, args);
 
     // only unwrap a LuaReturn if we reach a function call
@@ -39,8 +39,7 @@ public class LuaFunction implements LuaObject {
     return value;
   }
 
-  public LuaReturn evaluate(Scope scope, ArrayList<Expression> args)
-      throws LuaRuntimeException {
+  public LuaReturn evaluate(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
     // Evaluate each arg
     ArrayList<LuaObject> evaluatedArgs = new ArrayList<>();
     for (Expression arg : args) {
@@ -50,8 +49,7 @@ public class LuaFunction implements LuaObject {
     return evaluate(evaluatedArgs);
   }
 
-  public LuaReturn evaluate(ArrayList<LuaObject> args)
-          throws LuaRuntimeException {
+  public LuaReturn evaluate(ArrayList<LuaObject> args) throws LuaRuntimeException {
     Scope funcScope = this.environment.createChild();
 
     // Init args to nil
@@ -67,6 +65,6 @@ public class LuaFunction implements LuaObject {
       return (LuaReturn) ret;
     }
 
-    return new LuaReturn(util.Util.createArrayList(ret));
+    return new LuaReturn(ret);
   }
 }

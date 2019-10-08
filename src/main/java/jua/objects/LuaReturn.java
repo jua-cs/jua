@@ -12,6 +12,10 @@ public class LuaReturn implements LuaObject {
     }
   }
 
+  public LuaReturn(LuaObject value) {
+    this.values = util.Util.createArrayList(value);
+  }
+
   public LuaReturn() {}
 
   public ArrayList<LuaObject> getValues() {

@@ -1,12 +1,12 @@
 package jua.objects.builtins;
 
 import java.util.ArrayList;
-import jua.ast.Expression;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.*;
 
 public class Tables {
+  public static final String name = "table";
 
   public static LuaTable create(Scope scope) {
     LuaTable table = new LuaTable();
@@ -20,12 +20,10 @@ public class Tables {
       super(null, null, null);
     }
 
-    public LuaObject evaluate(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
-      // Remove takes 2 arguments
-      LuaObject table = args.size() > 0 ? args.get(0).evaluate(scope) : LuaNil.getInstance();
-      // We have toe evaluate the key even if table is not really a table, because that's how it
-      // works
-      LuaObject key = args.size() > 1 ? args.get(1).evaluate(scope) : LuaNil.getInstance();
+    @Override
+    public LuaReturn evaluate(ArrayList<LuaObject> args) throws LuaRuntimeException {
+      LuaObject table = args.size() > 0 ? args.get(0) : LuaNil.getInstance();
+      LuaObject key = args.size() > 1 ? args.get(1) : LuaNil.getInstance();
 
       if (!(table instanceof LuaTable)) {
         throw new LuaRuntimeException(
@@ -34,7 +32,7 @@ public class Tables {
                 key, table, table.getClass()));
       }
 
-      return ((LuaTable) table).remove(key);
+      return new LuaReturn(((LuaTable) table).remove(key));
     }
   }
 }

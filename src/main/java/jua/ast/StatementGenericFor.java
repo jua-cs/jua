@@ -7,7 +7,6 @@ import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.*;
 import jua.token.Token;
-import jua.token.TokenFactory;
 
 public class StatementGenericFor extends StatementFor {
   Expression iterator;
