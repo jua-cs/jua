@@ -1,7 +1,6 @@
 package jua;
 
 import java.io.OutputStream;
-
 import jua.ast.Statement;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;

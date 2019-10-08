@@ -331,7 +331,7 @@ public class Parser {
       ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
       // Check if we are on an assignment
-      if (currentToken().isSubtype(Operator.ASSIGN)) {
+      if (currentTokenNoSkip().isSubtype(Operator.ASSIGN)) {
         // Cast into variables
         ArrayList<Variable> vars = new ArrayList<>();
         exprs.forEach(expr -> vars.add((Variable) expr));

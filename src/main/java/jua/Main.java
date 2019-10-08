@@ -3,7 +3,6 @@ package jua;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import jua.lexer.Lexer;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
@@ -13,28 +12,29 @@ import util.BufferedChannel;
 public class Main {
 
   public static void main(String[] args) throws IllegalParseException {
-      repl();
+    repl();
   }
-
 
   private static void repl() {
 
-      BufferedChannel<Character> in = new BufferedChannel<>();
-      var scanner = new Scanner(System.in);
-      new Thread(() -> {
-          while (true) {
-              String line = scanner.nextLine() + '\n';
-              for (Character ch : line.toCharArray()) {
+    BufferedChannel<Character> in = new BufferedChannel<>();
+    var scanner = new Scanner(System.in);
+    new Thread(
+            () -> {
+              while (true) {
+                String line = scanner.nextLine() + '\n';
+                for (Character ch : line.toCharArray()) {
                   try {
-                      in.add(ch);
+                    in.add(ch);
                   } catch (InterruptedException e) {
-                      e.printStackTrace();
+                    e.printStackTrace();
                   }
+                }
               }
-          }
-      }).start();
-      var interpreter = new Interpreter(in);
-      interpreter.start();
+            })
+        .start();
+    var interpreter = new Interpreter(in);
+    interpreter.start();
   }
 
   private static void debug() throws IllegalParseException {

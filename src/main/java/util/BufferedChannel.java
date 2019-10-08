@@ -2,7 +2,6 @@ package util;
 
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 public class BufferedChannel<T> {
   private static final int size = 10000;
