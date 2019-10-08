@@ -75,7 +75,7 @@ public class Parser {
     register(identifierKey, new IdentifierParser());
   }
 
-  private Token nextToken(int i) {
+  public Token nextToken(int i) {
     try {
       return tokens.peek(i);
     } catch (InterruptedException e) {
@@ -194,7 +194,13 @@ public class Parser {
   }
 
   private int getCurrTokenPrecedence() {
-    InfixParser parser = getInfix(currentToken());
+    // TODO: Hacky, fixme fast
+    Token tok = tokens.peek();
+    if (tok == null) {
+      return 0;
+    }
+
+    InfixParser parser = getInfix(tok);
 
     return parser != null ? parser.getPrecedence() : 0;
   }
@@ -243,7 +249,7 @@ public class Parser {
   protected StatementList parseListStatement() throws IllegalParseException {
     StatementList list = new StatementList(currentToken());
 
-    while (currentTokenIsValid() && !isBlockEnd()) {
+    while (currentToken().isValid() && !isBlockEnd()) {
       Statement child = parseStatement();
       list.addChild(child);
       if (child instanceof StatementReturn) {
@@ -270,7 +276,7 @@ public class Parser {
     return list;
   }
 
-  private Statement parseStatement() throws IllegalParseException {
+  public Statement parseStatement() throws IllegalParseException {
     if (isAssignmentStatement()) {
       return parseAssignment();
     } else if (isFunctionStatement()) {

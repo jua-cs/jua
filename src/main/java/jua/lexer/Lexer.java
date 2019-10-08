@@ -8,24 +8,23 @@ public class Lexer {
 
   private BufferedChannel<Character> in;
   private char ch;
+  public boolean init = false;
   private int readPosition;
   private int currentLine;
   private int currentPosInLine;
 
+  public Lexer(BufferedChannel<Character> in) {
+    this.currentLine = 1;
+    this.in = in;
+  }
+
   public Lexer(String in) {
     this.currentLine = 1;
     this.in = BufferedChannel.fromString(in);
-    readChar();
   }
 
   private char peekChar() {
-    try {
-      return in.peek();
-    } catch (InterruptedException e) {
-      // TODO: handle this
-      e.printStackTrace();
-    }
-    return 0;
+    return in.peek();
   }
 
   private void readChar() {
@@ -48,7 +47,12 @@ public class Lexer {
     }
   }
 
-  private Token nextToken() {
+  public Token nextToken() {
+    if (!init) {
+      init = true;
+      readChar();
+    }
+
     Token token;
 
     consumeWhitespace();

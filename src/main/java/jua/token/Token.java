@@ -98,6 +98,10 @@ public abstract class Token {
     return this instanceof TokenIdentifier;
   }
 
+  public boolean isValid() {
+    return !(this instanceof TokenEOF || this instanceof TokenInvalid);
+  }
+
   public boolean lightEquals(Object o) {
     if (this == o) return true;
     if (o == null || getClass() != o.getClass()) return false;
