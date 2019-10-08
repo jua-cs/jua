@@ -77,8 +77,13 @@ public class Parser {
     register(identifierKey, new IdentifierParser());
   }
 
-  public Token nextToken(int i) {
+  public Token nextToken(int i, boolean skip) {
     try {
+      Token currentTok = tokens.peek();
+      while (skip && currentTok != null && currentTok.isSubtype(Delimiter.NEWLINE)) {
+        advanceTokens();
+        currentTok = tokens.peek();
+      }
       return tokens.peek(i);
     } catch (InterruptedException e) {
       // TODO: handle this
@@ -87,12 +92,20 @@ public class Parser {
     return null;
   }
 
+  private Token nextToken(int i) {
+    return nextToken(i, true);
+  }
+
   private Token nextToken() {
-    return nextToken(1);
+    return nextToken(1, true);
   }
 
   Token currentToken() {
-    return nextToken(0);
+    return nextToken(0, true);
+  }
+
+  Token currentTokenNoSkip() {
+    return nextToken(0, false);
   }
 
   void advanceTokens() {
@@ -106,21 +119,21 @@ public class Parser {
 
   void consume(Delimiter delimiter) throws IllegalParseException {
     if (!currentToken().isSubtype(delimiter)) {
-      throw new IllegalParseException("Expecting " + delimiter + " but found " + nextToken());
+      throw new IllegalParseException("Expecting " + delimiter + " but found " + currentToken());
     }
     advanceTokens();
   }
 
   void consume(Keyword keyword) throws IllegalParseException {
     if (!currentToken().isSubtype(keyword)) {
-      throw new IllegalParseException("Expecting " + keyword + " but found " + nextToken());
+      throw new IllegalParseException("Expecting " + keyword + " but found " + currentToken());
     }
     advanceTokens();
   }
 
   void consume(Operator operator) throws IllegalParseException {
     if (!currentToken().isSubtype(operator)) {
-      throw new IllegalParseException("Expecting " + operator + " but found " + nextToken());
+      throw new IllegalParseException("Expecting " + operator + " but found " + currentToken());
     }
     advanceTokens();
   }
@@ -171,12 +184,9 @@ public class Parser {
     exprs.add((T) parseExpression());
     int count = 1;
 
-    while (currentToken().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
+    while (currentTokenNoSkip().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
       // Consume ','
       consume(Delimiter.COMMA);
-      if (currentToken().isSubtype(Delimiter.NEWLINE)) {
-        advanceTokens();
-      }
       exprs.add((T) parseExpression(precedence));
     }
 
@@ -208,9 +218,9 @@ public class Parser {
     return lhs;
   }
 
+  // do not use currentToken() not to consume the new line
   private int getCurrTokenPrecedence() {
-    // TODO: Hacky, fixme fast
-    Token tok = tokens.peek();
+    Token tok = currentTokenNoSkip();
     if (tok == null) {
       return 0;
     }
@@ -292,6 +302,7 @@ public class Parser {
   }
 
   public Statement parseStatement() throws IllegalParseException {
+
     if (isLocalAssignment()) {
       return parseAssignment();
     }
@@ -491,10 +502,6 @@ public class Parser {
     Token tok = currentToken();
     consume(Keyword.WHILE);
     Expression condition = parseExpression();
-    if (!isBlockStatement()) {
-      throw new IllegalParseException(
-          String.format("expected do ... end statement after while %s", tok));
-    }
 
     Statement consequence = parseBlockStatement();
 
@@ -581,6 +588,7 @@ public class Parser {
   }
 
   private boolean isBlockEnd() {
+
     Token tok = currentToken();
     return tok.isSubtype(Keyword.END)
         || tok.isSubtype(Keyword.ELSE)

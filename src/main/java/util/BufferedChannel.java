@@ -74,47 +74,8 @@ public class BufferedChannel<T> {
     }
   }
 
-  public T poll() {
-    if (buffer.isEmpty()) {
-      return queue.poll();
-    }
-
-    return buffer.remove(0);
-  }
-
-  public T poll(long timeout, TimeUnit unit) throws InterruptedException {
-    if (buffer.isEmpty()) {
-      return queue.poll(timeout, unit);
-    }
-
-    return buffer.remove(0);
-  }
-
-  public T peekPoll() {
-    if (buffer.isEmpty()) {
-      T res = queue.poll();
-      if (res != null) {
-        buffer.add(res);
-      }
-      return res;
-    }
-
-    return buffer.get(0);
-  }
-
   public final void add(T element) throws InterruptedException {
     // System.out.printf("Adding: %s of type %s to queue\n", element, element.getClass());
     queue.put(element);
-  }
-
-  public ArrayList<T> flush() {
-    ArrayList<T> flushed = new ArrayList<>();
-
-    T e = poll();
-    while (e != null) {
-      flushed.add(e);
-      e = poll();
-    }
-    return flushed;
   }
 }
