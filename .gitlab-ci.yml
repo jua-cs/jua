@@ -32,6 +32,14 @@ build-jar:
     paths:
       - build/libs
 
+build-jlink:
+  stage: build
+  script:
+    - gradle jlink
+  artifacts:
+    paths:
+      - build/image/bin
+
 
 run-integration-tests:
   stage: integration-test
