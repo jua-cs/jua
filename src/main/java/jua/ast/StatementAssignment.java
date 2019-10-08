@@ -11,20 +11,17 @@ import jua.token.Token;
 
 public class StatementAssignment extends Statement {
   private boolean isLocal;
-  private ArrayList<ExpressionIdentifier> lhs = new ArrayList<>();
+  private ArrayList<Variable> lhs = new ArrayList<>();
   private ArrayList<Expression> rhs = new ArrayList<>();
 
-  public StatementAssignment(Token token, ExpressionIdentifier lhs, Expression rhs) {
+  public StatementAssignment(Token token, Variable lhs, Expression rhs) {
     super(token);
     this.lhs.add(lhs);
     this.rhs.add(rhs);
   }
 
   public StatementAssignment(
-      Token token,
-      ArrayList<ExpressionIdentifier> lhs,
-      ArrayList<Expression> rhs,
-      boolean isLocal) {
+      Token token, ArrayList<Variable> lhs, ArrayList<Expression> rhs, boolean isLocal) {
     super(token);
     this.lhs = lhs;
     this.rhs = rhs;
@@ -39,7 +36,7 @@ public class StatementAssignment extends Statement {
         rhs.stream().map(Objects::toString).collect(Collectors.joining(", ")));
   }
 
-  public ArrayList<ExpressionIdentifier> getLhs() {
+  public ArrayList<Variable> getLhs() {
     return lhs;
   }
 
@@ -76,16 +73,8 @@ public class StatementAssignment extends Statement {
     }
 
     for (int i = 0; i < lhs.size(); i++) {
-      String ident = lhs.get(i).getIdentifier();
-      LuaObject value = LuaNil.getInstance();
-      if (i < values.size()) {
-        value = values.get(i);
-      }
-      if (isLocal) {
-        scope.assign(ident, value);
-      } else {
-        scope.assignGlobal(ident, value);
-      }
+      LuaObject value = i < values.size() ? values.get(i) : LuaNil.getInstance();
+      lhs.get(i).assign(scope, value, isLocal);
     }
     return LuaNil.getInstance();
   }

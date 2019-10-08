@@ -413,7 +413,7 @@ public class ParserTest {
     ArrayList<Statement> stmts1 = new Parser((new Lexer(in1)).getNTokens(0)).parse().getChildren();
     ArrayList<Statement> stmts2 = new Parser((new Lexer(in2)).getNTokens(0)).parse().getChildren();
 
-    ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
+    ArrayList<Variable> identifiers = new ArrayList<>();
     identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("a")));
     identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("b")));
     identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("c")));
@@ -439,7 +439,7 @@ public class ParserTest {
 
     ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
 
-    ArrayList<ExpressionIdentifier> identifiers = new ArrayList<>();
+    ArrayList<Variable> identifiers = new ArrayList<>();
     identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("a")));
     identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("b")));
     identifiers.add(ExpressionFactory.create((TokenIdentifier) TokenFactory.create("c")));
@@ -462,7 +462,7 @@ public class ParserTest {
 
     ArrayList<Statement> stmts = new Parser((new Lexer(in)).getNTokens(0)).parse().getChildren();
 
-    ArrayList<ExpressionIdentifier> identifiers =
+    ArrayList<Variable> identifiers =
         util.Util.createArrayList(
             ExpressionFactory.create((TokenIdentifier) TokenFactory.create("a")),
             ExpressionFactory.create((TokenIdentifier) TokenFactory.create("b")));
@@ -513,6 +513,8 @@ public class ParserTest {
         new Tuple<>(
             ExpressionFactory.create(
                 func,
+                0,
+                0,
                 util.Util.createArrayList(
                     ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))),
             ExpressionFactory.create(TokenFactory.create("g"))));
@@ -546,6 +548,8 @@ public class ParserTest {
         new Tuple<>(
             ExpressionFactory.create(
                 func,
+                0,
+                0,
                 util.Util.createArrayList(
                     ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))),
             ExpressionFactory.create(TokenFactory.create("g"))));
@@ -566,6 +570,8 @@ public class ParserTest {
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "3")),
             ExpressionFactory.create(
                 func,
+                0,
+                0,
                 util.Util.createArrayList(ExpressionFactory.create(TokenFactory.create("x"))))));
     tuples.add(
         new Tuple<>(

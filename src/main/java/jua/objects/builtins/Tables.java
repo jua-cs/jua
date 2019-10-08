@@ -22,6 +22,7 @@ public class Tables {
 
     @Override
     public LuaReturn evaluate(ArrayList<LuaObject> args) throws LuaRuntimeException {
+      // TODO: testme
       LuaObject table = args.size() > 0 ? args.get(0) : LuaNil.getInstance();
       LuaObject key = args.size() > 1 ? args.get(1) : LuaNil.getInstance();
 

@@ -5,7 +5,7 @@ import jua.evaluator.Scope;
 import jua.objects.LuaObject;
 import jua.token.Token;
 
-public class ExpressionIdentifier extends Expression {
+public class ExpressionIdentifier extends Expression implements Variable {
   private String identifier;
 
   ExpressionIdentifier(Token token) {
@@ -20,5 +20,19 @@ public class ExpressionIdentifier extends Expression {
   @Override
   public LuaObject evaluate(Scope scope) throws IllegalCastException {
     return scope.getVariable(identifier);
+  }
+
+  @Override
+  public void assign(Scope scope, LuaObject value, boolean isLocal) {
+    if (isLocal) {
+      scope.assign(getLiteral(), value);
+    } else {
+      scope.assignGlobal(getLiteral(), value);
+    }
+  }
+
+  @Override
+  public String name() {
+    return identifier;
   }
 }

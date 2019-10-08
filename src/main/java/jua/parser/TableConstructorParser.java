@@ -1,10 +1,7 @@
 package jua.parser;
 
 import java.util.ArrayList;
-import jua.ast.Expression;
-import jua.ast.ExpressionFactory;
-import jua.ast.ExpressionTableConstructor;
-import jua.ast.StatementAssignment;
+import jua.ast.*;
 import jua.token.*;
 import util.Tuple;
 
@@ -36,7 +33,9 @@ public class TableConstructorParser implements PrefixParser {
             new Tuple<>(
                 // Convert the LHS to a string
                 ExpressionFactory.create(
-                    TokenFactory.create(Literal.STRING, assign.getLhs().get(0).getLiteral())),
+                    TokenFactory.create(
+                        Literal.STRING,
+                        ((ExpressionIdentifier) assign.getLhs().get(0)).getLiteral())),
                 assign.getRhs().get(0));
         tuples.add(tup);
       } else {
