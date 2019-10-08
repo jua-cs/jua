@@ -605,6 +605,7 @@ public class ParserTest {
     StatementExpression printStatement = new StatementExpression(
             ExpressionFactory.create(
                     ExpressionFactory.create((TokenIdentifier) TokenFactory.create("print")),
+                    0, 0,
                     Util.createArrayList(ExpressionFactory.create(var_a))));
 
     expected.add(
