@@ -53,12 +53,10 @@ public class ExpressionFunctionCall extends Expression {
 
   @Override
   public String toString() {
-    StringBuilder str = new StringBuilder();
-    str.append(functionName);
-    str.append("(");
-    str.append(args.stream().map(Objects::toString).collect(Collectors.joining(",")));
-    str.append(")");
-    return str.toString();
+    return functionName
+        + "("
+        + args.stream().map(Objects::toString).collect(Collectors.joining(", "))
+        + ")";
   }
 
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
