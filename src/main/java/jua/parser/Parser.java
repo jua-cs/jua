@@ -258,7 +258,7 @@ public class Parser {
   protected StatementList parseListStatement() throws IllegalParseException {
     StatementList list = new StatementList(currentToken());
 
-    while (currentToken().isValid() && !isBlockEnd()) {
+    while (currentTokenIsValid() && !isBlockEnd() && !currentToken().isSubtype(Keyword.UNTIL)) {
       Statement child = parseStatement();
       list.addChild(child);
       if (child instanceof StatementReturn) {
@@ -302,8 +302,9 @@ public class Parser {
       return parseForStatement();
     } else if (isBreakStatement()) {
       return parseBreakStatement();
-      //    } else if (isRepeatStatement()) {
-      //      return parseRepeatUntilStatement();
+
+    } else if (isRepeatStatement()) {
+      return parseRepeatUntilStatement();
     } else {
       ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
@@ -324,9 +325,19 @@ public class Parser {
     }
   }
 
-  //  private Statement parseRepeatUntilStatement() {
-  //    return new StatementRepeatUntil();
-  //  }
+  private Statement parseRepeatUntilStatement() throws IllegalParseException {
+    Token tok = currentToken();
+    consume(Keyword.REPEAT);
+
+    Statement action = parseListStatement();
+
+    // expecting an until
+    consume(Keyword.UNTIL);
+
+    Expression condition = parseExpression();
+
+    return new StatementRepeatUntil(tok, condition, action);
+  }
 
   private StatementFunction parseFunctionStatement() throws IllegalParseException {
     // Next jua.token should be an identifier
