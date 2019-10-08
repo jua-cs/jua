@@ -10,6 +10,8 @@ public class Parser {
   private static final Token identifierKey = TokenFactory.create("", 0, 0);
   private static final Token literalKey = TokenFactory.create(Literal.BOOLEAN, "0", 0, 0);
   private BufferedChannel<Token> tokens;
+  private BufferedChannel<Statement> out = new BufferedChannel<>();
+
   private HashMap<TokenHashmMapKey, PrefixParser> tokenPrefixParserHashMap;
   private HashMap<TokenHashmMapKey, InfixParser> tokenInfixParserHashMap;
 
@@ -18,7 +20,7 @@ public class Parser {
   }
 
   public Parser(ArrayList<Token> tokenList) {
-    BufferedChannel<Token> tokens = new BufferedChannel<Token>();
+    BufferedChannel<Token> tokens = new BufferedChannel<>();
     tokenList.forEach(
         tok -> {
           try {
@@ -172,6 +174,9 @@ public class Parser {
     while (currentToken().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
       // Consume ','
       consume(Delimiter.COMMA);
+      if (currentToken().isSubtype(Delimiter.NEWLINE)) {
+        advanceTokens();
+      }
       exprs.add((T) parseExpression(precedence));
     }
 
@@ -180,13 +185,14 @@ public class Parser {
 
   protected Expression parseExpression(int precedence) throws IllegalParseException {
     Token tok = currentToken();
-    // can't use consume here
-    advanceTokens();
 
     PrefixParser prefix = getPrefixParser(tok);
     if (prefix == null) {
+      advanceTokens();
       throw new IllegalParseException(String.format("Unexpected jua.token: %s", tok));
     }
+    // can't use consume here
+    advanceTokens();
 
     Expression lhs = prefix.parsePrefix(this, tok);
     while (precedence < getCurrTokenPrecedence()) {
@@ -288,23 +294,28 @@ public class Parser {
   public Statement parseStatement() throws IllegalParseException {
     if (isLocalAssignment()) {
       return parseAssignment();
-    } else if (isFunctionStatement()) {
-      return parseFunctionStatement();
-    } else if (isReturnStatement()) {
-      return parseReturnStatement();
-    } else if (isIfStatement()) {
-      return parseIfStatement();
-    } else if (isBlockStatement()) {
-      return parseBlockStatement();
-    } else if (isWhileStatement()) {
-      return parseWhileStatement();
-    } else if (isForStatement()) {
-      return parseForStatement();
-    } else if (isBreakStatement()) {
-      return parseBreakStatement();
+    }
+    while (currentToken().isSubtype(Delimiter.NEWLINE)) {
+      advanceTokens();
+    }
 
+    Statement s;
+    if (isFunctionStatement()) {
+      s = parseFunctionStatement();
+    } else if (isReturnStatement()) {
+      s = parseReturnStatement();
+    } else if (isIfStatement()) {
+      s = parseIfStatement();
+    } else if (isBlockStatement()) {
+      s = parseBlockStatement();
+    } else if (isWhileStatement()) {
+      s = parseWhileStatement();
+    } else if (isForStatement()) {
+      s = parseForStatement();
+    } else if (isBreakStatement()) {
+      s = parseBreakStatement();
     } else if (isRepeatStatement()) {
-      return parseRepeatUntilStatement();
+      s = parseRepeatUntilStatement();
     } else {
       ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
@@ -323,6 +334,8 @@ public class Parser {
       // Otherwise return a statement expression
       return new StatementExpression(exprs);
     }
+
+    return s;
   }
 
   private Statement parseRepeatUntilStatement() throws IllegalParseException {
@@ -615,5 +628,21 @@ public class Parser {
     public int hashCode() {
       return token != null ? token.hashCode() : 0;
     }
+  }
+
+  public void start() throws InterruptedException {
+    while (true) {
+      try {
+
+        Statement statement = parseStatement();
+        out.add(statement);
+      } catch (IllegalParseException e) {
+        e.printStackTrace();
+      }
+    }
+  }
+
+  public BufferedChannel<Statement> getOut() {
+    return out;
   }
 }
