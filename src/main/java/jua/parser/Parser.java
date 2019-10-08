@@ -305,28 +305,22 @@ public class Parser {
 
     if (isLocalAssignment()) {
       return parseAssignment();
-    }
-    while (currentToken().isSubtype(Delimiter.NEWLINE)) {
-      advanceTokens();
-    }
-
-    Statement s;
-    if (isFunctionStatement()) {
-      s = parseFunctionStatement();
+    } else if (isFunctionStatement()) {
+      return parseFunctionStatement();
     } else if (isReturnStatement()) {
-      s = parseReturnStatement();
+      return parseReturnStatement();
     } else if (isIfStatement()) {
-      s = parseIfStatement();
+      return parseIfStatement();
     } else if (isBlockStatement()) {
-      s = parseBlockStatement();
+      return parseBlockStatement();
     } else if (isWhileStatement()) {
-      s = parseWhileStatement();
+      return parseWhileStatement();
     } else if (isForStatement()) {
-      s = parseForStatement();
+      return parseForStatement();
     } else if (isBreakStatement()) {
-      s = parseBreakStatement();
+      return parseBreakStatement();
     } else if (isRepeatStatement()) {
-      s = parseRepeatUntilStatement();
+      return parseRepeatUntilStatement();
     } else {
       ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
@@ -345,8 +339,6 @@ public class Parser {
       // Otherwise return a statement expression
       return new StatementExpression(exprs);
     }
-
-    return s;
   }
 
   private Statement parseRepeatUntilStatement() throws IllegalParseException {
