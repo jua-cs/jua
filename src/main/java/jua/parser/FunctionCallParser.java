@@ -21,7 +21,8 @@ public class FunctionCallParser implements InfixParser {
       throw new IllegalParseException("lhs is not a Variable but a " + lhs.getClass());
     }
 
-    ExpressionFunctionCall exp = ExpressionFactory.create((Variable) lhs);
+    ExpressionFunctionCall exp =
+        ExpressionFactory.create((Variable) lhs, tok.getLine(), tok.getPosition());
 
     // if there is no args, we look for a ')'
     if (parser.currentToken().isSubtype(Delimiter.RPAREN)) {

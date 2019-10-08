@@ -15,15 +15,13 @@ public class ExpressionFunctionCall extends Expression {
   private Variable func;
   private ArrayList<Expression> args = new ArrayList<>();
 
-  ExpressionFunctionCall(Variable var) {
-    // TODO we loose line and position doing this
-    super(TokenFactory.create(var.name()));
+  ExpressionFunctionCall(Variable var, int line, int position) {
+    super(TokenFactory.create(var.name(), line, position));
     func = var;
   }
 
-  ExpressionFunctionCall(Variable var, ArrayList<Expression> args) {
-    // TODO we loose line and position doing this
-    super(TokenFactory.create(var.name()));
+  ExpressionFunctionCall(Variable var, int line, int position, ArrayList<Expression> args) {
+    super(TokenFactory.create(var.name(), line, position));
     func = var;
     this.args = args;
   }

@@ -513,6 +513,8 @@ public class ParserTest {
         new Tuple<>(
             ExpressionFactory.create(
                 func,
+                0,
+                0,
                 util.Util.createArrayList(
                     ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))),
             ExpressionFactory.create(TokenFactory.create("g"))));
@@ -546,6 +548,8 @@ public class ParserTest {
         new Tuple<>(
             ExpressionFactory.create(
                 func,
+                0,
+                0,
                 util.Util.createArrayList(
                     ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))),
             ExpressionFactory.create(TokenFactory.create("g"))));
@@ -566,6 +570,8 @@ public class ParserTest {
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "3")),
             ExpressionFactory.create(
                 func,
+                0,
+                0,
                 util.Util.createArrayList(ExpressionFactory.create(TokenFactory.create("x"))))));
     tuples.add(
         new Tuple<>(

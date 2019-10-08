@@ -2,6 +2,7 @@ package jua.ast;
 
 import java.util.ArrayList;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaObject;
@@ -31,7 +32,7 @@ public class StatementExpression extends Statement {
 
   @Override
   public String toString() {
-    return exprs.toString();
+    return exprs.stream().map(Object::toString).collect(Collectors.joining(", "));
   }
 
   @Override
@@ -50,7 +51,12 @@ public class StatementExpression extends Statement {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    // TODO: FIXME  we should evaluate everything
-    return exprs.get(0).evaluate(scope);
+    ArrayList<LuaObject> objects = new ArrayList<>();
+    for (Expression expr : exprs) {
+      objects.add(expr.evaluate(scope));
+    }
+
+    // TODO: fixme we should support multiple LuaObjects
+    return objects.get(0);
   }
 }
