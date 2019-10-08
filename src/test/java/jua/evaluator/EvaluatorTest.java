@@ -251,15 +251,7 @@ public class EvaluatorTest {
   @Test
   void testRepeatUntil() throws LuaRuntimeException, IllegalParseException {
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
-    tests.add(
-        new Tuple<>(
-            "a = 0\n"
-                + "repeat\n"
-                + "  a = a + 1\n"
-                + "until a == 2\n"
-                + "a",
-            "2"));
-
+    tests.add(new Tuple<>("a = 0\n" + "repeat\n" + "  a = a + 1\n" + "until a == 2\n" + "a", "2"));
 
     for (Tuple<String, String> t : tests) {
       var obj = setupEval(t.x);

@@ -602,11 +602,13 @@ public class ParserTest {
     ArrayList<Statement> expected = new ArrayList<>();
 
     Token var_a = TokenFactory.create("a");
-    StatementExpression printStatement = new StatementExpression(
+    StatementExpression printStatement =
+        new StatementExpression(
             ExpressionFactory.create(
-                    ExpressionFactory.create((TokenIdentifier) TokenFactory.create("print")),
-                    0, 0,
-                    Util.createArrayList(ExpressionFactory.create(var_a))));
+                ExpressionFactory.create((TokenIdentifier) TokenFactory.create("print")),
+                0,
+                0,
+                Util.createArrayList(ExpressionFactory.create(var_a))));
 
     expected.add(
         new StatementAssignment(
