@@ -12,7 +12,7 @@ public class Tables {
     LuaTable table = new LuaTable();
 
     table.put(new LuaString("remove"), new Remove());
-    return new LuaTable();
+    return table;
   }
 
   private static class Remove extends LuaFunction {
