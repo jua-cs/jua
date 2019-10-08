@@ -1,5 +1,6 @@
 plugins {
     id 'java'
+    id 'org.beryx.jlink' version '2.16.0'
 }
 
 group 'fr.ecp.student'
@@ -36,4 +37,11 @@ test {
 
 run {
     standardInput = System.in
+}
+
+jlink {
+    options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
+    launcher {
+        name ='jua'
+    }
 }
