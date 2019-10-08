@@ -240,7 +240,7 @@ public class EvaluatorTest {
             runLuaScript(f, sb);
             String expected =
                 new String(Files.readAllBytes(Paths.get(f.replace(".lua", ".expected"))));
-            assertEquals(expected.strip(), sb.toString().strip());
+            assertEquals(expected.strip(), sb.toString().strip(), String.format("File: %s", f));
 
           } catch (IOException | IllegalParseException e) {
             e.printStackTrace();

@@ -16,6 +16,15 @@ public interface LuaObject {
     }
   }
 
+  public static LuaTable toTable(LuaObject table) throws IllegalTypeException {
+    if (!(table instanceof LuaTable)) {
+      throw new IllegalTypeException(
+          String.format("Can't index LuaObject %s of type %s", table, table.getClass()));
+    }
+
+    return (LuaTable) table;
+  }
+
   // TODO casting functions
 
   String repr();

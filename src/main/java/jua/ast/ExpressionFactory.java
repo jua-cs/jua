@@ -84,13 +84,12 @@ public class ExpressionFactory {
     return new ExpressionLiteral(token);
   }
 
-  public static ExpressionFunctionCall create(ExpressionIdentifier identifier) {
-    return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()));
+  public static ExpressionFunctionCall create(Variable var) {
+    return new ExpressionFunctionCall(var);
   }
 
-  public static ExpressionFunctionCall create(
-      ExpressionIdentifier identifier, ArrayList<Expression> args) {
-    return new ExpressionFunctionCall(TokenFactory.create(identifier.getIdentifier()), args);
+  public static ExpressionFunctionCall create(Variable var, ArrayList<Expression> args) {
+    return new ExpressionFunctionCall(var, args);
   }
 
   public static ExpressionFunction createExpressionFunction(

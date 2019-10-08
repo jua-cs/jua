@@ -35,8 +35,7 @@ public class LuaFunction implements LuaObject {
     LuaReturn ret = evaluate(scope, args);
 
     // only unwrap a LuaReturn if we reach a function call
-    LuaObject value = ret.getValues().get(0);
-    return value;
+    return ret.getValues().get(0);
   }
 
   public LuaReturn evaluate(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {

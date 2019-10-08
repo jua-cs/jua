@@ -9,7 +9,7 @@ import jua.token.Operator;
 import jua.token.Token;
 import jua.token.TokenFactory;
 
-public class ExpressionIndex extends ExpressionBinary {
+public class ExpressionIndex extends ExpressionBinary implements Variable {
   public ExpressionIndex(Token token, Expression lhs, Expression rhs) {
     super(TokenFactory.create(Operator.INDEX, token.getLine(), token.getPosition()), lhs, rhs);
   }
@@ -33,5 +33,17 @@ public class ExpressionIndex extends ExpressionBinary {
     }
 
     return ((LuaTable) table).get(rhs.evaluate(scope));
+  }
+
+  @Override
+  public void assign(Scope scope, LuaObject value, boolean isLocal) throws LuaRuntimeException {
+    LuaObject var = lhs.evaluate(scope);
+    LuaTable table = LuaObject.toTable(var);
+    table.put(rhs.evaluate(scope), value);
+  }
+
+  @Override
+  public String name() {
+    return toString();
   }
 }

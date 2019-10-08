@@ -34,7 +34,7 @@ public class TokenFactory {
     return new TokenLiteral(l, value, line, pos);
   }
 
-  public static Token create(String identifier) {
+  public static TokenIdentifier create(String identifier) {
     return new TokenIdentifier(identifier, 0, 0);
   }
 

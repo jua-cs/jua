@@ -60,7 +60,7 @@ public class Parser {
     registerBinaryOperator(Operator.GTE, 3);
     registerBinaryOperator(Operator.LT, 3);
     registerBinaryOperator(Operator.LTE, 3);
-    registerBinaryOperator(Operator.DOT, 8);
+    registerBinaryOperator(Operator.DOT, 10);
 
     register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(9));
 
@@ -134,7 +134,7 @@ public class Parser {
       advanceTokens();
     }
     // At least one identifier
-    ArrayList<ExpressionIdentifier> identifiers = parseCommaSeparatedExpressions(0, max);
+    ArrayList<Variable> identifiers = parseCommaSeparatedExpressions(0, max);
 
     // Store the '=' position
     Token assignTok = currentToken();
@@ -149,14 +149,14 @@ public class Parser {
     return parseExpression(0);
   }
 
-  protected <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(int precedence)
+  protected <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence)
       throws IllegalParseException {
     return parseCommaSeparatedExpressions(precedence, -1);
   }
 
   @SuppressWarnings(value = "unchecked")
-  private <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(
-      int precedence, int max) throws IllegalParseException {
+  private <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence, int max)
+      throws IllegalParseException {
     ArrayList<T> exprs = new ArrayList<>();
 
     exprs.add((T) parseExpression());
@@ -277,7 +277,7 @@ public class Parser {
   }
 
   public Statement parseStatement() throws IllegalParseException {
-    if (isAssignmentStatement()) {
+    if (isLocalAssignment()) {
       return parseAssignment();
     } else if (isFunctionStatement()) {
       return parseFunctionStatement();
@@ -294,7 +294,22 @@ public class Parser {
     } else if (isBreakStatement()) {
       return parseBreakStatement();
     } else {
-      return new StatementExpression(parseExpression());
+      ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
+
+      // Check if we are on an assignment
+      if (currentToken().isSubtype(Operator.ASSIGN)) {
+        // Cast into variables
+        ArrayList<Variable> vars = new ArrayList<>();
+        exprs.forEach(expr -> vars.add((Variable) expr));
+
+        TokenOperator assignTok = (TokenOperator) currentToken();
+        consume(Operator.ASSIGN);
+
+        return new StatementAssignment(assignTok, vars, parseCommaSeparatedExpressions(0), false);
+      }
+
+      // Otherwise return a statement expression
+      return new StatementExpression(exprs);
     }
   }
 
@@ -335,6 +350,10 @@ public class Parser {
 
   private boolean isReturnStatement() {
     return currentToken().isSubtype(Keyword.RETURN);
+  }
+
+  private boolean isLocalAssignment() {
+    return currentToken().isSubtype(Keyword.LOCAL);
   }
 
   protected boolean isAssignmentStatement() {
@@ -455,7 +474,7 @@ public class Parser {
       throw new IllegalParseException("expected assignment in for loop");
     }
     StatementAssignment assignment = parseAssignment();
-    ExpressionIdentifier variable = assignment.getLhs().get(0);
+    ExpressionIdentifier variable = (ExpressionIdentifier) assignment.getLhs().get(0);
     Expression var = assignment.getRhs().get(0);
     Expression limit = null;
     Expression step = null;
