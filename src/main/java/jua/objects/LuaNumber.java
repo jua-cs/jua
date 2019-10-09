@@ -37,6 +37,10 @@ public class LuaNumber implements LuaObject {
     return value;
   }
 
+  public int getIntValue() {
+    return value.intValue();
+  }
+
   @Override
   public String repr() {
     if (value == Math.floor(value)) {

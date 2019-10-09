@@ -13,9 +13,13 @@ public class Print extends LuaFunction {
   private final OutputStream out;
   public static final String name = "print";
 
-  public Print(Scope environment, OutputStream out) {
+  private Print(Scope environment, OutputStream out) {
     super(null, environment, null);
     this.out = out;
+  }
+
+  static void register(Scope scope, OutputStream out) {
+    scope.assign(name, new Print(scope, out));
   }
 
   public LuaReturn evaluate(ArrayList<LuaObject> args) throws LuaRuntimeException {

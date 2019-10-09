@@ -26,8 +26,7 @@ public class ExpressionHash extends ExpressionUnary {
     }
 
     if (o instanceof LuaTable) {
-      // TODO
-      return new LuaNumber(0.0);
+      return new LuaNumber((double) ((LuaTable) o).size());
     }
 
     throw new IllegalTypeException(

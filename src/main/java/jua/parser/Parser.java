@@ -70,6 +70,7 @@ public class Parser {
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(8));
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(8));
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(8));
+    register(TokenFactory.create(Operator.HASH), (PrefixParser) new OperatorParser(8));
     register(TokenFactory.create(Keyword.FUNCTION), (PrefixParser) new FunctionExprParser());
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());

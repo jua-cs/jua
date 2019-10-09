@@ -10,8 +10,9 @@ public class Builtin {
 
   public static Scope createScope(OutputStream out) {
     Scope scope = new Scope(false);
-    scope.assign(Print.name, new Print(scope, out));
-    scope.assign(Tables.name, Tables.create(scope));
+    Print.register(scope, out);
+    Tables.register(scope);
+    Cast.register(scope);
     return scope;
   }
 }

@@ -1,0 +1,149 @@
+false
+inspect number: 1
+nil
+1
+2
+3
+nil
+nil
+nil
+nil
+nil
+3
+---
+inspect number: 2
+nil
+hello
+2
+3
+nil
+nil
+nil
+nil
+nil
+3
+---
+inspect number: 3
+nil
+hello
+2
+3
+nil
+nil
+nil
+test-string
+nil
+3
+---
+inspect number: 4
+nil
+hello
+2
+3
+nil
+nil
+nil
+cc
+nil
+3
+---
+inspect number: 5
+nil
+hello
+2
+3
+nil
+nil
+nil
+cc
+new
+3
+---
+inspect number: 6
+nil
+2
+3
+nil
+nil
+nil
+nil
+cc
+new
+2
+---
+inspect number: 7
+nil
+2
+3
+last
+nil
+nil
+nil
+cc
+new
+3
+---
+inspect number: 8
+nil
+2
+3
+last
+new last
+nil
+nil
+cc
+new
+4
+---
+2|3|last|new last
+hi
+inspect number: 9
+nil
+1
+2
+3
+nil
+nil
+nil
+nil
+nil
+3
+---
+inspect number: 10
+nil
+1
+2
+3
+nil
+nil
+100
+nil
+nil
+3
+---
+inspect number: 11
+nil
+1
+2
+3
+nil
+5
+100
+nil
+nil
+3
+---
+inspect number: 12
+nil
+1
+2
+3
+4
+5
+100
+nil
+nil
+5
+---
+0
+0
