@@ -59,6 +59,13 @@ print(#{hello = 1, hi = 2})
 print(#{[4.5] = 1, [3.2] = 2})
 
 x.print = function(table) print(table[1]) end
+x.reset_with = function(table, val)
+    table = {1, 2, 3}
+    table['test'] = 'got reset !' .. val
+end
 
 x.print(x)
 x:print()
+
+x:reset_with(100)
+inspect(13)

@@ -91,10 +91,6 @@ public class ExpressionFactory {
     return new ExpressionFunctionCall(var, line, position);
   }
 
-  public static ExpressionMethodCall create(ExpressionFunctionCall expr) {
-    return new ExpressionMethodCall(expr);
-  }
-
   public static ExpressionFunctionCall create(
       Variable var, int line, int position, ArrayList<Expression> args) {
     return new ExpressionFunctionCall(var, line, position, args);

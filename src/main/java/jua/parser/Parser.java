@@ -140,11 +140,13 @@ public class Parser {
     advanceTokens();
   }
 
-  void consumeIdentifier() throws IllegalParseException {
-    if (!(currentToken().isIdentifier())) {
+  TokenIdentifier consumeIdentifier() throws IllegalParseException {
+    Token tok = currentToken();
+    if (!(tok.isIdentifier())) {
       throw new IllegalParseException("Expecting an identifier but found a" + nextToken());
     }
     advanceTokens();
+    return (TokenIdentifier) tok;
   }
 
   private StatementAssignment parseAssignment() throws IllegalParseException {
