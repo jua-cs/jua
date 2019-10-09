@@ -1,7 +1,10 @@
 package jua.parser;
 
 import java.util.ArrayList;
-import jua.ast.*;
+import jua.ast.Expression;
+import jua.ast.ExpressionFactory;
+import jua.ast.ExpressionFunctionCall;
+import jua.ast.Variable;
 import jua.token.Delimiter;
 import jua.token.Token;
 
@@ -14,7 +17,7 @@ public class FunctionCallParser implements InfixParser {
   }
 
   @Override
-  public Expression parseInfix(Parser parser, Token tok, Expression lhs)
+  public ExpressionFunctionCall parseInfix(Parser parser, Token tok, Expression lhs)
       throws IllegalParseException {
     // Parser is on the jua.token nxt "(", lhs is the function identifier
     if (!(lhs instanceof Variable)) {

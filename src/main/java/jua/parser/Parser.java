@@ -65,6 +65,7 @@ public class Parser {
     registerBinaryOperator(Operator.DOT, 10);
 
     register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(9));
+    register(TokenFactory.create(Operator.COLON), new MethodCallParser(9));
 
     // Register the class which implements PrefixParser interface
     register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser());
@@ -73,7 +74,7 @@ public class Parser {
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(8));
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(8));
     register(TokenFactory.create(Operator.HASH), (PrefixParser) new OperatorParser(8));
-    register(TokenFactory.create(Keyword.FUNCTION), (PrefixParser) new FunctionExprParser());
+    register(TokenFactory.create(Keyword.FUNCTION), new FunctionExprParser());
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());
   }
@@ -604,6 +605,27 @@ public class Parser {
     return args;
   }
 
+  public void start() throws InterruptedException {
+    while (currentTokenIsValid()) {
+      try {
+
+        Statement statement = parseStatement();
+        out.add(statement);
+      } catch (IllegalParseException e) {
+        e.printStackTrace();
+        // send a nil to reset the repl
+        out.add(
+            new StatementExpression(
+                ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
+      }
+    }
+    out.add(new StatementEOP());
+  }
+
+  public BufferedChannel<Statement> getOut() {
+    return out;
+  }
+
   // Used to access the HasmMap with Token, with still a functioning equals for Lexer
   private static class TokenHashmMapKey {
     private final Token token;
@@ -628,26 +650,5 @@ public class Parser {
     public int hashCode() {
       return token != null ? token.hashCode() : 0;
     }
-  }
-
-  public void start() throws InterruptedException {
-    while (currentTokenIsValid()) {
-      try {
-
-        Statement statement = parseStatement();
-        out.add(statement);
-      } catch (IllegalParseException e) {
-        e.printStackTrace();
-        // send a nil to reset the repl
-        out.add(
-            new StatementExpression(
-                ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
-      }
-    }
-    out.add(new StatementEOP());
-  }
-
-  public BufferedChannel<Statement> getOut() {
-    return out;
   }
 }

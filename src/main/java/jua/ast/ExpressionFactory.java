@@ -1,7 +1,10 @@
 package jua.ast;
 
 import java.util.ArrayList;
-import jua.token.*;
+import jua.token.Token;
+import jua.token.TokenIdentifier;
+import jua.token.TokenLiteral;
+import jua.token.TokenOperator;
 
 public class ExpressionFactory {
   public static ExpressionBinary create(TokenOperator token, Expression lhs, Expression rhs) {
@@ -86,6 +89,10 @@ public class ExpressionFactory {
 
   public static ExpressionFunctionCall create(Variable var, int line, int position) {
     return new ExpressionFunctionCall(var, line, position);
+  }
+
+  public static ExpressionMethodCall create(ExpressionFunctionCall expr) {
+    return new ExpressionMethodCall(expr);
   }
 
   public static ExpressionFunctionCall create(

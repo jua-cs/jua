@@ -12,8 +12,8 @@ import jua.token.TokenFactory;
 
 public class ExpressionFunctionCall extends Expression {
 
-  private Variable func;
-  private ArrayList<Expression> args = new ArrayList<>();
+  protected ArrayList<Expression> args = new ArrayList<>();
+  Variable func;
 
   ExpressionFunctionCall(Variable var, int line, int position) {
     super(TokenFactory.create(var.name(), line, position));

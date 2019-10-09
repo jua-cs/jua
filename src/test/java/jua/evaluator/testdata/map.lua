@@ -57,3 +57,8 @@ inspect(12)
 
 print(#{hello = 1, hi = 2})
 print(#{[4.5] = 1, [3.2] = 2})
+
+x.print = function(table) print(table[1]) end
+
+x.print(x)
+x:print()
