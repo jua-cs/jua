@@ -638,6 +638,10 @@ public class Parser {
         out.add(statement);
       } catch (IllegalParseException e) {
         e.printStackTrace();
+        // send a nil to reset the repl
+        out.add(
+            new StatementExpression(
+                ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
       }
     }
   }
