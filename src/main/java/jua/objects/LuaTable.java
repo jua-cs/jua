@@ -33,6 +33,10 @@ public class LuaTable implements LuaObject {
     return map.getOrDefault(key, LuaNil.getInstance());
   }
 
+  public void put(String key, LuaObject value) {
+    put(new LuaString(key), value);
+  }
+
   public void put(LuaObject key, LuaObject value) {
     if (isPositiveInteger(key)) {
       // Check if there is enough space to store it in the array list

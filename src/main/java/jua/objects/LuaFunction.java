@@ -7,7 +7,7 @@ import jua.evaluator.IllegalCastException;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 
-public class LuaFunction implements LuaObject {
+public class LuaFunction implements LuaObject, Function {
   protected ArrayList<String> argNames;
   protected Scope environment;
   StatementList block;

@@ -24,9 +24,10 @@ import jua.parser.Parser;
 import org.junit.jupiter.api.Test;
 import util.Tuple;
 
-public class EvaluatorTest {
+class EvaluatorTest {
 
-  static final Path testdata = Paths.get("src", "test", "java", "jua", "evaluator", "testdata");
+  private static final Path testdata =
+      Paths.get("src", "test", "java", "jua", "evaluator", "testdata");
 
   private LuaObject setupEval(String in) throws LuaRuntimeException, IllegalParseException {
     return setupEval(in, new Scope());

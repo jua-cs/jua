@@ -6,7 +6,6 @@ import jua.ast.StatementExpression;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.lexer.Lexer;
-import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;

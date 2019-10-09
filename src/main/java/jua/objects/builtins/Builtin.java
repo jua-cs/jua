@@ -2,6 +2,7 @@ package jua.objects.builtins;
 
 import java.io.OutputStream;
 import jua.evaluator.Scope;
+import jua.objects.Function;
 
 public class Builtin {
   public static Scope createScope() {
@@ -14,5 +15,9 @@ public class Builtin {
     Tables.register(scope);
     Cast.register(scope);
     return scope;
+  }
+
+  public static BuiltinFunction createFunction(Function f) {
+    return new BuiltinFunction(f);
   }
 }
