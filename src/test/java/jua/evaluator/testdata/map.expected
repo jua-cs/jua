@@ -151,13 +151,13 @@ nil
 1
 inspect number: 13
 nil
-1
+got reset ! boom for 1 !
 2
 3
 4
 5
 100
-nil
+got reset ! boom
 nil
 5
 ---
