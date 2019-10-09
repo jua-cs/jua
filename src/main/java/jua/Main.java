@@ -1,7 +1,9 @@
 package jua;
 
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 import jua.lexer.Lexer;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
@@ -11,29 +13,63 @@ import util.BufferedChannel;
 public class Main {
 
   public static void main(String[] args) throws IllegalParseException {
-    if (args.length > 0) {
-      debug();
+    ArrayList<String> argsList = new ArrayList<String>(Arrays.asList(args));
+
+    if (argsList.size() > 0
+        && (argsList.contains("-h")
+            || argsList.contains("--help")
+            || argsList.get(0).equals("help"))) {
+      // TODO move usage elsewhere
+      System.err.println(
+          "Welcome to jua ! Usage:\n"
+              + "\n"
+              + "- jua to launch a Lua REPL\n"
+              + "- jua <file.lua> to run a lua script (use -d or --debug to enable the debug mode)\n"
+              + "- jua -h or jua --help to print this help message\n");
+      System.exit(0);
+    }
+
+    ArrayList<String> nonFlags =
+        argsList.stream()
+            .filter(x -> !x.startsWith("-"))
+            .collect(Collectors.toCollection(ArrayList::new));
+
+    // Check if we should use a file or stdin
+    InputStream in = System.in;
+    if (nonFlags.size() > 0) {
+      String name = nonFlags.get(0);
+      try {
+        in = new FileInputStream(name);
+      } catch (FileNotFoundException e) {
+        System.err.printf("Could not find file: %s\n", name);
+        System.exit(1);
+      }
+    }
+
+    if (argsList.contains("-d") || argsList.contains("--debug")) {
+      debug(in);
     } else {
-      repl();
+      repl(in);
     }
   }
 
-  private static void noninteractive(BufferedChannel<Character> in) throws InterruptedException {
+  private static void noninteractive(BufferedChannel<Character> out, InputStream in)
+      throws InterruptedException {
     try {
       while (true) {
-        int ch = System.in.read();
+        int ch = in.read();
         if (ch == -1) {
           break;
         }
-        in.add((char) ch);
+        out.add((char) ch);
       }
     } catch (IOException e) {
       e.printStackTrace();
     }
-    in.add('\0');
+    out.add('\0');
   }
 
-  private static void interactive(BufferedChannel<Character> in) throws InterruptedException {
+  private static void interactive(BufferedChannel<Character> out) throws InterruptedException {
     var console = System.console();
 
     while (true) {
@@ -45,22 +81,22 @@ public class Main {
       }
       line += '\n';
       for (Character ch : line.toCharArray()) {
-        in.add(ch);
+        out.add(ch);
       }
     }
   }
 
-  private static void repl() {
-    BufferedChannel<Character> in = new BufferedChannel<>();
-    var interpreter = new Interpreter(in);
-    boolean isInteractive = System.console() != null;
+  private static void repl(InputStream in) {
+    BufferedChannel<Character> ch = new BufferedChannel<>();
+    var interpreter = new Interpreter(ch);
+    boolean isInteractive = System.console() != null && in == System.in;
     new Thread(
             () -> {
               try {
                 if (isInteractive) {
-                  interactive(in);
+                  interactive(ch);
                 } else {
-                  noninteractive(in);
+                  noninteractive(ch, in);
                 }
               } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -70,10 +106,10 @@ public class Main {
     interpreter.start(isInteractive);
   }
 
-  private static void debug() throws IllegalParseException {
+  private static void debug(InputStream in) throws IllegalParseException {
     String text = null;
     try {
-      text = new String(System.in.readAllBytes());
+      text = new String(in.readAllBytes());
     } catch (IOException e) {
       e.printStackTrace();
     }
