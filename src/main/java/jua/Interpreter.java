@@ -15,6 +15,9 @@ public class Interpreter {
   private Lexer lexer;
   private Parser parser;
   private Scope scope;
+  private Thread lexerWorker;
+  private Thread parserWorker;
+  private Thread evaluationWorker;
 
   public Interpreter(String in) {
     lexer = new Lexer(in);
@@ -48,43 +51,51 @@ public class Interpreter {
             });
   }
 
-  public void start() {
+  public void start(boolean isInteractive) {
 
     // start lexer worker
-    new Thread(
+    lexerWorker = new Thread(
             () -> {
               try {
                 lexer.start();
               } catch (InterruptedException e) {
                 e.printStackTrace();
               }
-            })
-        .start();
+            });
+    lexerWorker.start();
 
     // start parser worker
-    new Thread(
+    parserWorker =  new Thread(
             () -> {
               try {
                 parser.start();
               } catch (InterruptedException e) {
                 e.printStackTrace();
               }
-            })
-        .start();
-
+            });
+    parserWorker.start();
     // start evaluation
     BufferedChannel<Statement> in = parser.getOut();
-    while (true) {
-      System.out.print("> ");
-      try {
-        Statement s = in.read();
-        LuaObject o = s.evaluate(scope);
-        if (s instanceof StatementExpression) {
-          System.out.println(o.repr());
+    evaluationWorker = new Thread(() -> {
+      while (true) {
+        if (isInteractive) {
+          System.out.print("> ");
         }
-      } catch (InterruptedException | LuaRuntimeException e) {
-        e.printStackTrace();
+        try {
+          if (in.isClosed()) {
+            break;
+          }
+          Statement s = in.read();
+          LuaObject o = s.evaluate(scope);
+          if (s instanceof StatementExpression) {
+            System.out.println(o.repr());
+          }
+        } catch (LuaRuntimeException | InterruptedException e) {
+          e.printStackTrace();
+          break;
+        }
       }
-    }
+    });
+    evaluationWorker.start();
   }
 }

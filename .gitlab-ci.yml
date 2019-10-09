@@ -44,4 +44,4 @@ build-jlink:
 run-integration-tests:
   stage: integration-test
   script:
-    - echo "x = y" | java -jar build/libs/jua-0.0.0.jar
+    - echo "x = y" | java -jar build/libs/jua-0.0.0.jar --debug

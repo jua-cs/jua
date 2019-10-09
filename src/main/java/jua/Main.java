@@ -3,6 +3,8 @@ package jua;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.function.Consumer;
+
 import jua.lexer.Lexer;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
@@ -12,29 +14,65 @@ import util.BufferedChannel;
 public class Main {
 
   public static void main(String[] args) throws IllegalParseException {
-    repl();
+    if (args.length > 0) {
+      debug();
+    } else {
+      repl();
+    }
+  }
+
+  private static void noninteractive(BufferedChannel<Character> in) throws InterruptedException {
+    try {
+      while (true) {
+        int ch = System.in.read();
+        if (ch == -1) {
+          break;
+        }
+        in.add((char) ch);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    in.add('\0');
+    in.close();
+  }
+
+  private static void interactive(BufferedChannel<Character> in) throws InterruptedException {
+    var console = System.console();
+
+    while (true) {
+      String line = console.readLine();
+
+      // Console is closed
+      if (line == null) {
+        break;
+      }
+      line += '\n';
+      for (Character ch : line.toCharArray()) {
+        in.add(ch);
+      }
+    }
+    in.close();
   }
 
   private static void repl() {
-
     BufferedChannel<Character> in = new BufferedChannel<>();
-    var scanner = new Scanner(System.in);
+    var interpreter = new Interpreter(in);
+    boolean isInteractive = System.console() != null;
     new Thread(
             () -> {
-              while (true) {
-                String line = scanner.nextLine() + '\n';
-                for (Character ch : line.toCharArray()) {
-                  try {
-                    in.add(ch);
-                  } catch (InterruptedException e) {
-                    e.printStackTrace();
-                  }
+              try {
+                if (isInteractive) {
+                  interactive(in);
+                } else {
+                  noninteractive(in);
                 }
+              } catch (InterruptedException e) {
+                e.printStackTrace();
               }
             })
         .start();
-    var interpreter = new Interpreter(in);
-    interpreter.start();
+    interpreter.start(isInteractive);
   }
 
   private static void debug() throws IllegalParseException {

@@ -275,6 +275,10 @@ public class Lexer {
     while (true) {
       Token token = nextToken();
       out.add(token);
+      if (token == null || token instanceof TokenEOF) {
+        break;
+      }
     }
+    out.close();
   }
 }

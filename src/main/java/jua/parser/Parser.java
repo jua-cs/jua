@@ -631,7 +631,7 @@ public class Parser {
   }
 
   public void start() throws InterruptedException {
-    while (true) {
+    while (currentTokenIsValid()) {
       try {
 
         Statement statement = parseStatement();
@@ -644,6 +644,7 @@ public class Parser {
                 ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
       }
     }
+    out.close();
   }
 
   public BufferedChannel<Statement> getOut() {

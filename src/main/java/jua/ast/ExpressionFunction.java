@@ -8,7 +8,7 @@ import jua.objects.LuaFunction;
 import jua.objects.LuaObject;
 import jua.token.Token;
 
-public class ExpressionFunction extends Expression {
+public class ExpressionFunction extends Expression implements Variable {
   protected ArrayList<ExpressionIdentifier> args;
   private StatementList statements;
 
@@ -71,5 +71,15 @@ public class ExpressionFunction extends Expression {
     }
 
     return new LuaFunction(argNames, scope, statements);
+  }
+
+  @Override
+  public void assign(Scope scope, LuaObject value, boolean isLocal) throws LuaRuntimeException {
+    // nothing
+  }
+
+  @Override
+  public String name() {
+    return String.format("function %s", hashCode());
   }
 }
