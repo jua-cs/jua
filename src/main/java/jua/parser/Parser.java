@@ -195,14 +195,13 @@ public class Parser {
 
   protected Expression parseExpression(int precedence) throws IllegalParseException {
     Token tok = currentToken();
+    // can't use consume here
+    advanceTokens();
 
     PrefixParser prefix = getPrefixParser(tok);
     if (prefix == null) {
-      advanceTokens();
       throw new IllegalParseException(String.format("Unexpected jua.token: %s", tok));
     }
-    // can't use consume here
-    advanceTokens();
 
     Expression lhs = prefix.parsePrefix(this, tok);
     while (precedence < getCurrTokenPrecedence()) {

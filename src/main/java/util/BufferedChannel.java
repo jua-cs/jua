@@ -7,7 +7,7 @@ public class BufferedChannel<T> {
   private static final int size = 10000;
 
   private LinkedBlockingQueue<T> queue = new LinkedBlockingQueue<>(size);
-  private ArrayList<T> buffer = new ArrayList<>();
+  private final ArrayList<T> buffer = new ArrayList<>();
 
   public static BufferedChannel<Character> fromString(String in) {
     BufferedChannel<Character> bc = new BufferedChannel<>();

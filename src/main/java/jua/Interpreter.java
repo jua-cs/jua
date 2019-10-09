@@ -2,6 +2,7 @@ package jua;
 
 import java.io.OutputStream;
 import jua.ast.Statement;
+import jua.ast.StatementExpression;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.lexer.Lexer;
@@ -79,7 +80,7 @@ public class Interpreter {
       try {
         Statement s = in.read();
         LuaObject o = s.evaluate(scope);
-        if (!(o == LuaNil.getInstance())) {
+        if (s instanceof StatementExpression) {
           System.out.println(o.repr());
         }
       } catch (InterruptedException | LuaRuntimeException e) {
