@@ -8,6 +8,7 @@ import jua.lexer.Lexer;
 import jua.token.*;
 import org.junit.jupiter.api.Test;
 import util.Tuple;
+import util.Util;
 
 public class ParserTest {
 
@@ -588,5 +589,54 @@ public class ParserTest {
     Expression expression = statement.getExpr();
     ExpressionTableConstructor expressionTableConstructor = (ExpressionTableConstructor) expression;
     assertIterableEquals(tuples, expressionTableConstructor.getTuples());
+  }
+
+  @Test
+  void testRepeatUntil() throws IllegalParseException {
+    String in =
+        "a = 0\n" + "repeat\n" + "  a = a + 1\n" + "  print(a)\n" + "until a == 2\n" + "print(a)";
+
+    Parser parser = new Parser((new Lexer(in)).getNTokens(0));
+
+    ArrayList<Statement> actual = parser.parse().getChildren();
+    ArrayList<Statement> expected = new ArrayList<>();
+
+    Token var_a = TokenFactory.create("a");
+    StatementExpression printStatement =
+        new StatementExpression(
+            ExpressionFactory.create(
+                ExpressionFactory.create((TokenIdentifier) TokenFactory.create("print")),
+                0,
+                0,
+                Util.createArrayList(ExpressionFactory.create(var_a))));
+
+    expected.add(
+        new StatementAssignment(
+            TokenFactory.create(Operator.ASSIGN),
+            (ExpressionIdentifier) ExpressionFactory.create(var_a),
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "0"))));
+
+    StatementList repeatBlock = new StatementList(var_a);
+    repeatBlock.addChild(
+        new StatementAssignment(
+            TokenFactory.create(Operator.ASSIGN),
+            (ExpressionIdentifier) ExpressionFactory.create(var_a),
+            ExpressionFactory.create(
+                TokenFactory.create(Operator.PLUS),
+                ExpressionFactory.create(var_a),
+                ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))));
+    repeatBlock.addChild(printStatement);
+    expected.add(
+        new StatementRepeatUntil(
+            TokenFactory.create("repeat"),
+            ExpressionFactory.create(
+                TokenFactory.create(Operator.EQUALS),
+                ExpressionFactory.create(var_a),
+                ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2"))),
+            repeatBlock));
+
+    expected.add(printStatement);
+
+    assertIterableEquals(expected, actual);
   }
 }

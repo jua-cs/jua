@@ -193,4 +193,45 @@ public class LexerTest {
 
     assertIterableEquals(expected, list);
   }
+
+  @Test
+  void testRepeatUntil() {
+    String in =
+        "a = 0\n" + "repeat\n" + "  a = a + 1\n" + "  print(a)\n" + "until a == 2\n" + "print(a)";
+    Lexer lex = new Lexer(in);
+
+    ArrayList<Token> list = lex.getNTokens(0);
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(TokenFactory.create("a", 1, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
+    expected.add(TokenFactory.create(Literal.NUMBER, "0", 1, 5));
+
+    expected.add(TokenFactory.create(Keyword.REPEAT, 2, 1));
+
+    expected.add(TokenFactory.create("a", 3, 3));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 3, 5));
+    expected.add(TokenFactory.create("a", 3, 7));
+    expected.add(TokenFactory.create(Operator.PLUS, 3, 9));
+    expected.add(TokenFactory.create(Literal.NUMBER, "1", 3, 11));
+
+    expected.add(TokenFactory.create("print", 4, 3));
+    expected.add(TokenFactory.create(Delimiter.LPAREN, 4, 8));
+    expected.add(TokenFactory.create("a", 4, 9));
+    expected.add(TokenFactory.create(Delimiter.RPAREN, 4, 10));
+
+    expected.add(TokenFactory.create(Keyword.UNTIL, 5, 1));
+    expected.add(TokenFactory.create("a", 5, 7));
+    expected.add(TokenFactory.create(Operator.EQUALS, 5, 9));
+    expected.add(TokenFactory.create(Literal.NUMBER, "2", 5, 12));
+
+    expected.add(TokenFactory.create("print", 6, 1));
+    expected.add(TokenFactory.create(Delimiter.LPAREN, 6, 6));
+    expected.add(TokenFactory.create("a", 6, 7));
+    expected.add(TokenFactory.create(Delimiter.RPAREN, 6, 8));
+
+    expected.add(TokenFactory.create(Special.TokenEOF, 6, 9));
+
+    assertIterableEquals(expected, list);
+  }
 }

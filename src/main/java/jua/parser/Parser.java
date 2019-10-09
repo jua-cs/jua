@@ -42,7 +42,7 @@ public class Parser {
     this.tokenPrefixParserHashMap = new HashMap<>();
 
     // Register the class which implements InfixParser interface
-    // FIXME: ^ has greater precedence than unary operators, this is not handled at the moment
+    // TODO: ^ has greater precedence than unary operators, this is not handled at the moment
     registerBinaryOperator(Operator.PLUS, 4);
     registerBinaryOperator(Operator.ASTERISK, 6);
     registerBinaryOperator(Operator.SLASH, 6);
@@ -123,6 +123,13 @@ public class Parser {
     advanceTokens();
   }
 
+  void consumeIdentifier() throws IllegalParseException {
+    if (!(currentToken().isIdentifier())) {
+      throw new IllegalParseException("Expecting an identifier but found a" + nextToken());
+    }
+    advanceTokens();
+  }
+
   private StatementAssignment parseAssignment() throws IllegalParseException {
     return parseAssignment(-1);
   }
@@ -131,7 +138,7 @@ public class Parser {
     boolean isLocal = false;
     if (currentToken().isSubtype(Keyword.LOCAL)) {
       isLocal = true;
-      advanceTokens();
+      consume(Keyword.LOCAL);
     }
     // At least one identifier
     ArrayList<Variable> identifiers = parseCommaSeparatedExpressions(0, max);
@@ -173,6 +180,7 @@ public class Parser {
 
   protected Expression parseExpression(int precedence) throws IllegalParseException {
     Token tok = currentToken();
+    // can't use consume here
     advanceTokens();
 
     PrefixParser prefix = getPrefixParser(tok);
@@ -183,6 +191,7 @@ public class Parser {
     Expression lhs = prefix.parsePrefix(this, tok);
     while (precedence < getCurrTokenPrecedence()) {
       tok = currentToken();
+      // can't use consume here
       advanceTokens();
 
       // We are 100 % sure that infix is not null here because getCurrTokenPrecedence
@@ -249,7 +258,7 @@ public class Parser {
   protected StatementList parseListStatement() throws IllegalParseException {
     StatementList list = new StatementList(currentToken());
 
-    while (currentToken().isValid() && !isBlockEnd()) {
+    while (currentTokenIsValid() && !isBlockEnd() && !currentToken().isSubtype(Keyword.UNTIL)) {
       Statement child = parseStatement();
       list.addChild(child);
       if (child instanceof StatementReturn) {
@@ -293,6 +302,9 @@ public class Parser {
       return parseForStatement();
     } else if (isBreakStatement()) {
       return parseBreakStatement();
+
+    } else if (isRepeatStatement()) {
+      return parseRepeatUntilStatement();
     } else {
       ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
@@ -313,17 +325,31 @@ public class Parser {
     }
   }
 
+  private Statement parseRepeatUntilStatement() throws IllegalParseException {
+    Token tok = currentToken();
+    consume(Keyword.REPEAT);
+
+    Statement action = parseListStatement();
+
+    // expecting an until
+    consume(Keyword.UNTIL);
+
+    Expression condition = parseExpression();
+
+    return new StatementRepeatUntil(tok, condition, action);
+  }
+
   private StatementFunction parseFunctionStatement() throws IllegalParseException {
     // Next jua.token should be an identifier
     Token tok = currentToken();
-    advanceTokens();
+    consume(Keyword.FUNCTION);
 
     if (!currentToken().isIdentifier()) {
       throw new IllegalParseException(
           String.format("Expected identifier in function args but got: %s", currentToken()));
     }
     ExpressionIdentifier funcName = (ExpressionIdentifier) ExpressionFactory.create(currentToken());
-    advanceTokens();
+    consumeIdentifier();
 
     // Parse args
     ArrayList<ExpressionIdentifier> args = parseFuncArgs();
@@ -343,7 +369,7 @@ public class Parser {
 
   private StatementReturn parseReturnStatement() throws IllegalParseException {
     Token tok = currentToken();
-    advanceTokens();
+    consume(Keyword.RETURN);
     StatementReturn stmt = new StatementReturn(tok, parseCommaSeparatedExpressions(0));
     return stmt;
   }
@@ -354,6 +380,10 @@ public class Parser {
 
   private boolean isLocalAssignment() {
     return currentToken().isSubtype(Keyword.LOCAL);
+  }
+
+  private boolean isRepeatStatement() {
+    return currentToken().isSubtype(Keyword.REPEAT);
   }
 
   protected boolean isAssignmentStatement() {
@@ -398,8 +428,13 @@ public class Parser {
   // this argument tells parseIfStatement not to consume the only END keyword
   private StatementIf parseIfStatement(boolean nested) throws IllegalParseException {
 
-    //  TODO: use consume(Keyword.IF);
-    advanceTokens();
+    // consumeKeyword.IF or Keyword.ELSEIF;
+    try {
+      consume(Keyword.IF);
+    } catch (IllegalParseException e) {
+      consume(Keyword.ELSEIF);
+    }
+
     Expression condition = parseExpression();
 
     consume(Keyword.THEN);
@@ -416,7 +451,7 @@ public class Parser {
         alternative = parseIfStatement(true);
         break;
       case ELSE:
-        advanceTokens();
+        consume(Keyword.ELSE);
         alternative = parseListStatement();
         break;
     }
@@ -441,7 +476,7 @@ public class Parser {
 
   private Statement parseWhileStatement() throws IllegalParseException {
     Token tok = currentToken();
-    advanceTokens();
+    consume(Keyword.WHILE);
     Expression condition = parseExpression();
     if (!isBlockStatement()) {
       throw new IllegalParseException(
@@ -460,7 +495,7 @@ public class Parser {
   private StatementFor parseForStatement() throws IllegalParseException {
     // consume FOR keyword
     Token tok = currentToken();
-    advanceTokens();
+    consume(Keyword.FOR);
 
     if (isAssignmentStatement()) {
       return parseNumericForStatement(tok);
@@ -498,10 +533,7 @@ public class Parser {
     ArrayList<ExpressionIdentifier> variables = parseCommaSeparatedExpressions(0);
 
     // Check if we are on equal jua.token
-    if (!currentToken().isSubtype(Keyword.IN)) {
-      throw new IllegalParseException(String.format("Expected in keyword but got %s", tok));
-    }
-    advanceTokens();
+    consume(Keyword.IN);
 
     ArrayList<Expression> explist = parseCommaSeparatedExpressions(0);
     Expression iterator = explist.get(0);
@@ -523,10 +555,10 @@ public class Parser {
     return currentToken().isSubtype(Keyword.BREAK);
   }
 
-  private StatementBreak parseBreakStatement() {
+  private StatementBreak parseBreakStatement() throws IllegalParseException {
     // consume BREAK keyword
     Token tok = currentToken();
-    advanceTokens();
+    consume(Keyword.BREAK);
 
     return new StatementBreak(tok);
   }
@@ -544,7 +576,7 @@ public class Parser {
 
   protected ArrayList<ExpressionIdentifier> parseFuncArgs() throws IllegalParseException {
     // consume the left parenthesis
-    advanceTokens();
+    consume(Delimiter.LPAREN);
     ArrayList<ExpressionIdentifier> args = new ArrayList<>();
     // if there is no args, we look for a ')'
     if (currentToken().isSubtype(Delimiter.RPAREN)) {

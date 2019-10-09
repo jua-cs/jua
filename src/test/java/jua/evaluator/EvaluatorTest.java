@@ -248,6 +248,17 @@ public class EvaluatorTest {
         });
   }
 
+  @Test
+  void testRepeatUntil() throws LuaRuntimeException, IllegalParseException {
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("a = 0\n" + "repeat\n" + "  a = a + 1\n" + "until a == 2\n" + "a", "2"));
+
+    for (Tuple<String, String> t : tests) {
+      var obj = setupEval(t.x);
+      assertEquals(t.y, obj.repr());
+    }
+  }
+
   void runLuaScript(String name, OutputStream out) throws IOException, IllegalParseException {
     String text = new String(Files.readAllBytes(Paths.get(name)));
     Interpreter interpreter = new Interpreter(text, out);
