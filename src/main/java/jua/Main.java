@@ -2,9 +2,6 @@ package jua;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.function.Consumer;
-
 import jua.lexer.Lexer;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
@@ -34,7 +31,6 @@ public class Main {
       e.printStackTrace();
     }
     in.add('\0');
-    in.close();
   }
 
   private static void interactive(BufferedChannel<Character> in) throws InterruptedException {
@@ -52,7 +48,6 @@ public class Main {
         in.add(ch);
       }
     }
-    in.close();
   }
 
   private static void repl() {

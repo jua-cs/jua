@@ -2,14 +2,12 @@ package util;
 
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class BufferedChannel<T> {
   private static final int size = 10000;
 
   private LinkedBlockingQueue<T> queue = new LinkedBlockingQueue<>(size);
   private final ArrayList<T> buffer = new ArrayList<>();
-  private AtomicBoolean closed = new AtomicBoolean(false);
 
   public static BufferedChannel<Character> fromString(String in) {
     BufferedChannel<Character> bc = new BufferedChannel<>();
@@ -79,13 +77,5 @@ public class BufferedChannel<T> {
   public final void add(T element) throws InterruptedException {
     // System.out.printf("Adding: %s of type %s to queue\n", element, element.getClass());
     queue.put(element);
-  }
-
-  public boolean isClosed() {
-    return closed.get();
-  }
-
-  public void close() {
-    closed.set(true);
   }
 }

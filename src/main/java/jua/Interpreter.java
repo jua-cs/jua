@@ -2,6 +2,7 @@ package jua;
 
 import java.io.OutputStream;
 import jua.ast.Statement;
+import jua.ast.StatementEOP;
 import jua.ast.StatementExpression;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
@@ -54,7 +55,8 @@ public class Interpreter {
   public void start(boolean isInteractive) {
 
     // start lexer worker
-    lexerWorker = new Thread(
+    lexerWorker =
+        new Thread(
             () -> {
               try {
                 lexer.start();
@@ -65,7 +67,8 @@ public class Interpreter {
     lexerWorker.start();
 
     // start parser worker
-    parserWorker =  new Thread(
+    parserWorker =
+        new Thread(
             () -> {
               try {
                 parser.start();
@@ -76,26 +79,28 @@ public class Interpreter {
     parserWorker.start();
     // start evaluation
     BufferedChannel<Statement> in = parser.getOut();
-    evaluationWorker = new Thread(() -> {
-      while (true) {
-        if (isInteractive) {
-          System.out.print("> ");
-        }
-        try {
-          if (in.isClosed()) {
-            break;
-          }
-          Statement s = in.read();
-          LuaObject o = s.evaluate(scope);
-          if (s instanceof StatementExpression) {
-            System.out.println(o.repr());
-          }
-        } catch (LuaRuntimeException | InterruptedException e) {
-          e.printStackTrace();
-          break;
-        }
-      }
-    });
+    evaluationWorker =
+        new Thread(
+            () -> {
+              while (true) {
+                if (isInteractive) {
+                  System.out.print("> ");
+                }
+                try {
+                  Statement s = in.read();
+                  if (s instanceof StatementEOP) {
+                    break;
+                  }
+                  LuaObject o = s.evaluate(scope);
+                  if (s instanceof StatementExpression) {
+                    System.out.println(o.repr());
+                  }
+                } catch (LuaRuntimeException | InterruptedException e) {
+                  e.printStackTrace();
+                  break;
+                }
+              }
+            });
     evaluationWorker.start();
   }
 }

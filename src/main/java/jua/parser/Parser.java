@@ -644,7 +644,7 @@ public class Parser {
                 ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
       }
     }
-    out.close();
+    out.add(new StatementEOP());
   }
 
   public BufferedChannel<Statement> getOut() {

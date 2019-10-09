@@ -279,6 +279,5 @@ public class Lexer {
         break;
       }
     }
-    out.close();
   }
 }
