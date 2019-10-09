@@ -7,15 +7,16 @@ import util.BufferedChannel;
 public class Lexer {
 
   private BufferedChannel<Character> in;
+  private BufferedChannel<Token> out = new BufferedChannel<>();
   private char ch;
-  public boolean init = false;
-  private int readPosition;
+  private boolean isREPL = false;
   private int currentLine;
   private int currentPosInLine;
 
   public Lexer(BufferedChannel<Character> in) {
     this.currentLine = 1;
     this.in = in;
+    this.isREPL = true;
   }
 
   public Lexer(String in) {
@@ -24,7 +25,16 @@ public class Lexer {
   }
 
   private char peekChar() {
-    return in.peek();
+    Character c = null;
+    try {
+      c = in.peek();
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    }
+    if (c != null) {
+      return c;
+    }
+    return 0;
   }
 
   private void readChar() {
@@ -42,24 +52,22 @@ public class Lexer {
       if (ch == '\n') {
         currentPosInLine = 0;
         currentLine++;
+        if (isREPL) {
+          break;
+        }
       }
       readChar();
     }
   }
 
   public Token nextToken() {
-    if (!init) {
-      init = true;
-      readChar();
-    }
+    readChar();
 
     Token token;
-
     consumeWhitespace();
 
     // Store it now in the case of a multi char jua.token
     int currentPos = currentPosInLine;
-
     switch (ch) {
       case 0:
         // Stop on EOF
@@ -142,6 +150,9 @@ public class Lexer {
       case ':':
         token = TokenFactory.create(Delimiter.COLON, currentLine, currentPos);
         break;
+      case '\n':
+        token = TokenFactory.create(Delimiter.NEWLINE, currentLine, currentPos);
+        break;
       case '\'':
       case '"':
         // TODO more extended support for strings like:
@@ -185,9 +196,6 @@ public class Lexer {
         token = TokenFactory.create(Special.TokenInvalid, currentLine, currentPos);
     }
 
-    // Move to next char
-    readChar();
-
     return token;
   }
 
@@ -198,11 +206,12 @@ public class Lexer {
 
     // (Character.isLetter(ch) || ch == '_') is true
     identifier.append(ch);
-    readChar();
+    char nextChar = peekChar();
 
-    while (Character.isLetterOrDigit(ch) || ch == '_') {
-      identifier.append(ch);
+    while (Character.isLetterOrDigit(nextChar) || nextChar == '_') {
+      identifier.append(nextChar);
       readChar();
+      nextChar = peekChar();
     }
 
     return identifier.toString();
@@ -214,19 +223,18 @@ public class Lexer {
     }
     currentLine++;
     currentPosInLine = 0;
-    readChar();
-    consumeWhitespace();
   }
 
   private String readStringLiteral() {
     // Handle both ' and "
     char sep = ch;
-    readChar();
+    char nextChar = peekChar();
     StringBuilder str = new StringBuilder();
 
-    while (ch != sep && ch != 0) {
-      str.append(ch);
+    while (nextChar != sep && nextChar != 0) {
+      str.append(nextChar);
       readChar();
+      nextChar = peekChar();
     }
     readChar();
 
@@ -235,11 +243,14 @@ public class Lexer {
 
   private String nextNumber() {
     StringBuilder number = new StringBuilder();
+    number.append(ch);
     boolean dotSeen = false;
-    while (Character.isDigit(ch) || (!dotSeen && ch == '.')) {
-      number.append(ch);
-      dotSeen = ch == '.';
+    char nextChar = peekChar();
+    while (Character.isDigit(nextChar) || (!dotSeen && nextChar == '.')) {
+      number.append(nextChar);
+      dotSeen = nextChar == '.';
       readChar();
+      nextChar = peekChar();
     }
 
     return number.toString();
@@ -254,5 +265,16 @@ public class Lexer {
       tokens.add(tok);
     } while ((tok != null && !(tok instanceof TokenEOF) && (n <= 0 || n > tokens.size())));
     return tokens;
+  }
+
+  public BufferedChannel<Token> getOut() {
+    return out;
+  }
+
+  public void start() throws InterruptedException {
+    while (true) {
+      Token token = nextToken();
+      out.add(token);
+    }
   }
 }

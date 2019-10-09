@@ -10,6 +10,8 @@ public class Parser {
   private static final Token identifierKey = TokenFactory.create("", 0, 0);
   private static final Token literalKey = TokenFactory.create(Literal.BOOLEAN, "0", 0, 0);
   private BufferedChannel<Token> tokens;
+  private BufferedChannel<Statement> out = new BufferedChannel<>();
+
   private HashMap<TokenHashmMapKey, PrefixParser> tokenPrefixParserHashMap;
   private HashMap<TokenHashmMapKey, InfixParser> tokenInfixParserHashMap;
 
@@ -18,7 +20,7 @@ public class Parser {
   }
 
   public Parser(ArrayList<Token> tokenList) {
-    BufferedChannel<Token> tokens = new BufferedChannel<Token>();
+    BufferedChannel<Token> tokens = new BufferedChannel<>();
     tokenList.forEach(
         tok -> {
           try {
@@ -76,8 +78,13 @@ public class Parser {
     register(identifierKey, new IdentifierParser());
   }
 
-  public Token nextToken(int i) {
+  public Token nextToken(int i, boolean skip) {
     try {
+      Token currentTok = tokens.peek();
+      while (skip && currentTok != null && currentTok.isSubtype(Delimiter.NEWLINE)) {
+        advanceTokens();
+        currentTok = tokens.peek();
+      }
       return tokens.peek(i);
     } catch (InterruptedException e) {
       // TODO: handle this
@@ -86,12 +93,20 @@ public class Parser {
     return null;
   }
 
+  private Token nextToken(int i) {
+    return nextToken(i, true);
+  }
+
   private Token nextToken() {
-    return nextToken(1);
+    return nextToken(1, true);
   }
 
   Token currentToken() {
-    return nextToken(0);
+    return nextToken(0, true);
+  }
+
+  Token currentTokenNoSkip() {
+    return nextToken(0, false);
   }
 
   void advanceTokens() {
@@ -105,21 +120,21 @@ public class Parser {
 
   void consume(Delimiter delimiter) throws IllegalParseException {
     if (!currentToken().isSubtype(delimiter)) {
-      throw new IllegalParseException("Expecting " + delimiter + " but found " + nextToken());
+      throw new IllegalParseException("Expecting " + delimiter + " but found " + currentToken());
     }
     advanceTokens();
   }
 
   void consume(Keyword keyword) throws IllegalParseException {
     if (!currentToken().isSubtype(keyword)) {
-      throw new IllegalParseException("Expecting " + keyword + " but found " + nextToken());
+      throw new IllegalParseException("Expecting " + keyword + " but found " + currentToken());
     }
     advanceTokens();
   }
 
   void consume(Operator operator) throws IllegalParseException {
     if (!currentToken().isSubtype(operator)) {
-      throw new IllegalParseException("Expecting " + operator + " but found " + nextToken());
+      throw new IllegalParseException("Expecting " + operator + " but found " + currentToken());
     }
     advanceTokens();
   }
@@ -170,7 +185,7 @@ public class Parser {
     exprs.add((T) parseExpression());
     int count = 1;
 
-    while (currentToken().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
+    while (currentTokenNoSkip().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
       // Consume ','
       consume(Delimiter.COMMA);
       exprs.add((T) parseExpression(precedence));
@@ -203,9 +218,9 @@ public class Parser {
     return lhs;
   }
 
+  // do not use currentToken() not to consume the new line
   private int getCurrTokenPrecedence() {
-    // TODO: Hacky, fixme fast
-    Token tok = tokens.peek();
+    Token tok = currentTokenNoSkip();
     if (tok == null) {
       return 0;
     }
@@ -287,6 +302,7 @@ public class Parser {
   }
 
   public Statement parseStatement() throws IllegalParseException {
+
     if (isLocalAssignment()) {
       return parseAssignment();
     } else if (isFunctionStatement()) {
@@ -303,14 +319,13 @@ public class Parser {
       return parseForStatement();
     } else if (isBreakStatement()) {
       return parseBreakStatement();
-
     } else if (isRepeatStatement()) {
       return parseRepeatUntilStatement();
     } else {
       ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
       // Check if we are on an assignment
-      if (currentToken().isSubtype(Operator.ASSIGN)) {
+      if (currentTokenNoSkip().isSubtype(Operator.ASSIGN)) {
         // Cast into variables
         ArrayList<Variable> vars = new ArrayList<>();
         exprs.forEach(expr -> vars.add((Variable) expr));
@@ -479,10 +494,6 @@ public class Parser {
     Token tok = currentToken();
     consume(Keyword.WHILE);
     Expression condition = parseExpression();
-    if (!isBlockStatement()) {
-      throw new IllegalParseException(
-          String.format("expected do ... end statement after while %s", tok));
-    }
 
     Statement consequence = parseBlockStatement();
 
@@ -569,6 +580,7 @@ public class Parser {
   }
 
   private boolean isBlockEnd() {
+
     Token tok = currentToken();
     return tok.isSubtype(Keyword.END)
         || tok.isSubtype(Keyword.ELSE)
@@ -616,5 +628,25 @@ public class Parser {
     public int hashCode() {
       return token != null ? token.hashCode() : 0;
     }
+  }
+
+  public void start() throws InterruptedException {
+    while (true) {
+      try {
+
+        Statement statement = parseStatement();
+        out.add(statement);
+      } catch (IllegalParseException e) {
+        e.printStackTrace();
+        // send a nil to reset the repl
+        out.add(
+            new StatementExpression(
+                ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
+      }
+    }
+  }
+
+  public BufferedChannel<Statement> getOut() {
+    return out;
   }
 }

@@ -2,13 +2,12 @@ package util;
 
 import java.util.ArrayList;
 import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.TimeUnit;
 
 public class BufferedChannel<T> {
   private static final int size = 10000;
 
   private LinkedBlockingQueue<T> queue = new LinkedBlockingQueue<>(size);
-  private ArrayList<T> buffer = new ArrayList<>();
+  private final ArrayList<T> buffer = new ArrayList<>();
 
   public static BufferedChannel<Character> fromString(String in) {
     BufferedChannel<Character> bc = new BufferedChannel<>();
@@ -34,87 +33,49 @@ public class BufferedChannel<T> {
   }
 
   public T peek(int pos) throws InterruptedException {
-    if (pos < 0) {
-      return null;
-    }
+    synchronized (buffer) {
+      if (pos < 0) {
+        return null;
+      }
 
-    if (pos < buffer.size()) {
+      if (pos < buffer.size()) {
+        return buffer.get(pos);
+      }
+
+      // Else read until pos and buffer it
+      while (buffer.size() <= pos) {
+        buffer.add(queue.take());
+      }
       return buffer.get(pos);
     }
-
-    // Else read until pos and buffer it
-    for (int i = 0; i <= pos - buffer.size(); i++) {
-      buffer.add(queue.take());
-    }
-
-    return buffer.get(pos);
   }
 
-  public T peek() {
-    if (buffer.isEmpty()) {
-      return queue.peek();
-    }
-
-    return buffer.get(0);
+  public T peek() throws InterruptedException {
+    return peek(0);
   }
 
   public T read() throws InterruptedException {
-    if (buffer.isEmpty()) {
-      return queue.take();
-    }
 
-    return buffer.remove(0);
+    synchronized (buffer) {
+      if (!buffer.isEmpty()) {
+        return buffer.remove(0);
+      }
+    }
+    return queue.take();
   }
 
   public void skip() throws InterruptedException {
-    if (buffer.isEmpty()) {
-      queue.take();
-    } else {
-      buffer.remove(0);
-    }
-  }
-
-  public T poll() {
-    if (buffer.isEmpty()) {
-      return queue.poll();
-    }
-
-    return buffer.remove(0);
-  }
-
-  public T poll(long timeout, TimeUnit unit) throws InterruptedException {
-    if (buffer.isEmpty()) {
-      return queue.poll(timeout, unit);
-    }
-
-    return buffer.remove(0);
-  }
-
-  public T peekPoll() {
-    if (buffer.isEmpty()) {
-      T res = queue.poll();
-      if (res != null) {
-        buffer.add(res);
+    synchronized (buffer) {
+      if (!buffer.isEmpty()) {
+        buffer.remove(0);
+        return;
       }
-      return res;
     }
-
-    return buffer.get(0);
+    queue.take();
   }
 
   public final void add(T element) throws InterruptedException {
     // System.out.printf("Adding: %s of type %s to queue\n", element, element.getClass());
     queue.put(element);
-  }
-
-  public ArrayList<T> flush() {
-    ArrayList<T> flushed = new ArrayList<>();
-
-    T e = poll();
-    while (e != null) {
-      flushed.add(e);
-      e = poll();
-    }
-    return flushed;
   }
 }

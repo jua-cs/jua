@@ -11,7 +11,8 @@ public enum Delimiter {
   RBRACE("}"),
   LBRACK("["),
   RBRACK("]"),
-  COLON(":");
+  COLON(":"),
+  NEWLINE("\n");
 
   private String repr;
 
