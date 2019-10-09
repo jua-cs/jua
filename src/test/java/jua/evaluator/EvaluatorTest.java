@@ -229,24 +229,17 @@ class EvaluatorTest {
   }
 
   @Test
-  void testLuaScript() throws IOException {
+  void testLuaScript() throws IOException, IllegalParseException {
     Stream<Path> walk = Files.walk(testdata);
     var files =
         walk.map(Objects::toString).filter(f -> f.endsWith(".lua")).collect(Collectors.toList());
 
-    files.forEach(
-        f -> {
-          try {
-            var sb = new ByteArrayOutputStream();
-            runLuaScript(f, sb);
-            String expected =
-                new String(Files.readAllBytes(Paths.get(f.replace(".lua", ".expected"))));
-            assertEquals(expected.strip(), sb.toString().strip(), String.format("File: %s", f));
-
-          } catch (IOException | IllegalParseException e) {
-            e.printStackTrace();
-          }
-        });
+    for (var f : files) {
+      var sb = new ByteArrayOutputStream();
+      runLuaScript(f, sb);
+      String expected = new String(Files.readAllBytes(Paths.get(f.replace(".lua", ".expected"))));
+      assertEquals(expected.strip(), sb.toString().strip(), String.format("File: %s", f));
+    }
   }
 
   @Test

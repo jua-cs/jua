@@ -69,3 +69,30 @@ x:print()
 x:set('test', 'boom')
 x:set(1, 'boom for 1 !')
 inspect(13)
+
+function x:append(key, str)
+   x[key] = x[key] .. str
+end
+
+x:append(1, "and append !")
+inspect(14)
+
+x.y = {}
+
+function x.y:set(key, val)
+    x.y[key] = val
+end
+
+x.y:set(1, 2)
+print(x.y[1] * 50)
+
+function x.not_method(table)
+    if table then
+        print(table[1])
+    else
+        print("nope")
+    end
+end
+
+x.not_method()
+x:not_method()

@@ -363,12 +363,12 @@ public class Parser {
     Token tok = currentToken();
     consume(Keyword.FUNCTION);
 
+    // TODO we should accept variables here
     if (!currentToken().isIdentifier()) {
       throw new IllegalParseException(
           String.format("Expected identifier in function args but got: %s", currentToken()));
     }
-    ExpressionIdentifier funcName = (ExpressionIdentifier) ExpressionFactory.create(currentToken());
-    consumeIdentifier();
+    ExpressionIdentifier funcName = ExpressionFactory.create(consumeIdentifier());
 
     // Parse args
     ArrayList<ExpressionIdentifier> args = parseFuncArgs();
