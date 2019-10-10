@@ -44,6 +44,7 @@ public class LuaTable implements LuaObject {
       if (nb < list.size()) {
         list.set(nb, value);
       } else {
+        // TODO: find a better way of doing this to avoid memory leaks
         // Fill with nulls until size is good
         while (nb >= list.size()) {
           list.add(null);
