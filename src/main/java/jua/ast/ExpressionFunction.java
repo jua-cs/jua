@@ -59,10 +59,6 @@ public class ExpressionFunction extends Expression implements Variable {
     return statements;
   }
 
-  public void addArgument(ExpressionIdentifier exp) {
-    args.add(exp);
-  }
-
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     ArrayList<String> argNames = new ArrayList<>();
