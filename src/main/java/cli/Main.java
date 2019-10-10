@@ -29,6 +29,7 @@ public class Main {
           "Welcome to jua ! Usage:\n"
               + "\n"
               + "- jua to launch a Lua REPL\n"
+              + "- jua --server to run the web API (on port 3000, hardcoded for now TODO)\n"
               + "- jua <file.lua> to run a lua script (use -d or --debug to enable the debug mode)\n"
               + "- jua -h or jua --help to print this help message\n");
       System.exit(0);
