@@ -12,8 +12,8 @@ import jua.token.TokenFactory;
 
 public class ExpressionFunctionCall extends Expression {
 
+  protected ArrayList<Expression> args = new ArrayList<>();
   private Variable func;
-  private ArrayList<Expression> args = new ArrayList<>();
 
   ExpressionFunctionCall(Variable var, int line, int position) {
     super(TokenFactory.create(var.name(), line, position));
@@ -24,10 +24,6 @@ public class ExpressionFunctionCall extends Expression {
     super(TokenFactory.create(var.name(), line, position));
     func = var;
     this.args = args;
-  }
-
-  public void addArgument(Expression arg) {
-    args.add(arg);
   }
 
   @Override
@@ -59,6 +55,10 @@ public class ExpressionFunctionCall extends Expression {
         + ")";
   }
 
+  public void addArg(int index, Expression arg) {
+    args.add(index, arg);
+  }
+
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     LuaFunction function = (LuaFunction) func.evaluate(scope);
     return function.evaluateUnwrap(scope, args);
@@ -68,5 +68,9 @@ public class ExpressionFunctionCall extends Expression {
   LuaReturn evaluateNoUnwrap(Scope scope) throws LuaRuntimeException {
     LuaFunction function = (LuaFunction) func.evaluate(scope);
     return function.evaluate(scope, args);
+  }
+
+  public Variable getFunc() {
+    return func;
   }
 }

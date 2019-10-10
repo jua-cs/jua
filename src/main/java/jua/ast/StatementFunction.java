@@ -8,12 +8,12 @@ import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementFunction extends Statement {
-  private ExpressionIdentifier name;
+  private Variable funcVar;
   private ExpressionFunction func;
 
-  public StatementFunction(Token token, ExpressionIdentifier name, ExpressionFunction func) {
+  public StatementFunction(Token token, Variable funcVar, ExpressionFunction func) {
     super(token);
-    this.name = name;
+    this.funcVar = funcVar;
     this.func = func;
   }
 
@@ -25,14 +25,14 @@ public class StatementFunction extends Statement {
 
     StatementFunction that = (StatementFunction) o;
 
-    if (!name.equals(that.name)) return false;
+    if (!funcVar.equals(that.funcVar)) return false;
     return func.equals(that.func);
   }
 
   @Override
   public int hashCode() {
     int result = super.hashCode();
-    result = 31 * result + name.hashCode();
+    result = 31 * result + funcVar.hashCode();
     result = 31 * result + func.hashCode();
     return result;
   }
@@ -41,14 +41,14 @@ public class StatementFunction extends Statement {
   public String toString() {
     return String.format(
         "function %s(%s)\n%s\nend",
-        name,
+        funcVar.name(),
         func.getArgs().stream().map(Object::toString).collect(Collectors.joining("\n")),
         util.Util.indent(func.getStatements().toString()));
   }
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    scope.assignGlobal(name.getIdentifier(), func.evaluate(scope));
+    funcVar.assign(scope, func.evaluate(scope), false);
 
     return LuaNil.getInstance();
   }

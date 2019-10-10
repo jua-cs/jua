@@ -10,6 +10,7 @@ public enum Operator {
   CARAT("^"),
   PERCENT("%"),
   DOT("."),
+  COLON(":"),
   CONCAT(".."),
   ASSIGN("="),
   LT("<"),

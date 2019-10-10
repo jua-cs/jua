@@ -65,6 +65,7 @@ public class Parser {
     registerBinaryOperator(Operator.DOT, 10);
 
     register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(9));
+    register(TokenFactory.create(Operator.COLON), new MethodCallParser(9));
 
     // Register the class which implements PrefixParser interface
     register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser());
@@ -73,7 +74,7 @@ public class Parser {
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(8));
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(8));
     register(TokenFactory.create(Operator.HASH), (PrefixParser) new OperatorParser(8));
-    register(TokenFactory.create(Keyword.FUNCTION), (PrefixParser) new FunctionExprParser());
+    register(TokenFactory.create(Keyword.FUNCTION), new FunctionExprParser());
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());
   }
@@ -139,11 +140,13 @@ public class Parser {
     advanceTokens();
   }
 
-  void consumeIdentifier() throws IllegalParseException {
-    if (!(currentToken().isIdentifier())) {
+  TokenIdentifier consumeIdentifier() throws IllegalParseException {
+    Token tok = currentToken();
+    if (!(tok.isIdentifier())) {
       throw new IllegalParseException("Expecting an identifier but found a" + nextToken());
     }
     advanceTokens();
+    return (TokenIdentifier) tok;
   }
 
   private StatementAssignment parseAssignment() throws IllegalParseException {
@@ -360,12 +363,17 @@ public class Parser {
     Token tok = currentToken();
     consume(Keyword.FUNCTION);
 
-    if (!currentToken().isIdentifier()) {
-      throw new IllegalParseException(
-          String.format("Expected identifier in function args but got: %s", currentToken()));
-    }
-    ExpressionIdentifier funcName = (ExpressionIdentifier) ExpressionFactory.create(currentToken());
-    consumeIdentifier();
+    // Parse any expression and cast it into a Variable to allow for:
+    // function f() -> Identifier
+    // function a.b.c() -> ExpressionAccess
+    // function d[e].f[0]() -> ExpressionIndex
+
+    // We don't want to parse the expression call so we set the precedence to just below it
+    // it also matches the precedence of the index and access operators
+    Variable funcVar = (Variable) parseExpression(9);
+
+    // TODO: support :
+    // function x.y:z()
 
     // Parse args
     ArrayList<ExpressionIdentifier> args = parseFuncArgs();
@@ -374,7 +382,7 @@ public class Parser {
     // consume END of function statement
     consume(Keyword.END);
     return new StatementFunction(
-        tok, funcName, ExpressionFactory.createExpressionFunction(tok, args, stmts));
+        tok, funcVar, ExpressionFactory.createExpressionFunction(tok, args, stmts));
   }
 
   private boolean isFunctionStatement() {
@@ -386,8 +394,7 @@ public class Parser {
   private StatementReturn parseReturnStatement() throws IllegalParseException {
     Token tok = currentToken();
     consume(Keyword.RETURN);
-    StatementReturn stmt = new StatementReturn(tok, parseCommaSeparatedExpressions(0));
-    return stmt;
+    return new StatementReturn(tok, parseCommaSeparatedExpressions(0));
   }
 
   private boolean isReturnStatement() {
@@ -406,6 +413,7 @@ public class Parser {
     int pos = 0;
 
     if (currentToken().isSubtype(Keyword.LOCAL)) {
+      // TODO local function f()... is valid so we should also check one character ahead
       return true;
     }
 
@@ -604,6 +612,27 @@ public class Parser {
     return args;
   }
 
+  public void start() throws InterruptedException {
+    while (currentTokenIsValid()) {
+      try {
+
+        Statement statement = parseStatement();
+        out.add(statement);
+      } catch (IllegalParseException e) {
+        e.printStackTrace();
+        // send a nil to reset the repl
+        out.add(
+            new StatementExpression(
+                ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
+      }
+    }
+    out.add(new StatementEOP());
+  }
+
+  public BufferedChannel<Statement> getOut() {
+    return out;
+  }
+
   // Used to access the HasmMap with Token, with still a functioning equals for Lexer
   private static class TokenHashmMapKey {
     private final Token token;
@@ -628,26 +657,5 @@ public class Parser {
     public int hashCode() {
       return token != null ? token.hashCode() : 0;
     }
-  }
-
-  public void start() throws InterruptedException {
-    while (currentTokenIsValid()) {
-      try {
-
-        Statement statement = parseStatement();
-        out.add(statement);
-      } catch (IllegalParseException e) {
-        e.printStackTrace();
-        // send a nil to reset the repl
-        out.add(
-            new StatementExpression(
-                ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
-      }
-    }
-    out.add(new StatementEOP());
-  }
-
-  public BufferedChannel<Statement> getOut() {
-    return out;
   }
 }

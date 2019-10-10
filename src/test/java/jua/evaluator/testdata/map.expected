@@ -147,3 +147,19 @@ nil
 ---
 0
 0
+1
+1
+inspect number: 13
+nil
+got reset ! boom for 1 !
+2
+3
+4
+5
+100
+got reset ! boom
+nil
+5
+---
+nope
+got reset ! boom for 1 !

@@ -148,7 +148,7 @@ public class Lexer {
         token = TokenFactory.create(Operator.HASH, currentLine, currentPos);
         break;
       case ':':
-        token = TokenFactory.create(Delimiter.COLON, currentLine, currentPos);
+        token = TokenFactory.create(Operator.COLON, currentLine, currentPos);
         break;
       case '\n':
         token = TokenFactory.create(Delimiter.NEWLINE, currentLine, currentPos);

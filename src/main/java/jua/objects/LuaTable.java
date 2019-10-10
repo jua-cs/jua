@@ -17,7 +17,7 @@ public class LuaTable implements LuaObject {
 
   @Override
   public String repr() {
-    return String.format("table: %d", this.hashCode());
+    return String.format("table: @%d", this.hashCode());
   }
 
   public LuaObject get(LuaObject key) {
