@@ -1,9 +1,14 @@
-package jua;
+package cli;
 
-import java.io.*;
+import api.Server;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
+import jua.Interpreter;
 import jua.lexer.Lexer;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
@@ -27,6 +32,10 @@ public class Main {
               + "- jua <file.lua> to run a lua script (use -d or --debug to enable the debug mode)\n"
               + "- jua -h or jua --help to print this help message\n");
       System.exit(0);
+    }
+
+    if (argsList.contains("--server")) {
+      new Server().run(args, 3000);
     }
 
     ArrayList<String> nonFlags =

@@ -1,3 +1,12 @@
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:2.1.6.RELEASE")
+    }
+}
+
 plugins {
     id 'java'
     id 'org.beryx.jlink' version '2.16.0'
@@ -14,19 +23,23 @@ repositories {
 
 apply plugin: 'application'
 apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply from: rootProject.file("gradle/install-git-hooks.gradle")
 
 application {
-    mainClassName = 'jua.Main'
+    mainClassName = 'cli.Main'
 }
 
 jar {
     manifest {
-        attributes 'Main-Class': 'jua.Main'
+        attributes 'Main-Class': 'cli.Main'
     }
 }
 
 dependencies {
+    compile("org.springframework.boot:spring-boot-starter-web")
+    testCompile('org.springframework.boot:spring-boot-starter-test')
     implementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
     runtimeOnly('org.junit.jupiter:junit-jupiter-engine:5.4.2')
 }
@@ -42,6 +55,6 @@ run {
 jlink {
     options = ['--strip-debug', '--compress', '2', '--no-header-files', '--no-man-pages']
     launcher {
-        name ='jua'
+        name = 'jua'
     }
 }

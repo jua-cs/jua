@@ -1,5 +1,6 @@
 package jua;
 
+import java.io.ByteArrayOutputStream;
 import java.io.OutputStream;
 import jua.ast.Statement;
 import jua.ast.StatementEOP;
@@ -36,6 +37,13 @@ public class Interpreter {
     lexer = new Lexer(in);
     parser = new Parser(lexer.getOut());
     scope = new Scope();
+  }
+
+  public static String eval(String in) throws IllegalParseException {
+    var sb = new ByteArrayOutputStream();
+    Interpreter interpreter = new Interpreter(in, sb);
+    interpreter.run();
+    return sb.toString();
   }
 
   public void run() throws IllegalParseException {

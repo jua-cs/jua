@@ -3,9 +3,7 @@ package jua.evaluator;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -235,10 +233,9 @@ class EvaluatorTest {
         walk.map(Objects::toString).filter(f -> f.endsWith(".lua")).collect(Collectors.toList());
 
     for (var f : files) {
-      var sb = new ByteArrayOutputStream();
-      runLuaScript(f, sb);
+      var value = runLuaScript(f);
       String expected = new String(Files.readAllBytes(Paths.get(f.replace(".lua", ".expected"))));
-      assertEquals(expected.strip(), sb.toString().strip(), String.format("File: %s", f));
+      assertEquals(expected.strip(), value.strip(), String.format("File: %s", f));
     }
   }
 
@@ -253,9 +250,8 @@ class EvaluatorTest {
     }
   }
 
-  void runLuaScript(String name, OutputStream out) throws IOException, IllegalParseException {
+  String runLuaScript(String name) throws IOException, IllegalParseException {
     String text = new String(Files.readAllBytes(Paths.get(name)));
-    Interpreter interpreter = new Interpreter(text, out);
-    interpreter.run();
+    return Interpreter.eval(text);
   }
 }

@@ -6,7 +6,7 @@
         </div>
         <div class="editor">
             <codemirror :options="cmOptions" class="code" v-model="code"></codemirror>
-            <pre class="result"> > {{ exec }}</pre>
+            <pre class="result">{{ result }}</pre>
         </div>
     </div>
 </template>
@@ -18,6 +18,8 @@
     import 'codemirror/theme/monokai.css'
     // Lua support
     import 'codemirror/mode/lua/lua.js'
+
+    import axios from 'axios';
 
     const startingCode = "print(\"Hello and welcome to Jua !\")";
 
@@ -32,7 +34,7 @@
         data() {
             return {
                 code: startingCode,
-                exec: '',
+                result: '',
                 cmOptions: {
                     tabSize: 4,
                     mode: 'lua',
@@ -44,9 +46,12 @@
             }
         },
         methods: {
-            run: function () {
-                this.exec = this.code;
-                // TODO send code to backend
+            run: async function () {
+                const res = await axios.post("http://localhost:3000/interpreter", {
+                    code: this.code
+                });
+
+                this.result = res.data;
             },
             reset: function () {
                 this.exec = ''
@@ -85,6 +90,7 @@
         color: white;
         margin: 0;
         overflow: auto;
+        padding: 8px;
     }
 
     .header {
