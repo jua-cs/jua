@@ -363,12 +363,17 @@ public class Parser {
     Token tok = currentToken();
     consume(Keyword.FUNCTION);
 
-    // TODO we should accept variables here
-    if (!currentToken().isIdentifier()) {
-      throw new IllegalParseException(
-          String.format("Expected identifier in function args but got: %s", currentToken()));
-    }
-    ExpressionIdentifier funcName = ExpressionFactory.create(consumeIdentifier());
+    // Parse any expression and cast it into a Variable to allow for:
+    // function f() -> Identifier
+    // function a.b.c() -> ExpressionAccess
+    // function d[e].f[0]() -> ExpressionIndex
+
+    // We don't want to parse the expression call so we set the precedence to just below it
+    // it also matches the precedence of the index and access operators
+    Variable funcVar = (Variable) parseExpression(9);
+
+    // TODO: support :
+    // function x.y:z()
 
     // Parse args
     ArrayList<ExpressionIdentifier> args = parseFuncArgs();
@@ -377,7 +382,7 @@ public class Parser {
     // consume END of function statement
     consume(Keyword.END);
     return new StatementFunction(
-        tok, funcName, ExpressionFactory.createExpressionFunction(tok, args, stmts));
+        tok, funcVar, ExpressionFactory.createExpressionFunction(tok, args, stmts));
   }
 
   private boolean isFunctionStatement() {
@@ -389,8 +394,7 @@ public class Parser {
   private StatementReturn parseReturnStatement() throws IllegalParseException {
     Token tok = currentToken();
     consume(Keyword.RETURN);
-    StatementReturn stmt = new StatementReturn(tok, parseCommaSeparatedExpressions(0));
-    return stmt;
+    return new StatementReturn(tok, parseCommaSeparatedExpressions(0));
   }
 
   private boolean isReturnStatement() {
@@ -409,6 +413,7 @@ public class Parser {
     int pos = 0;
 
     if (currentToken().isSubtype(Keyword.LOCAL)) {
+      // TODO local function f()... is valid so we should also check one character ahead
       return true;
     }
 

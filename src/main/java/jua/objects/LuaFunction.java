@@ -8,9 +8,9 @@ import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 
 public class LuaFunction implements LuaObject, Function {
-  protected ArrayList<String> argNames;
-  protected Scope environment;
-  StatementList block;
+  private ArrayList<String> argNames;
+  private Scope environment;
+  private StatementList block;
 
   public LuaFunction(ArrayList<String> argNames, Scope environment, StatementList block) {
     this.argNames = argNames;

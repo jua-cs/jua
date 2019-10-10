@@ -7,9 +7,9 @@ import jua.objects.LuaObject;
 import jua.objects.builtins.Builtin;
 
 public class Scope {
-  HashMap<String, LuaObject> scope = new HashMap<>();
+  private HashMap<String, LuaObject> scope = new HashMap<>();
 
-  Scope parent;
+  private Scope parent;
 
   public Scope() {
     this.parent = Builtin.createScope();
@@ -34,12 +34,15 @@ public class Scope {
   }
 
   public LuaObject getVariable(String identifier) {
-    LuaObject variable = scope.getOrDefault(identifier, LuaNil.getInstance());
-    if (variable == LuaNil.getInstance() && parent != null) {
+    LuaObject variable = scope.get(identifier);
+
+    // Don't check if variable is nil here because it could be nil in an inner scope in a legitimate
+    // way
+    if (variable == null && parent != null) {
       variable = parent.getVariable(identifier);
     }
 
-    return variable;
+    return variable == null ? LuaNil.getInstance() : variable;
   }
 
   public void assign(String identifier, LuaObject value) {

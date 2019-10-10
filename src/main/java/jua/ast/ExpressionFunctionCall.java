@@ -69,4 +69,8 @@ public class ExpressionFunctionCall extends Expression {
     LuaFunction function = (LuaFunction) func.evaluate(scope);
     return function.evaluate(scope, args);
   }
+
+  public Variable getFunc() {
+    return func;
+  }
 }

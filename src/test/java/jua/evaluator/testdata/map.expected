@@ -161,18 +161,5 @@ got reset ! boom
 nil
 5
 ---
-inspect number: 14
-nil
-got reset ! boom for 1 !and append !
-2
-3
-4
-5
-100
-got reset ! boom
-nil
-5
----
-100
 nope
-got reset ! boom for 1 !and append !
+got reset ! boom for 1 !
