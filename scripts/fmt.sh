@@ -11,3 +11,6 @@ fi
 
 
 find src/ -name "*.java" | xargs $JAVACMD -jar tools/google-java-format-1.7-all-deps.jar -i
+
+cd src/web
+yarn lint
