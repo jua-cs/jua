@@ -25,8 +25,7 @@ To setup the pre-commit hooks (checks for linting of both the backend and the fr
 You can also use the scripts in `./scripts`
 
 - `start-front-dev` starts the frontend in development mode
-- `build-images` will build docker images for the frontend (`jua/frontend`) and the backend (`jua/backend`)
 
-You can also run the whole stack using [docker-compose](https://docs.docker.com/compose/):
+You can also run the whole stack using [docker](https://www.docker.com/) or [podman](https://podman.io/):
 
-`docker-compose up`
+`docker build . -t jua && docker run -p 127.0.0.1:3000:3000 jua`

@@ -15,8 +15,7 @@ public class InterpreterController {
 
   Logger logger = LoggerFactory.getLogger(InterpreterController.class);
 
-  @CrossOrigin(origins = "*")
-  @RequestMapping(value = "/interpreter", method = RequestMethod.POST)
+  @RequestMapping(value = "/api/v1/interpreter", method = RequestMethod.POST)
   public String interpret(@RequestBody Map<String, String> payload) {
     logger.info("Received request !");
     try {

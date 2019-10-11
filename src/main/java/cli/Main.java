@@ -29,30 +29,35 @@ public class Main {
     }
 
     if (argsList.contains("--server")) {
-      new Server().run(args, 3000);
-    }
-
-    ArrayList<String> nonFlags =
-        argsList.stream()
-            .filter(x -> !x.startsWith("-"))
-            .collect(Collectors.toCollection(ArrayList::new));
-
-    // Check if we should use a file or stdin
-    InputStream in = System.in;
-    if (nonFlags.size() > 0) {
-      String name = nonFlags.get(0);
-      try {
-        in = new FileInputStream(name);
-      } catch (FileNotFoundException e) {
-        System.err.printf("Could not find file: %s\n", name);
-        System.exit(1);
+      int port = 3000;
+      if (System.getenv("PORT") != null) {
+        port = Integer.parseInt(System.getenv("PORT"));
       }
-    }
 
-    if (argsList.contains("-d") || argsList.contains("--debug")) {
-      debug(in);
+      new Server().run(args, port);
     } else {
-      repl(in);
+      ArrayList<String> nonFlags =
+          argsList.stream()
+              .filter(x -> !x.startsWith("-"))
+              .collect(Collectors.toCollection(ArrayList::new));
+
+      // Check if we should use a file or stdin
+      InputStream in = System.in;
+      if (nonFlags.size() > 0) {
+        String name = nonFlags.get(0);
+        try {
+          in = new FileInputStream(name);
+        } catch (FileNotFoundException e) {
+          System.err.printf("Could not find file: %s\n", name);
+          System.exit(1);
+        }
+      }
+
+      if (argsList.contains("-d") || argsList.contains("--debug")) {
+        debug(in);
+      } else {
+        repl(in);
+      }
     }
   }
 
@@ -138,7 +143,7 @@ public class Main {
         "Welcome to jua ! Usage:\n"
             + "\n"
             + "- jua to launch a Lua REPL\n"
-            + "- jua --server to run the web API (on port 3000, hardcoded for now TODO)\n"
+            + "- jua --server to run the web API (on port 3000 by default, configurable with the PORT env variable)\n"
             + "- jua <file.lua> to run a lua script (use -d or --debug to enable the debug mode)\n"
             + "- jua -h or jua --help to print this help message\n");
     System.exit(0);
