@@ -227,7 +227,7 @@ class EvaluatorTest {
   }
 
   @Test
-  void testLuaScript() throws IOException, IllegalParseException {
+  void testLuaScript() throws IOException, IllegalParseException, LuaRuntimeException {
     Stream<Path> walk = Files.walk(testdata);
     var files =
         walk.map(Objects::toString).filter(f -> f.endsWith(".lua")).collect(Collectors.toList());
@@ -250,7 +250,7 @@ class EvaluatorTest {
     }
   }
 
-  String runLuaScript(String name) throws IOException, IllegalParseException {
+  String runLuaScript(String name) throws IOException, IllegalParseException, LuaRuntimeException {
     String text = new String(Files.readAllBytes(Paths.get(name)));
     return Interpreter.eval(text);
   }

@@ -39,25 +39,18 @@ public class Interpreter {
     scope = new Scope();
   }
 
-  public static String eval(String in) throws IllegalParseException {
+  public static String eval(String in) throws IllegalParseException, LuaRuntimeException {
     var sb = new ByteArrayOutputStream();
     Interpreter interpreter = new Interpreter(in, sb);
     interpreter.run();
     return sb.toString();
   }
 
-  public void run() throws IllegalParseException {
-    var stmts = parser.parse();
-    stmts
-        .getChildren()
-        .forEach(
-            stmt -> {
-              try {
-                stmt.evaluate(scope);
-              } catch (LuaRuntimeException e) {
-                e.printStackTrace();
-              }
-            });
+  public void run() throws IllegalParseException, LuaRuntimeException {
+    var stmts = parser.parse().getChildren();
+    for (Statement stmt : stmts) {
+      stmt.evaluate(scope);
+    }
   }
 
   public void start(boolean isInteractive) {
@@ -67,7 +60,7 @@ public class Interpreter {
         new Thread(
             () -> {
               try {
-                lexer.start();
+                lexer.start(isInteractive);
               } catch (InterruptedException e) {
                 e.printStackTrace();
               }
@@ -79,7 +72,7 @@ public class Interpreter {
         new Thread(
             () -> {
               try {
-                parser.start();
+                parser.start(isInteractive);
               } catch (InterruptedException e) {
                 e.printStackTrace();
               }

@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.concurrent.*;
+import jua.evaluator.IllegalLexingException;
 import jua.token.*;
 import org.junit.jupiter.api.Test;
 
@@ -13,12 +14,13 @@ public class LexerTest {
   void testVariableAssignment() {
     Lexer lex = new Lexer("x = y\nbonjour = bonsoir");
 
-    ArrayList<Token> list = lex.getNTokens(7);
+    ArrayList<Token> list = lex.getNTokens(0);
 
     ArrayList<Token> expected = new ArrayList<Token>();
     expected.add(TokenFactory.create("x", 1, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
     expected.add(TokenFactory.create("y", 1, 5));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 1, 6));
     expected.add(TokenFactory.create("bonjour", 2, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 2, 9));
     expected.add(TokenFactory.create("bonsoir", 2, 11));
@@ -49,12 +51,13 @@ public class LexerTest {
             //            "1ncorrect = 5hould_fail"
             );
 
-    ArrayList<Token> list = lex.getNTokens(7);
+    ArrayList<Token> list = lex.getNTokens(0);
 
     ArrayList<Token> expected = new ArrayList<Token>();
     expected.add(TokenFactory.create("varw1thd1g1ts0", 1, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 16));
     expected.add(TokenFactory.create("y", 1, 18));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 1, 19));
     expected.add(TokenFactory.create("bon_jour", 2, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 2, 10));
     expected.add(TokenFactory.create("_bonsoir", 2, 12));
@@ -82,7 +85,7 @@ public class LexerTest {
             + "print(n)\n";
 
     Lexer lex = new Lexer(in);
-    ArrayList<Token> list = lex.getNTokens(29);
+    ArrayList<Token> list = lex.getNTokens(0);
 
     ArrayList<Token> expected = new ArrayList<Token>();
     // First line of code
@@ -91,17 +94,21 @@ public class LexerTest {
     expected.add(TokenFactory.create(Delimiter.LPAREN, 2, 15));
     expected.add(TokenFactory.create("n", 2, 16));
     expected.add(TokenFactory.create(Delimiter.RPAREN, 2, 17));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 2, 18));
 
     expected.add(TokenFactory.create(Keyword.IF, 3, 3));
     expected.add(TokenFactory.create("n", 3, 6));
     expected.add(TokenFactory.create(Operator.EQUALS, 3, 8));
     expected.add(TokenFactory.create(Literal.NUMBER, "0", 3, 11));
     expected.add(TokenFactory.create(Keyword.THEN, 3, 13));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 3, 17));
 
     expected.add(TokenFactory.create(Keyword.RETURN, 4, 5));
     expected.add(TokenFactory.create(Literal.NUMBER, "1", 4, 12));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 4, 13));
 
     expected.add(TokenFactory.create(Keyword.ELSE, 5, 3));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 5, 7));
 
     expected.add(TokenFactory.create(Keyword.RETURN, 6, 5));
     expected.add(TokenFactory.create("" + "n", 6, 12));
@@ -112,15 +119,21 @@ public class LexerTest {
     expected.add(TokenFactory.create(Operator.MINUS, 6, 22));
     expected.add(TokenFactory.create(Literal.NUMBER, "1", 6, 23));
     expected.add(TokenFactory.create(Delimiter.RPAREN, 6, 24));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 6, 25));
 
     expected.add(TokenFactory.create(Keyword.END, 7, 3));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 7, 6));
 
     expected.add(TokenFactory.create(Keyword.END, 8, 1));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 8, 4));
+
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 9, 1));
 
     expected.add(TokenFactory.create("print", 10, 1));
     expected.add(TokenFactory.create(Delimiter.LPAREN, 10, 6));
     expected.add(TokenFactory.create("n", 10, 7));
     expected.add(TokenFactory.create(Delimiter.RPAREN, 10, 8));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 10, 9));
     expected.add(TokenFactory.create(Special.TokenEOF, 11, 1));
 
     assertIterableEquals(expected, list);
@@ -144,14 +157,14 @@ public class LexerTest {
   void testUnterminatedString() {
     Lexer lex = new Lexer("x = 'hello");
 
-    ArrayList<Token> list = lex.getNTokens(3);
+    ArrayList<Token> list = lex.getNTokens(2);
 
     ArrayList<Token> expected = new ArrayList<Token>();
     expected.add(TokenFactory.create("x", 1, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
-    expected.add(TokenFactory.create(Literal.STRING, "hello", 1, 5));
-
     assertIterableEquals(expected, list);
+
+    assertThrows(IllegalLexingException.class, lex::nextToken);
   }
 
   @Test
@@ -194,24 +207,29 @@ public class LexerTest {
     expected.add(TokenFactory.create("a", 1, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
     expected.add(TokenFactory.create(Literal.NUMBER, "0", 1, 5));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 1, 6));
 
     expected.add(TokenFactory.create(Keyword.REPEAT, 2, 1));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 2, 7));
 
     expected.add(TokenFactory.create("a", 3, 3));
     expected.add(TokenFactory.create(Operator.ASSIGN, 3, 5));
     expected.add(TokenFactory.create("a", 3, 7));
     expected.add(TokenFactory.create(Operator.PLUS, 3, 9));
     expected.add(TokenFactory.create(Literal.NUMBER, "1", 3, 11));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 3, 12));
 
     expected.add(TokenFactory.create("print", 4, 3));
     expected.add(TokenFactory.create(Delimiter.LPAREN, 4, 8));
     expected.add(TokenFactory.create("a", 4, 9));
     expected.add(TokenFactory.create(Delimiter.RPAREN, 4, 10));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 4, 11));
 
     expected.add(TokenFactory.create(Keyword.UNTIL, 5, 1));
     expected.add(TokenFactory.create("a", 5, 7));
     expected.add(TokenFactory.create(Operator.EQUALS, 5, 9));
     expected.add(TokenFactory.create(Literal.NUMBER, "2", 5, 12));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 5, 13));
 
     expected.add(TokenFactory.create("print", 6, 1));
     expected.add(TokenFactory.create(Delimiter.LPAREN, 6, 6));

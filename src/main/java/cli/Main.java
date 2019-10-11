@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import jua.Interpreter;
+import jua.evaluator.LuaRuntimeException;
 import jua.lexer.Lexer;
 import jua.parser.IllegalParseException;
 import jua.parser.Parser;
@@ -17,22 +18,14 @@ import util.BufferedChannel;
 
 public class Main {
 
-  public static void main(String[] args) throws IllegalParseException {
+  public static void main(String[] args) throws IllegalParseException, LuaRuntimeException {
     ArrayList<String> argsList = new ArrayList<String>(Arrays.asList(args));
 
     if (argsList.size() > 0
         && (argsList.contains("-h")
             || argsList.contains("--help")
             || argsList.get(0).equals("help"))) {
-      // TODO move usage elsewhere
-      System.err.println(
-          "Welcome to jua ! Usage:\n"
-              + "\n"
-              + "- jua to launch a Lua REPL\n"
-              + "- jua --server to run the web API (on port 3000, hardcoded for now TODO)\n"
-              + "- jua <file.lua> to run a lua script (use -d or --debug to enable the debug mode)\n"
-              + "- jua -h or jua --help to print this help message\n");
-      System.exit(0);
+      usage();
     }
 
     if (argsList.contains("--server")) {
@@ -116,7 +109,7 @@ public class Main {
     interpreter.start(isInteractive);
   }
 
-  private static void debug(InputStream in) throws IllegalParseException {
+  private static void debug(InputStream in) throws IllegalParseException, LuaRuntimeException {
     String text = null;
     try {
       text = new String(in.readAllBytes());
@@ -138,5 +131,16 @@ public class Main {
     var interpreter = new Interpreter(text);
     interpreter.run();
     System.out.println("---");
+  }
+
+  private static void usage() {
+    System.err.println(
+        "Welcome to jua ! Usage:\n"
+            + "\n"
+            + "- jua to launch a Lua REPL\n"
+            + "- jua --server to run the web API (on port 3000, hardcoded for now TODO)\n"
+            + "- jua <file.lua> to run a lua script (use -d or --debug to enable the debug mode)\n"
+            + "- jua -h or jua --help to print this help message\n");
+    System.exit(0);
   }
 }
