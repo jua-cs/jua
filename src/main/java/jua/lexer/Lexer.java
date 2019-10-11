@@ -1,6 +1,7 @@
 package jua.lexer;
 
 import java.util.ArrayList;
+import jua.evaluator.IllegalLexingException;
 import jua.token.*;
 import util.BufferedChannel;
 
@@ -9,14 +10,12 @@ public class Lexer {
   private BufferedChannel<Character> in;
   private BufferedChannel<Token> out = new BufferedChannel<>();
   private char ch;
-  private boolean isREPL = false;
   private int currentLine;
   private int currentPosInLine;
 
   public Lexer(BufferedChannel<Character> in) {
     this.currentLine = 1;
     this.in = in;
-    this.isREPL = true;
   }
 
   public Lexer(String in) {
@@ -48,19 +47,13 @@ public class Lexer {
   }
 
   private void consumeWhitespace() {
-    while (Character.isWhitespace(ch)) {
-      if (ch == '\n') {
-        currentPosInLine = 0;
-        currentLine++;
-        if (isREPL) {
-          break;
-        }
-      }
+    // lex newlines as tokens
+    while (Character.isWhitespace(ch) && ch != '\n') {
       readChar();
     }
   }
 
-  public Token nextToken() {
+  public Token nextToken() throws IllegalLexingException {
     readChar();
 
     Token token;
@@ -152,6 +145,8 @@ public class Lexer {
         break;
       case '\n':
         token = TokenFactory.create(Delimiter.NEWLINE, currentLine, currentPos);
+        currentLine++;
+        currentPosInLine = 0;
         break;
       case '\'':
       case '"':
@@ -225,7 +220,7 @@ public class Lexer {
     currentPosInLine = 0;
   }
 
-  private String readStringLiteral() {
+  private String readStringLiteral() throws IllegalLexingException {
     // Handle both ' and "
     char sep = ch;
     char nextChar = peekChar();
@@ -236,6 +231,10 @@ public class Lexer {
       readChar();
       nextChar = peekChar();
     }
+    if (nextChar == '\0') {
+      throw new IllegalLexingException(String.format("unexpected end of file in string literal"));
+    }
+
     readChar();
 
     return str.toString();
@@ -258,11 +257,15 @@ public class Lexer {
 
   public ArrayList<Token> getNTokens(int n) {
     ArrayList<Token> tokens = new ArrayList<>();
-    Token tok;
+    Token tok = null;
 
     do {
-      tok = nextToken();
-      tokens.add(tok);
+      try {
+        tok = nextToken();
+        tokens.add(tok);
+      } catch (IllegalLexingException e) {
+        e.printStackTrace();
+      }
     } while ((tok != null && !(tok instanceof TokenEOF) && (n <= 0 || n > tokens.size())));
     return tokens;
   }
@@ -271,12 +274,20 @@ public class Lexer {
     return out;
   }
 
-  public void start() throws InterruptedException {
+  public void start(boolean isInteractive) throws InterruptedException {
     while (true) {
-      Token token = nextToken();
-      out.add(token);
-      if (token == null || token instanceof TokenEOF) {
-        break;
+      try {
+        Token token = nextToken();
+        out.add(token);
+        if (token == null || token instanceof TokenEOF) {
+          break;
+        }
+      } catch (IllegalLexingException e) {
+        e.printStackTrace();
+        if (!isInteractive) {
+          out.add(TokenFactory.create(Special.TokenEOF, currentLine, currentPosInLine));
+          break;
+        }
       }
     }
   }

@@ -19,14 +19,7 @@ public class Main {
         && (argsList.contains("-h")
             || argsList.contains("--help")
             || argsList.get(0).equals("help"))) {
-      // TODO move usage elsewhere
-      System.err.println(
-          "Welcome to jua ! Usage:\n"
-              + "\n"
-              + "- jua to launch a Lua REPL\n"
-              + "- jua <file.lua> to run a lua script (use -d or --debug to enable the debug mode)\n"
-              + "- jua -h or jua --help to print this help message\n");
-      System.exit(0);
+      usage();
     }
 
     ArrayList<String> nonFlags =
@@ -128,5 +121,15 @@ public class Main {
     var interpreter = new Interpreter(text);
     interpreter.run();
     System.out.println("---");
+  }
+
+  private static void usage() {
+    System.err.println(
+        "Welcome to jua ! Usage:\n"
+            + "\n"
+            + "- jua to launch a Lua REPL\n"
+            + "- jua <file.lua> to run a lua script (use -d or --debug to enable the debug mode)\n"
+            + "- jua -h or jua --help to print this help message\n");
+    System.exit(0);
   }
 }

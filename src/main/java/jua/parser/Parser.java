@@ -612,7 +612,7 @@ public class Parser {
     return args;
   }
 
-  public void start() throws InterruptedException {
+  public void start(boolean isInteractive) throws InterruptedException {
     while (currentTokenIsValid()) {
       try {
 
@@ -620,6 +620,10 @@ public class Parser {
         out.add(statement);
       } catch (IllegalParseException e) {
         e.printStackTrace();
+        if (!isInteractive) {
+          out.add(new StatementEOP());
+          break;
+        }
         // send a nil to reset the repl
         out.add(
             new StatementExpression(

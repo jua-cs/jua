@@ -59,7 +59,7 @@ public class Interpreter {
         new Thread(
             () -> {
               try {
-                lexer.start();
+                lexer.start(isInteractive);
               } catch (InterruptedException e) {
                 e.printStackTrace();
               }
@@ -71,7 +71,7 @@ public class Interpreter {
         new Thread(
             () -> {
               try {
-                parser.start();
+                parser.start(isInteractive);
               } catch (InterruptedException e) {
                 e.printStackTrace();
               }
