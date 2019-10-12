@@ -13,13 +13,13 @@ FROM gradle:jdk11 AS jar-builder
 WORKDIR /jua/
 
 COPY . .
+COPY --from=front-builder /web/dist/ /jua/src/main/resources/static/
 
 RUN gradle assemble
 
 # Final image
-FROM gradle:jdk11
+FROM openjdk:11.0.4-jre
 WORKDIR /root/
 COPY --from=jar-builder /jua/build/libs/jua-0.0.0.jar ./jua.jar
-COPY --from=front-builder /web/dist/ ./src/main/resources/static/
 
 CMD ["java", "-jar", "jua.jar", "--server"]
