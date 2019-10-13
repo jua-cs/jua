@@ -62,10 +62,10 @@
                     });
                 } catch (e) {
                     this.$buefy.toast.open({
-                        message: `An error occured: ${e.response.data.message}`,
+                        message: `An error occurred: ${e.response.data.message}`,
                         type: 'is-danger'
                     });
-                    this.this.result = "ERROR\n" + e.response.data.message;
+                    this.result = "ERROR\n" + e.response.data.message;
                     this.error = true;
                 }
                 this.loading = false;
