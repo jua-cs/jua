@@ -1,9 +1,6 @@
 <template>
-    <div class="container">
-        <div class="header">
-            <button v-on:click="run"> Run</button>
-            <button v-on:click="reset"> Reset</button>
-        </div>
+    <div class="editor-container">
+        <Header :run="run" :reset="reset" />
         <div class="editor">
             <codemirror :options="cmOptions" class="code" v-model="code"></codemirror>
             <pre :class="{ redText: error }" class="result">{{ result }}</pre>
@@ -13,20 +10,23 @@
 
 <script>
     import {codemirror} from 'vue-codemirror'
+    import axios from 'axios';
     // Themes
     import 'codemirror/lib/codemirror.css'
-    import 'codemirror/theme/monokai.css'
+    import 'codemirror/theme/mdn-like.css'
     // Lua support
     import 'codemirror/mode/lua/lua.js'
 
-    import axios from 'axios';
+    import Header from "./Header";
+
 
     const startingCode = "print(\"Hello and welcome to Jua !\")";
 
     export default {
         name: 'Editor',
         components: {
-            codemirror
+            codemirror,
+            Header
         },
         data() {
             return {
@@ -36,7 +36,7 @@
                 cmOptions: {
                     tabSize: 4,
                     mode: 'lua',
-                    theme: 'monokai',
+                    theme: 'mdn-like',
                     lineNumbers: true,
                     line: true,
                     lineWrapping: true,
@@ -64,21 +64,21 @@
     }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-    .container {
+    .editor-container {
         display: flex;
         flex-direction: column;
-        justify-content: space-between;
         height: 100%;
-        background-color: #272822;
+        background-color: #e1e1db;
     }
 
 
     .editor {
         display: flex;
-        border-top: thin solid white;
+        border: thick solid #bbbbbb;
+        border-radius: 3px;
         height: 90%;
+        margin: 0 1% 0.5% 1%;
     }
 
     .code {
@@ -86,8 +86,8 @@
     }
 
     .result {
-        background-color: #272822;
-        border-left: thin solid white;
+        background-color: white;
+        border-left: thin solid #bbbbbb;
         width: 40%;
         color: white;
         margin: 0;
@@ -96,17 +96,6 @@
         font-size: 14px;
     }
 
-    .header {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        height: 10%;
-    }
-
-    .redText {
-        color: red;
-    }
 </style>
 
 <style>

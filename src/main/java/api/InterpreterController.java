@@ -13,7 +13,7 @@ import org.springframework.web.server.ResponseStatusException;
 @RestController
 public class InterpreterController {
 
-  Logger logger = LoggerFactory.getLogger(InterpreterController.class);
+  private Logger logger = LoggerFactory.getLogger(InterpreterController.class);
 
   @RequestMapping(value = "/api/v1/interpreter", method = RequestMethod.POST)
   public String interpret(@RequestBody Map<String, String> payload) {
