@@ -10,6 +10,9 @@
                     reset
                 </span>
         </b-button>
+        <a href="https://github.com/jua-cs/jua" class="github-link">
+            <b-icon  icon="github-circle" size="is-medium" />
+        </a>
     </div>
 </template>
 
@@ -42,6 +45,10 @@
         font-weight: 600;
     }
 
+    .github-link {
+        margin-left: auto;
+        text-decoration: none;
+    }
 </style>
 
 <style>

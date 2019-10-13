@@ -1,9 +1,10 @@
 import Vue from 'vue'
 import App from './App.vue'
-import {Button} from 'buefy'
+import {Button, Icon} from 'buefy'
 import 'buefy/dist/buefy.css'
 
 Vue.use(Button);
+Vue.use(Icon);
 
 Vue.config.productionTip = false
 
