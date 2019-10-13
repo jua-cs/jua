@@ -4,7 +4,7 @@
         <div class="editor">
             <codemirror :options="cmOptions" class="code" v-model="code"></codemirror>
             <div class="result">
-                <pre :class="{ redText: error }">{{ result }}</pre>
+                <pre :style="{ color: error ? 'red' : '#222222'}">{{ result }}</pre>
                 <b-loading :active.sync="loading" :is-full-page="false"></b-loading>
             </div>
         </div>
@@ -22,8 +22,8 @@
 
     import Header from "./Header";
 
-
     const startingCode = "print(\"Hello and welcome to Jua !\")";
+    const url = process.env.VUE_APP_API_URL || "";
 
     export default {
         name: 'Editor',
@@ -51,7 +51,7 @@
             run: async function () {
                 this.loading = true;
                 try {
-                    const res = await axios.post("/api/v1/interpreter", {
+                    const res = await axios.post(`${url}/api/v1/interpreter`, {
                         code: this.code
                     });
                     this.result = res.data;
@@ -61,11 +61,12 @@
                         type: 'is-success'
                     });
                 } catch (e) {
+                    const msg = (e.response && e.response.data && e.response.data.message) || e.message;
                     this.$buefy.toast.open({
-                        message: `An error occurred: ${e.response.data.message}`,
+                        message: `An error occurred: ${msg}`,
                         type: 'is-danger'
                     });
-                    this.result = "ERROR\n" + e.response.data.message;
+                    this.result = "ERROR\n" + msg;
                     this.error = true;
                 }
                 this.loading = false;
@@ -95,7 +96,7 @@
         margin: 0 1% 0.5% 1%;
     }
 
-    @media only screen and (min-width : 1224px){
+    @media only screen and (min-width: 1224px) {
         /*  Desktops */
         .code {
             width: 60%;
@@ -107,7 +108,7 @@
         }
     }
 
-    @media only screen and (max-width : 1224px){
+    @media only screen and (max-width: 1224px) {
         /* Others */
         .code {
             height: 60%;
@@ -131,7 +132,6 @@
     }
 
     .result > pre {
-        color: #222222;
         font-size: 14px;
         background-color: white;
         padding: 8px;
