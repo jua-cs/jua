@@ -71,7 +71,7 @@
                 this.loading = false;
             },
             reset: function () {
-                this.exec = '';
+                this.result = '';
                 this.code = startingCode
             }
         }
@@ -95,14 +95,36 @@
         margin: 0 1% 0.5% 1%;
     }
 
-    .code {
-        width: 60%;
+    @media only screen and (min-width : 1224px){
+        /*  Desktops */
+        .code {
+            width: 60%;
+        }
+
+        .result {
+            width: 40%;
+            border-left: thin solid #bbbbbb;
+        }
+    }
+
+    @media only screen and (max-width : 1224px){
+        /* Others */
+        .code {
+            height: 60%;
+        }
+
+        .editor {
+            flex-direction: column;
+        }
+
+        .result {
+            height: 40%;
+            border-top: thin solid #bbbbbb;
+        }
     }
 
     .result {
         background-color: white;
-        border-left: thin solid #bbbbbb;
-        width: 40%;
         margin: 0;
         overflow: auto;
         position: relative;
