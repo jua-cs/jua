@@ -15,6 +15,9 @@ public class InterpreterController {
 
   private Logger logger = LoggerFactory.getLogger(InterpreterController.class);
 
+  // Allow cors for dev
+  // TODO: disable it on prod !
+  @CrossOrigin("http://localhost:8080")
   @RequestMapping(value = "/api/v1/interpreter", method = RequestMethod.POST)
   public String interpret(@RequestBody Map<String, String> payload) {
     logger.info("Received request !");
