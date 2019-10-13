@@ -1,9 +1,12 @@
 <template>
     <div class="editor-container">
-        <Header :run="run" :reset="reset" />
+        <Header :reset="reset" :run="run"/>
         <div class="editor">
             <codemirror :options="cmOptions" class="code" v-model="code"></codemirror>
-            <pre :class="{ redText: error }" class="result">{{ result }}</pre>
+            <div class="result">
+                <pre :class="{ redText: error }">{{ result }}</pre>
+                <b-loading :active.sync="loading" :is-full-page="false"></b-loading>
+            </div>
         </div>
     </div>
 </template>
@@ -33,6 +36,7 @@
                 code: startingCode,
                 result: '',
                 error: false,
+                loading: false,
                 cmOptions: {
                     tabSize: 4,
                     mode: 'lua',
@@ -45,16 +49,26 @@
         },
         methods: {
             run: async function () {
+                this.loading = true;
                 try {
                     const res = await axios.post("/api/v1/interpreter", {
                         code: this.code
                     });
                     this.result = res.data;
                     this.error = false;
+                    this.$buefy.toast.open({
+                        message: `Success`,
+                        type: 'is-success'
+                    });
                 } catch (e) {
-                    this.result = "ERROR\n" + e.response.data.message;
+                    this.$buefy.toast.open({
+                        message: `An error occured: ${e.response.data.message}`,
+                        type: 'is-danger'
+                    });
+                    this.this.result = "ERROR\n" + e.response.data.message;
                     this.error = true;
                 }
+                this.loading = false;
             },
             reset: function () {
                 this.exec = '';
@@ -89,11 +103,16 @@
         background-color: white;
         border-left: thin solid #bbbbbb;
         width: 40%;
-        color: #222222;
         margin: 0;
         overflow: auto;
-        padding: 8px;
+        position: relative;
+    }
+
+    .result > pre {
+        color: #222222;
         font-size: 14px;
+        background-color: white;
+        padding: 8px;
     }
 
     .redText {
