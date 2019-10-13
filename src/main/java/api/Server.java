@@ -1,13 +1,18 @@
 package api;
 
 import java.util.Collections;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
 public class Server {
 
-  public void run(String args[], int port) {
+  Logger logger = LoggerFactory.getLogger(Server.class);
+
+  public void run(String[] args, int port) {
+    logger.info("Starting the web server");
     SpringApplication app = new SpringApplication(Server.class);
     app.setDefaultProperties(Collections.singletonMap("server.port", String.valueOf(port)));
     app.run(args);

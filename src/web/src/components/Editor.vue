@@ -46,7 +46,7 @@
         methods: {
             run: async function () {
                 try {
-                    const res = await axios.post("http://localhost:3000/interpreter", {
+                    const res = await axios.post("/api/v1/interpreter", {
                         code: this.code
                     });
                     this.result = res.data;

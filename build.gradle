@@ -37,6 +37,7 @@ jar {
 }
 
 dependencies {
+    implementation('org.springframework.boot:spring-boot-starter-actuator')
     compile("org.springframework.boot:spring-boot-starter-web")
     testCompile('org.springframework.boot:spring-boot-starter-test')
     implementation('org.junit.jupiter:junit-jupiter-api:5.4.2')
