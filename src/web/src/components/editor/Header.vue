@@ -1,11 +1,11 @@
 <template>
     <div class="header">
-        <b-button @click="run" icon-right="play" size="is-medium" type="is-warning">
+        <b-button @click="run()" icon-right="play" size="is-medium" type="is-warning">
                 <span class="button-inner">
                     run
                 </span>
         </b-button>
-        <b-button @click="reset" icon-right="replay" size="is-medium" type="is-light">
+        <b-button @click="reset()" icon-right="replay" size="is-medium" type="is-light">
                 <span class="button-inner">
                     reset
                 </span>

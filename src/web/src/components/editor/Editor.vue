@@ -89,13 +89,16 @@
         background-color: white;
         border-left: thin solid #bbbbbb;
         width: 40%;
-        color: white;
+        color: #222222;
         margin: 0;
         overflow: auto;
         padding: 8px;
         font-size: 14px;
     }
 
+    .redText {
+        color: red;
+    }
 </style>
 
 <style>
