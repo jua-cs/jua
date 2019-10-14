@@ -22,9 +22,7 @@ public class WebSocketOutputStream extends OutputStream {
   @Override
   public void flush() throws IOException {
     TextMessage message = new TextMessage(buffer);
-    System.out.printf("send message %s\n", message.getPayload());
     session.sendMessage(message);
-    System.out.println("message sent");
     buffer = new StringBuilder();
   }
 }

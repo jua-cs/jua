@@ -16,7 +16,6 @@ public class REPLSocketHandler extends AbstractWebSocketHandler {
 
   @Override
   public void handleTextMessage(WebSocketSession session, TextMessage message) {
-    System.out.printf("handle text message: %s\n", message.getPayload());
     var interpreter = sessions.get(session);
     message
         .getPayload()
@@ -33,20 +32,16 @@ public class REPLSocketHandler extends AbstractWebSocketHandler {
 
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
-    System.out.printf("new session: %s", session);
     var interpreter = new Interpreter(new BufferedChannel<>(), new WebSocketOutputStream(session));
     sessions.put(session, interpreter);
     interpreter.start(true);
-    System.out.println("after connection end");
   }
 
   @Override
   public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
-    System.out.println("connection closed");
     super.afterConnectionClosed(session, status);
     var interpreter = sessions.get(session);
     interpreter.getIn().add('\0');
     sessions.remove(session);
-    System.out.println("connection closed end");
   }
 }
