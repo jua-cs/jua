@@ -1,0 +1,27 @@
+name: Java CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java-version: [11, 12]
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up JDK 1.${{ matrix.java-version }}
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.${{ matrix.java-version }}
+
+    - name: ensure fmt
+      run: find src/ -name "*.java" | xargs java -jar tools/google-java-format-1.7-all-deps.jar --set-exit-if-changed
+    - name: tests
+      run: ./gradlew clean test -i
+    - name: Build with Gradle
+      run: ./gradlew build
+    - name: integration tests
+      run: echo "x = y" | java -jar build/libs/jua-0.0.0.jar --debug
