@@ -1,6 +1,7 @@
 package jua;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.OutputStream;
 import jua.ast.Statement;
 import jua.ast.StatementEOP;
@@ -17,6 +18,8 @@ public class Interpreter {
   private Lexer lexer;
   private Parser parser;
   private Scope scope;
+  private BufferedChannel<Character> in = new BufferedChannel<>();
+  private OutputStream out = System.out;
   private Thread lexerWorker;
   private Thread parserWorker;
   private Thread evaluationWorker;
@@ -31,12 +34,26 @@ public class Interpreter {
     lexer = new Lexer(in);
     parser = new Parser(lexer.getNTokens(0));
     scope = new Scope(out);
+    this.out = out;
   }
 
   public Interpreter(BufferedChannel<Character> in) {
+    this.in = in;
     lexer = new Lexer(in);
     parser = new Parser(lexer.getOut());
     scope = new Scope();
+  }
+
+  public Interpreter(BufferedChannel<Character> in, OutputStream out) {
+    this.in = in;
+    lexer = new Lexer(in);
+    parser = new Parser(lexer.getOut());
+    scope = new Scope(out);
+    this.out = out;
+  }
+
+  public BufferedChannel<Character> getIn() {
+    return in;
   }
 
   public static String eval(String in) throws IllegalParseException, LuaRuntimeException {
@@ -85,7 +102,13 @@ public class Interpreter {
             () -> {
               while (true) {
                 if (isInteractive) {
-                  System.out.print("> ");
+
+                  try {
+                    out.write("> ".getBytes());
+                    out.flush();
+                  } catch (IOException e) {
+                    e.printStackTrace();
+                  }
                 }
                 try {
                   Statement s = in.read();
@@ -94,7 +117,12 @@ public class Interpreter {
                   }
                   LuaObject o = s.evaluate(scope);
                   if (s instanceof StatementExpression) {
-                    System.out.println(o.repr());
+                    try {
+                      out.write(o.repr().getBytes());
+                      out.flush();
+                    } catch (IOException e) {
+                      e.printStackTrace();
+                    }
                   }
                 } catch (LuaRuntimeException | InterruptedException e) {
                   e.printStackTrace();
