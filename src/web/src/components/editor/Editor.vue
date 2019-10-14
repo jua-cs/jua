@@ -51,7 +51,7 @@
             run: async function () {
                 this.loading = true;
                 try {
-                    const res = await axios.post(`${url}/api/v1/interpreter`, {
+                    const res = await axios.post(`http://${url}/api/v1/interpreter`, {
                         code: this.code
                     });
                     this.result = res.data;

@@ -1,16 +1,28 @@
 <template>
   <div id="app">
-    <Editor />
+    <div>
+      toggle REPL: 
+      <input type="checkbox" v-model="isREPL">
+    </div>
+    <REPL v-if="isREPL" />
+    <Editor v-else/>
   </div>
 </template>
 
 <script>
 import Editor from './components/editor/Editor.vue'
+import REPL from './components/editor/REPL.vue'
 
 export default {
   name: 'app',
   components: {
-    Editor
+    Editor,
+    REPL,
+  },
+  data() {
+    return {
+      isREPL: false,
+    }
   }
 }
 </script>
