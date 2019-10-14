@@ -4,6 +4,8 @@ Jua is a lua interpreter implemented in java.
 
 It features a CLI (repl + interpreter for files) and a web application.
 
+You can access the web application [here](jua.herokuapp.com).
+
 ## Usage
 
 To build jua you can run:

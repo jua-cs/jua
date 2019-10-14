@@ -6,4 +6,4 @@ cd ..
 cd src/web
 
 yarn
-yarn serve
+VUE_APP_API_URL=http://localhost:3000 yarn serve
