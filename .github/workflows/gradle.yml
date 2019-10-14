@@ -13,5 +13,12 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.12
+
+    - name: ensure fmt
+      run: find src/ -name "*.java" | xargs java -jar tools/google-java-format-1.7-all-deps.jar --set-exit-if-changed
+    - name: tests
+      run: ./gradlew clean test -i
+    - name: integration tests
+      run: echo "x = y" | java -jar build/libs/jua-0.0.0.jar --debug
     - name: Build with Gradle
       run: ./gradlew build
