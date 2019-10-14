@@ -6,7 +6,7 @@
 </template>
 
 <script>
-    const url = process.env.VUE_APP_API_URL || "";
+    const url = process.env.VUE_APP_API_URL || document.domain;
 
     export default {
         name: 'REPL',
