@@ -118,7 +118,7 @@ public class Interpreter {
                   LuaObject o = s.evaluate(scope);
                   if (s instanceof StatementExpression) {
                     try {
-                      out.write((o.repr()+'\n').getBytes());
+                      out.write((o.repr() + '\n').getBytes());
                       out.flush();
                     } catch (IOException e) {
                       e.printStackTrace();

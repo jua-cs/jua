@@ -1,10 +1,9 @@
 package api;
 
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
-
 import java.io.IOException;
 import java.io.OutputStream;
+import org.springframework.web.socket.TextMessage;
+import org.springframework.web.socket.WebSocketSession;
 
 public class WebSocketOutputStream extends OutputStream {
   WebSocketSession session;

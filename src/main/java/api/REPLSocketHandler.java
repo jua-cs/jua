@@ -1,14 +1,12 @@
 package api;
 
+import java.util.HashMap;
 import jua.Interpreter;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.AbstractWebSocketHandler;
 import util.BufferedChannel;
-
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class REPLSocketHandler extends AbstractWebSocketHandler {
 
