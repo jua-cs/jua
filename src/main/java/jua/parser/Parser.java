@@ -84,6 +84,7 @@ public class Parser {
     register(new FunctionStatementParser());
     register(new ReturnStatementParser());
     register(new IfStatementParser());
+    register(new BlockStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
@@ -298,23 +299,6 @@ public class Parser {
     return list;
   }
 
-  private boolean isBlockStatement() {
-    return currentToken().isSubtype(Keyword.DO);
-  }
-
-  private StatementList parseBlockStatement() throws IllegalParseException {
-
-    // consume the DO keyword
-    consume(Keyword.DO);
-
-    StatementList list = parseListStatement();
-
-    // consume the END keyword
-    consume(Keyword.END);
-
-    return list;
-  }
-
   public Statement parseStatement() throws IllegalParseException {
 
     for (StatementParser p : statementParserList) {
@@ -325,10 +309,6 @@ public class Parser {
 
     if (isLocalAssignment()) {
       return parseAssignment();
-    } else if (isBlockStatement()) {
-      return parseBlockStatement();
-    } else if (isWhileStatement()) {
-      return parseWhileStatement();
     } else if (isForStatement()) {
       return parseForStatement();
     } else if (isBreakStatement()) {
@@ -408,74 +388,6 @@ public class Parser {
     return true;
   }
 
-  private boolean isIfStatement() {
-    return currentToken().isSubtype(Keyword.IF);
-  }
-
-  private StatementIf parseIfStatement() throws IllegalParseException {
-    return parseIfStatement(false);
-  }
-
-  // nested should only be true when parsing an elseif statement inside a main if
-  // this argument tells parseIfStatement not to consume the only END keyword
-  private StatementIf parseIfStatement(boolean nested) throws IllegalParseException {
-
-    // consumeKeyword.IF or Keyword.ELSEIF;
-    try {
-      consume(Keyword.IF);
-    } catch (IllegalParseException e) {
-      consume(Keyword.ELSEIF);
-    }
-
-    Expression condition = parseExpression();
-
-    consume(Keyword.THEN);
-    Statement consequence = parseListStatement();
-    Token tok = currentToken();
-    if (!isBlockEnd()) {
-      throw new IllegalParseException(
-          String.format("unexpected jua.token %s, expected end, else or elseif", tok));
-    }
-    Statement alternative = null;
-    TokenKeyword keyword = (TokenKeyword) tok;
-    switch (keyword.getKeyword()) {
-      case ELSEIF:
-        alternative = parseIfStatement(true);
-        break;
-      case ELSE:
-        consume(Keyword.ELSE);
-        alternative = parseListStatement();
-        break;
-    }
-
-    tok = currentToken();
-    if (!tok.isSubtype(Keyword.END)) {
-      throw new IllegalParseException(
-          String.format("unexpected jua.token %s, expected end", keyword));
-    }
-
-    if (!nested) {
-      // consume the END keyword
-      consume(Keyword.END);
-    }
-
-    return new StatementIf(tok, condition, consequence, alternative);
-  }
-
-  private boolean isWhileStatement() {
-    return currentToken().isSubtype(Keyword.WHILE);
-  }
-
-  private Statement parseWhileStatement() throws IllegalParseException {
-    Token tok = currentToken();
-    consume(Keyword.WHILE);
-    Expression condition = parseExpression();
-
-    Statement consequence = parseBlockStatement();
-
-    return new StatementWhile(tok, condition, consequence);
-  }
-
   private boolean isForStatement() {
     return currentToken().isSubtype(Keyword.FOR);
   }
@@ -512,7 +424,9 @@ public class Parser {
       step = assignment.getRhs().get(2);
     }
 
-    Statement block = parseBlockStatement();
+    BlockStatementParser blockParser = new BlockStatementParser();
+
+    Statement block = blockParser.parse(this);
 
     return new StatementNumericFor(tok, variable, var, limit, step, block);
   }
@@ -534,7 +448,9 @@ public class Parser {
       var = explist.get(2);
     }
 
-    Statement block = parseBlockStatement();
+    BlockStatementParser blockParser = new BlockStatementParser();
+
+    Statement block = blockParser.parse(this);
 
     return new StatementGenericFor(tok, variables, iterator, state, var, block);
   }
