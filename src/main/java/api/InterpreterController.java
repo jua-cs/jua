@@ -7,8 +7,10 @@ import jua.parser.IllegalParseException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @RestController
 public class InterpreterController {
@@ -19,18 +21,22 @@ public class InterpreterController {
   // TODO: disable it on prod !
   @CrossOrigin("http://localhost:8080")
   @RequestMapping(value = "/api/v1/interpreter", method = RequestMethod.POST)
-  public String interpret(@RequestBody Map<String, String> payload) {
+  public ResponseEntity<StreamingResponseBody> interpret(@RequestBody Map<String, String> payload) {
     logger.info("Received request !");
-    try {
-      return Interpreter.eval(payload.get("code"));
-    } catch (IllegalParseException e) {
-      logger.error("Error parsing !");
-      throw new ResponseStatusException(
-          HttpStatus.INTERNAL_SERVER_ERROR, "Error parsing the provided code", e);
-    } catch (LuaRuntimeException e) {
-      logger.error("Error evaluating !");
-      throw new ResponseStatusException(
-          HttpStatus.INTERNAL_SERVER_ERROR, "Error evaluating the provided code", e);
-    }
+    StreamingResponseBody resp =
+        outputStream -> {
+          Interpreter interpreter = new Interpreter(payload.get("code"), outputStream);
+          try {
+            interpreter.run();
+          } catch (IllegalParseException e) {
+            throw new ResponseStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR, "Error parsing the provided code", e);
+          } catch (LuaRuntimeException e) {
+            throw new ResponseStatusException(
+                HttpStatus.INTERNAL_SERVER_ERROR, "Error evaluating the provided code", e);
+          }
+        };
+
+    return new ResponseEntity<>(resp, HttpStatus.OK);
   }
 }
