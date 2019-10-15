@@ -14,6 +14,7 @@ public class Parser {
 
   private HashMap<TokenHashmMapKey, PrefixParser> tokenPrefixParserHashMap;
   private HashMap<TokenHashmMapKey, InfixParser> tokenInfixParserHashMap;
+  private ArrayList<StatementParser> statementParserList;
 
   public Parser(BufferedChannel<Token> tokens) {
     init(tokens);
@@ -42,6 +43,7 @@ public class Parser {
   private void registerParsers() {
     this.tokenInfixParserHashMap = new HashMap<>();
     this.tokenPrefixParserHashMap = new HashMap<>();
+    this.statementParserList = new ArrayList<>();
 
     // Register the class which implements InfixParser interface
     // TODO: ^ has greater precedence than unary operators, this is not handled at the moment
@@ -67,7 +69,7 @@ public class Parser {
     register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(9));
     register(TokenFactory.create(Operator.COLON), new MethodCallParser(9));
 
-    // Register the class which implements PrefixParser interface
+    // Register the classes which implements PrefixParser interface
     register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser());
     register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(8));
     register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(8));
@@ -77,6 +79,26 @@ public class Parser {
     register(TokenFactory.create(Keyword.FUNCTION), new FunctionExprParser());
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());
+
+    // Register the classes which implements StatementParser interface
+    register(new FunctionStatementParser());
+  }
+
+  private void registerBinaryOperator(Operator op, int precedence) {
+    tokenInfixParserHashMap.put(
+        new TokenHashmMapKey(TokenFactory.create(op)), new OperatorParser(precedence));
+  }
+
+  private void register(Token type, PrefixParser parser) {
+    tokenPrefixParserHashMap.put(new TokenHashmMapKey(type), parser);
+  }
+
+  private void register(Token type, InfixParser parser) {
+    tokenInfixParserHashMap.put(new TokenHashmMapKey(type), parser);
+  }
+
+  private void register(StatementParser statementParser) {
+    statementParserList.add(statementParser);
   }
 
   public Token nextToken(int i, boolean skip) {
@@ -94,11 +116,11 @@ public class Parser {
     return null;
   }
 
-  private Token nextToken(int i) {
+  Token nextToken(int i) {
     return nextToken(i, true);
   }
 
-  private Token nextToken() {
+  Token nextToken() {
     return nextToken(1, true);
   }
 
@@ -233,19 +255,6 @@ public class Parser {
     return parser != null ? parser.getPrecedence() : 0;
   }
 
-  private void registerBinaryOperator(Operator op, int precedence) {
-    tokenInfixParserHashMap.put(
-        new TokenHashmMapKey(TokenFactory.create(op)), new OperatorParser(precedence));
-  }
-
-  private void register(Token type, PrefixParser parser) {
-    tokenPrefixParserHashMap.put(new TokenHashmMapKey(type), parser);
-  }
-
-  private void register(Token type, InfixParser parser) {
-    tokenInfixParserHashMap.put(new TokenHashmMapKey(type), parser);
-  }
-
   public StatementList parse() throws IllegalParseException {
     StatementList statements = new StatementList(currentToken());
 
@@ -306,10 +315,14 @@ public class Parser {
 
   public Statement parseStatement() throws IllegalParseException {
 
+    for (StatementParser p : statementParserList) {
+      if (p.matches(this)) {
+        return p.parse(this);
+      }
+    }
+
     if (isLocalAssignment()) {
       return parseAssignment();
-    } else if (isFunctionStatement()) {
-      return parseFunctionStatement();
     } else if (isReturnStatement()) {
       return parseReturnStatement();
     } else if (isIfStatement()) {
@@ -644,7 +657,7 @@ public class Parser {
     public TokenHashmMapKey(Token token) {
       this.token = token;
     }
-
+    // Used to set a "light" equals between tokens, ignoring position and line.
     @Override
     public boolean equals(Object o) {
       if (this == o) return true;
