@@ -82,6 +82,7 @@ public class Parser {
 
     // Register the classes which implements StatementParser interface
     register(new FunctionStatementParser());
+    register(new ReturnStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
@@ -323,8 +324,6 @@ public class Parser {
 
     if (isLocalAssignment()) {
       return parseAssignment();
-    } else if (isReturnStatement()) {
-      return parseReturnStatement();
     } else if (isIfStatement()) {
       return parseIfStatement();
     } else if (isBlockStatement()) {
@@ -370,50 +369,7 @@ public class Parser {
 
     return new StatementRepeatUntil(tok, condition, action);
   }
-
-  private StatementFunction parseFunctionStatement() throws IllegalParseException {
-    // Next jua.token should be an identifier
-    Token tok = currentToken();
-    consume(Keyword.FUNCTION);
-
-    // Parse any expression and cast it into a Variable to allow for:
-    // function f() -> Identifier
-    // function a.b.c() -> ExpressionAccess
-    // function d[e].f[0]() -> ExpressionIndex
-
-    // We don't want to parse the expression call so we set the precedence to just below it
-    // it also matches the precedence of the index and access operators
-    Variable funcVar = (Variable) parseExpression(9);
-
-    // TODO: support :
-    // function x.y:z()
-
-    // Parse args
-    ArrayList<ExpressionIdentifier> args = parseFuncArgs();
-    StatementList stmts = parseListStatement();
-
-    // consume END of function statement
-    consume(Keyword.END);
-    return new StatementFunction(
-        tok, funcVar, ExpressionFactory.createExpressionFunction(tok, args, stmts));
-  }
-
-  private boolean isFunctionStatement() {
-    boolean isFunc = currentToken().isSubtype(Keyword.FUNCTION);
-    boolean nextIsIdent = nextToken().isIdentifier();
-    return isFunc && nextIsIdent;
-  }
-
-  private StatementReturn parseReturnStatement() throws IllegalParseException {
-    Token tok = currentToken();
-    consume(Keyword.RETURN);
-    return new StatementReturn(tok, parseCommaSeparatedExpressions(0));
-  }
-
-  private boolean isReturnStatement() {
-    return currentToken().isSubtype(Keyword.RETURN);
-  }
-
+  
   private boolean isLocalAssignment() {
     return currentToken().isSubtype(Keyword.LOCAL);
   }
