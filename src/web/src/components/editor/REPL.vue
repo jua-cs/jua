@@ -1,15 +1,19 @@
 <template>
-    <div class="editor-container">
-    <div class="prompt"> {{prompt}}</div>
-    <input v-model="code" v-on:keyup.enter="run()">
-    </div>
+    <Container :reset="reset">
+        <pre class="prompt"> {{prompt}}</pre>
+        <input v-model="code" v-on:keyup.enter="run()">
+    </Container>
 </template>
 
 <script>
     import {url} from '../../util';
+    import Container from './Container'
 
     export default {
         name: 'REPL',
+        components: {
+            Container
+        },
         data() {
             return {
                 code: "",
@@ -18,8 +22,10 @@
             }
         },
         created() {
-            this.ws = new WebSocket(`ws://${url}/repl`);
-            this.ws.onmessage = this.updatePrompt;
+            this.connect();
+        },
+        destroyed() {
+            this.ws.close();
         },
         methods: {
             run: function () {
@@ -27,15 +33,19 @@
                 this.prompt += this.code + '\n';
                 this.code = "";
             },
-            updatePrompt: function(message) {
+            connect: function() {
+                this.ws = new WebSocket(`ws://${url}/api/v1/repl`);
+                this.ws.onmessage = this.updatePrompt;
+            },
+            reset: function() {
+                this.ws.close();
+                this.code = "";
+                this.prompt = "";
+                this.connect();
+            },
+            updatePrompt: function (message) {
                 this.prompt += message.data;
             }
         }
     }
 </script>
-
-<style scoped>
-    .prompt {
-        white-space: pre;
-    }
-</style>
