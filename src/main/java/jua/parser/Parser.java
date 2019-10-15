@@ -83,6 +83,7 @@ public class Parser {
     // Register the classes which implements StatementParser interface
     register(new FunctionStatementParser());
     register(new ReturnStatementParser());
+    register(new IfStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
@@ -194,7 +195,7 @@ public class Parser {
     return new StatementAssignment(assignTok, identifiers, exprs, isLocal);
   }
 
-  private Expression parseExpression() throws IllegalParseException {
+  Expression parseExpression() throws IllegalParseException {
     return parseExpression(0);
   }
 
@@ -324,8 +325,6 @@ public class Parser {
 
     if (isLocalAssignment()) {
       return parseAssignment();
-    } else if (isIfStatement()) {
-      return parseIfStatement();
     } else if (isBlockStatement()) {
       return parseBlockStatement();
     } else if (isWhileStatement()) {
@@ -369,7 +368,7 @@ public class Parser {
 
     return new StatementRepeatUntil(tok, condition, action);
   }
-  
+
   private boolean isLocalAssignment() {
     return currentToken().isSubtype(Keyword.LOCAL);
   }
@@ -556,7 +555,7 @@ public class Parser {
     return !(currentToken() instanceof TokenEOF || currentToken() instanceof TokenInvalid);
   }
 
-  private boolean isBlockEnd() {
+  boolean isBlockEnd() {
 
     Token tok = currentToken();
     return tok.isSubtype(Keyword.END)
