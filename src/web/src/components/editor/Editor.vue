@@ -1,6 +1,5 @@
 <template>
-    <div class="editor-container">
-        <Header :reset="reset" :run="run"/>
+    <Container :reset="reset" :run="run" :share="share">
         <div class="editor">
             <codemirror :options="cmOptions" class="code" v-model="code"></codemirror>
             <div class="result">
@@ -8,7 +7,7 @@
                 <b-loading :active.sync="loading" :is-full-page="false"></b-loading>
             </div>
         </div>
-    </div>
+    </Container>
 </template>
 
 <script>
@@ -19,7 +18,7 @@
     // Lua support
     import 'codemirror/mode/lua/lua.js'
 
-    import Header from "./Header";
+    import Container from './Container'
 
     const startingCode = "print(\"Hello and welcome to Jua !\")";
     import {url} from '../../util';
@@ -28,7 +27,7 @@
         name: 'Editor',
         components: {
             codemirror,
-            Header
+            Container
         },
         data() {
             return {
@@ -71,14 +70,14 @@
                         throw decoded.message;
                     }
                     await this.pump(res.body.getReader());
-                    this.$buefy.toast.open({
-                        message: `Success`,
-                        type: 'is-success'
+                    this.$buefy.snackbar.open({
+                        message: "Success",
+                        type: "is-success"
                     });
                 // Handle all the errors here
                 } catch (err) {
                     const msg = err.message || err;
-                    this.$buefy.toast.open({
+                    this.$buefy.snackbar.open({
                         message: `An error occurred: ${msg}`,
                         type: 'is-danger'
                     });
@@ -91,6 +90,12 @@
                 this.result = '';
                 this.error = false;
                 this.code = startingCode;
+            },
+            share: function () {
+                this.$buefy.snackbar.open({
+                    message: "Not available yet !",
+                    type: "is-warning"
+                });
             },
             pump: async function (reader) {
                 const {done, value} = await reader.read();
@@ -106,14 +111,6 @@
 </script>
 
 <style scoped>
-    .editor-container {
-        display: flex;
-        flex-direction: column;
-        height: 100%;
-        background-color: #e1e1db;
-    }
-
-
     .editor {
         display: flex;
         border: thick solid #bbbbbb;

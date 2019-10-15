@@ -1,6 +1,6 @@
 <template>
     <div class="header">
-        <b-button @click="run()" icon-right="play" size="is-medium" type="is-warning">
+        <b-button :disabled="!run" @click="run()" icon-right="play" size="is-medium" type="is-warning">
                 <span class="button-inner">
                     run
                 </span>
@@ -10,8 +10,23 @@
                     reset
                 </span>
         </b-button>
-        <a href="https://github.com/jua-cs/jua" class="github-link">
-            <b-icon  icon="github-circle" size="is-medium" />
+        <b-button :disabled="!share" @click="share()" icon-right="share" size="is-medium" type="is-light">
+                <span class="button-inner">
+                    Share
+                </span>
+        </b-button>
+        <b-button @click="switchPage('/')" icon-right="code-tags" size="is-medium" type="is-link" v-if="isOnRepl">
+                <span class="button-inner">
+                    Editor
+                </span>
+        </b-button>
+        <b-button @click="switchPage('/repl')" icon-right="console-line" size="is-medium" type="is-link" v-else>
+                <span class="button-inner">
+                    REPL
+                </span>
+        </b-button>
+        <a class="github-link" href="https://github.com/jua-cs/jua">
+            <b-icon icon="github-circle" size="is-medium"/>
         </a>
     </div>
 </template>
@@ -22,7 +37,18 @@
         name: 'Header',
         props: {
             reset: Function,
-            run: Function
+            run: Function,
+            share: Function,
+        },
+        computed: {
+            isOnRepl: function () {
+                return this.$route.fullPath === "/repl";
+            }
+        },
+        methods: {
+            switchPage: function (to) {
+                this.$router.push(to);
+            }
         }
     }
 </script>
@@ -35,8 +61,12 @@
     }
 
     /* Add margin to every button except the first */
+    .header > button {
+        margin-right: 5px;
+    }
+
     .header > button + button {
-        margin: 0 10px;
+        margin: 0 5px;
     }
 
     .button-inner {
