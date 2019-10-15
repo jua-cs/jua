@@ -22,7 +22,7 @@
     import Header from "./Header";
 
     const startingCode = "print(\"Hello and welcome to Jua !\")";
-    const url = process.env.VUE_APP_API_URL || "";
+    import {url} from '../../util';
 
     export default {
         name: 'Editor',
@@ -54,7 +54,7 @@
                 this.error = false;
                 try {
                     const res = await fetch(
-                        `${url}/api/v1/interpreter`,
+                        `http://${url}/api/v1/interpreter`,
                         {
                             method: 'post',
                             body: JSON.stringify({

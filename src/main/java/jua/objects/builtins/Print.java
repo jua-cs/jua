@@ -16,6 +16,7 @@ class Print extends BuiltinFunction {
             try {
               out.write(arg.repr().getBytes());
               out.write('\n');
+              out.flush();
             } catch (IOException e) {
               throw new LuaRuntimeException("could not write to output stream in `print` builtin");
             }
