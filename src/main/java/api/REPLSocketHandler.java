@@ -31,7 +31,11 @@ public class REPLSocketHandler extends AbstractWebSocketHandler {
   @Override
   public void afterConnectionEstablished(WebSocketSession session) {
     WebSocketWriter writer = new WebSocketWriter(session);
-    var interpreter = new Interpreter(new BufferedChannel<>(), new WebSocketOutputStream(writer, "return"), new WebSocketOutputStream(writer, "error"));
+    var interpreter =
+        new Interpreter(
+            new BufferedChannel<>(),
+            new WebSocketOutputStream(writer, "return"),
+            new WebSocketOutputStream(writer, "error"));
     sessions.put(session, interpreter);
     interpreter.start(true);
   }

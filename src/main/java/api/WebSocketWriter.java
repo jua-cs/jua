@@ -1,9 +1,8 @@
 package api;
 
+import java.io.IOException;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
-
-import java.io.IOException;
 
 public class WebSocketWriter {
   WebSocketSession session;

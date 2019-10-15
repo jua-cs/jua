@@ -1,13 +1,9 @@
 package api;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.HashMap;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.boot.json.GsonJsonParser;
-import org.springframework.web.socket.TextMessage;
-import org.springframework.web.socket.WebSocketSession;
 
 public class WebSocketOutputStream extends OutputStream {
   WebSocketWriter writer;

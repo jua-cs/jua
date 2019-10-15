@@ -128,13 +128,13 @@ public class Interpreter {
               while (true) {
                 try {
                   lexer.start(isInteractive);
-                  //lexer ends normally, exiting
+                  // lexer ends normally, exiting
                   break;
                 } catch (InterruptedException e) {
                   e.printStackTrace();
                   break;
                 } catch (IllegalLexingException e) {
-                  //print the exception and resume the lexer
+                  // print the exception and resume the lexer
                   try {
                     stderr.write((e.toString() + '\n').getBytes());
                     stderr.flush();
@@ -153,13 +153,13 @@ public class Interpreter {
               while (true) {
                 try {
                   parser.start(isInteractive);
-                  //parser ends normally, exiting
+                  // parser ends normally, exiting
                   break;
                 } catch (InterruptedException e) {
                   e.printStackTrace();
                   break;
                 } catch (IllegalParseException e) {
-                  //print the exception and resume the parser
+                  // print the exception and resume the parser
                   try {
                     stderr.write((e.toString() + '\n').getBytes());
                     stderr.flush();
