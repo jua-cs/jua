@@ -2,26 +2,48 @@ package api;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.HashMap;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.json.GsonJsonParser;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 public class WebSocketOutputStream extends OutputStream {
-  WebSocketSession session;
+  WebSocketWriter writer;
   StringBuilder buffer = new StringBuilder();
+  ObjectMapper objectMapper = new ObjectMapper();
+  String prefix;
 
-  public WebSocketOutputStream(WebSocketSession session) {
-    this.session = session;
+  public WebSocketOutputStream(WebSocketWriter writer, String prefix) {
+    this.writer = writer;
+    this.prefix = prefix;
   }
 
   @Override
   public void write(int i) {
-    buffer.append((char) i);
+    synchronized (buffer) {
+      buffer.append((char) i);
+    }
+  }
+
+  @Override
+  public void write(byte[] b) {
+    synchronized (buffer) {
+      buffer.append(new String(b));
+    }
   }
 
   @Override
   public void flush() throws IOException {
-    TextMessage message = new TextMessage(buffer);
-    session.sendMessage(message);
-    buffer = new StringBuilder();
+    String message;
+    synchronized (buffer) {
+      message = buffer.toString();
+      buffer = new StringBuilder();
+    }
+    HashMap<String, String> payload = new HashMap<>();
+    payload.put(prefix, message);
+    String serialized = objectMapper.writeValueAsString(payload);
+    writer.write(serialized);
   }
 }
