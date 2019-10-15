@@ -44,7 +44,7 @@
                 this.connect();
             },
             updatePrompt: function (message) {
-                payload = JSON.parse(message.data);
+                let payload = JSON.parse(message.data);
                 if (typeof payload.return !== "undefined") {
                     this.prompt += payload.return;
                 }
