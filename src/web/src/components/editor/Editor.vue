@@ -13,7 +13,6 @@
 
 <script>
     import {codemirror} from 'vue-codemirror'
-    import axios from 'axios';
     // Themes
     import 'codemirror/lib/codemirror.css'
     import 'codemirror/theme/mdn-like.css'
@@ -44,36 +43,63 @@
                     lineNumbers: true,
                     line: true,
                     lineWrapping: true,
-                }
+                },
+                decoder: new TextDecoder("utf-8")
             }
         },
         methods: {
             run: async function () {
                 this.loading = true;
+                this.result = '';
+                this.error = false;
                 try {
-                    const res = await axios.post(`http://${url}/api/v1/interpreter`, {
-                        code: this.code
-                    });
-                    this.result = res.data;
-                    this.error = false;
+                    const res = await fetch(
+                        `http://${url}/api/v1/interpreter`,
+                        {
+                            method: 'post',
+                            body: JSON.stringify({
+                                code: this.code
+                            }),
+                            headers: {
+                                'Content-Type': 'application/json'
+                            }
+                        },
+                    );
+                    if (res.status !== 200) {
+                        const raw = (await res.body.getReader().read()).value;
+                        const decoded = JSON.parse(this.decoder.decode(raw));
+                        throw decoded.message;
+                    }
+                    await this.pump(res.body.getReader());
                     this.$buefy.toast.open({
                         message: `Success`,
                         type: 'is-success'
                     });
-                } catch (e) {
-                    const msg = (e.response && e.response.data && e.response.data.message) || e.message;
+                // Handle all the errors here
+                } catch (err) {
+                    const msg = err.message || err;
                     this.$buefy.toast.open({
                         message: `An error occurred: ${msg}`,
                         type: 'is-danger'
                     });
-                    this.result = "ERROR\n" + msg;
+                    this.result = `ERROR\n${msg}`;
                     this.error = true;
                 }
                 this.loading = false;
             },
             reset: function () {
                 this.result = '';
-                this.code = startingCode
+                this.error = false;
+                this.code = startingCode;
+            },
+            pump: async function (reader) {
+                const {done, value} = await reader.read();
+                if (done) {
+                    // TODO; close ?
+                    return;
+                }
+                this.result += this.decoder.decode(value);
+                return this.pump(reader);
             }
         }
     }
@@ -135,6 +161,8 @@
         font-size: 14px;
         background-color: white;
         padding: 8px;
+        height: 100%;
+        width: 100%;
     }
 
     .redText {
