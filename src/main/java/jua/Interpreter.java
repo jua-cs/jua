@@ -6,6 +6,7 @@ import java.io.OutputStream;
 import jua.ast.Statement;
 import jua.ast.StatementEOP;
 import jua.ast.StatementExpression;
+import jua.evaluator.IllegalLexingException;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.lexer.Lexer;
@@ -19,7 +20,8 @@ public class Interpreter {
   private Parser parser;
   private Scope scope;
   private BufferedChannel<Character> in = new BufferedChannel<>();
-  private OutputStream out = System.out;
+  private OutputStream stdout = System.out;
+  private OutputStream stderr = System.err;
   private Thread lexerWorker;
   private Thread parserWorker;
   private Thread evaluationWorker;
@@ -30,11 +32,11 @@ public class Interpreter {
     scope = new Scope();
   }
 
-  public Interpreter(String in, OutputStream out) {
+  public Interpreter(String in, OutputStream stdout) {
     lexer = new Lexer(in);
     parser = new Parser(lexer.getNTokens(0));
-    scope = new Scope(out);
-    this.out = out;
+    scope = new Scope(stdout);
+    this.stdout = stdout;
   }
 
   public Interpreter(BufferedChannel<Character> in) {
@@ -44,12 +46,21 @@ public class Interpreter {
     scope = new Scope();
   }
 
-  public Interpreter(BufferedChannel<Character> in, OutputStream out) {
+  public Interpreter(BufferedChannel<Character> in, OutputStream stdout) {
     this.in = in;
     lexer = new Lexer(in);
     parser = new Parser(lexer.getOut());
-    scope = new Scope(out);
-    this.out = out;
+    scope = new Scope(stdout);
+    this.stdout = stdout;
+  }
+
+  public Interpreter(BufferedChannel<Character> in, OutputStream stdout, OutputStream stderr) {
+    this.in = in;
+    lexer = new Lexer(in);
+    parser = new Parser(lexer.getOut());
+    scope = new Scope(stdout);
+    this.stdout = stdout;
+    this.stderr = stderr;
   }
 
   public BufferedChannel<Character> getIn() {
@@ -70,16 +81,67 @@ public class Interpreter {
     }
   }
 
+  private void loop(boolean isInteractive) {
+    while (true) {
+      if (isInteractive) {
+        try {
+          stdout.write("> ".getBytes());
+          stdout.flush();
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+      }
+      try {
+        Statement s = parser.getOut().read();
+        if (s instanceof StatementEOP) {
+          break;
+        }
+        LuaObject o = s.evaluate(scope);
+        if (s instanceof StatementExpression) {
+          try {
+            stdout.write((o.repr() + '\n').getBytes());
+            stdout.flush();
+          } catch (IOException e) {
+            e.printStackTrace();
+          }
+        }
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+        break;
+      } catch (LuaRuntimeException e) {
+        try {
+          stderr.write((e.toString() + '\n').getBytes());
+          stderr.flush();
+        } catch (IOException ex) {
+          ex.printStackTrace();
+        }
+      }
+    }
+  }
+
   public void start(boolean isInteractive) {
 
     // start lexer worker
     lexerWorker =
         new Thread(
             () -> {
-              try {
-                lexer.start(isInteractive);
-              } catch (InterruptedException e) {
-                e.printStackTrace();
+              while (true) {
+                try {
+                  lexer.start(isInteractive);
+                  //lexer ends normally, exiting
+                  break;
+                } catch (InterruptedException e) {
+                  e.printStackTrace();
+                  break;
+                } catch (IllegalLexingException e) {
+                  //print the exception and resume the lexer
+                  try {
+                    stderr.write((e.toString() + '\n').getBytes());
+                    stderr.flush();
+                  } catch (IOException ex) {
+                    ex.printStackTrace();
+                  }
+                }
               }
             });
     lexerWorker.start();
@@ -88,48 +150,28 @@ public class Interpreter {
     parserWorker =
         new Thread(
             () -> {
-              try {
-                parser.start(isInteractive);
-              } catch (InterruptedException e) {
-                e.printStackTrace();
+              while (true) {
+                try {
+                  parser.start(isInteractive);
+                  //parser ends normally, exiting
+                  break;
+                } catch (InterruptedException e) {
+                  e.printStackTrace();
+                  break;
+                } catch (IllegalParseException e) {
+                  //print the exception and resume the parser
+                  try {
+                    stderr.write((e.toString() + '\n').getBytes());
+                    stderr.flush();
+                  } catch (IOException ex) {
+                    ex.printStackTrace();
+                  }
+                }
               }
             });
     parserWorker.start();
-    // start evaluation
-    BufferedChannel<Statement> in = parser.getOut();
-    evaluationWorker =
-        new Thread(
-            () -> {
-              while (true) {
-                if (isInteractive) {
 
-                  try {
-                    out.write("> ".getBytes());
-                    out.flush();
-                  } catch (IOException e) {
-                    e.printStackTrace();
-                  }
-                }
-                try {
-                  Statement s = in.read();
-                  if (s instanceof StatementEOP) {
-                    break;
-                  }
-                  LuaObject o = s.evaluate(scope);
-                  if (s instanceof StatementExpression) {
-                    try {
-                      out.write((o.repr() + '\n').getBytes());
-                      out.flush();
-                    } catch (IOException e) {
-                      e.printStackTrace();
-                    }
-                  }
-                } catch (LuaRuntimeException | InterruptedException e) {
-                  e.printStackTrace();
-                  break;
-                }
-              }
-            });
+    evaluationWorker = new Thread(() -> loop(isInteractive));
     evaluationWorker.start();
   }
 }
