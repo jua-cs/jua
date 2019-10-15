@@ -44,7 +44,13 @@
                 this.connect();
             },
             updatePrompt: function (message) {
-                this.prompt += message.data;
+                payload = JSON.parse(message.data);
+                if (typeof payload.return !== "undefined") {
+                    this.prompt += payload.return;
+                }
+                if (typeof payload.error !== "undefined") {
+                    this.prompt += payload.error;
+                }
             }
         }
     }
