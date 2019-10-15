@@ -85,6 +85,7 @@ public class Parser {
     register(new ReturnStatementParser());
     register(new IfStatementParser());
     register(new BlockStatementParser());
+    register(new WhileStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
