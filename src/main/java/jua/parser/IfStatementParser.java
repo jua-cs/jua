@@ -29,7 +29,7 @@ public class IfStatementParser implements StatementParser {
     parser.consume(Keyword.THEN);
     Statement consequence = parser.parseListStatement();
     Token tok = parser.currentToken();
-    if (!parser.isBlockEnd()) {
+    if (!parser.currentToken().isBlockEnd()) {
       throw new IllegalParseException(
           String.format("unexpected jua.token %s, expected end, else or elseif", tok));
     }
