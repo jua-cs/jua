@@ -381,23 +381,6 @@ public class Parser {
         || tok.isSubtype(Keyword.ELSEIF);
   }
 
-  protected ArrayList<ExpressionIdentifier> parseFuncArgs() throws IllegalParseException {
-    // consume the left parenthesis
-    consume(Delimiter.LPAREN);
-    ArrayList<ExpressionIdentifier> args = new ArrayList<>();
-    // if there is no args, we look for a ')'
-    if (currentToken().isSubtype(Delimiter.RPAREN)) {
-      consume(Delimiter.RPAREN);
-      return args;
-    }
-    args = parseCommaSeparatedExpressions(0);
-
-    // Consume ')'
-    consume(Delimiter.RPAREN);
-
-    return args;
-  }
-
   public void start(boolean isInteractive) throws InterruptedException {
     while (currentTokenIsValid()) {
       try {

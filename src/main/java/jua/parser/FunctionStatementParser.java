@@ -26,7 +26,7 @@ public class FunctionStatementParser implements StatementParser {
     // function x.y:z()
 
     // Parse args
-    ArrayList<ExpressionIdentifier> args = parser.parseFuncArgs();
+    ArrayList<ExpressionIdentifier> args = FunctionExprParser.parseFuncArgs(parser);
     StatementList stmts = parser.parseListStatement();
 
     // consume END of function statement
