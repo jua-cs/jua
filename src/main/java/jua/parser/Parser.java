@@ -87,6 +87,7 @@ public class Parser {
     register(new BlockStatementParser());
     register(new WhileStatementParser());
     register(new BreakStatementParser());
+    register(new RepeatStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
@@ -314,8 +315,6 @@ public class Parser {
       return parseAssignment();
     } else if (isForStatement()) {
       return parseForStatement();
-    } else if (isRepeatStatement()) {
-      return parseRepeatUntilStatement();
     } else {
       ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
@@ -336,26 +335,8 @@ public class Parser {
     }
   }
 
-  private Statement parseRepeatUntilStatement() throws IllegalParseException {
-    Token tok = currentToken();
-    consume(Keyword.REPEAT);
-
-    Statement action = parseListStatement();
-
-    // expecting an until
-    consume(Keyword.UNTIL);
-
-    Expression condition = parseExpression();
-
-    return new StatementRepeatUntil(tok, condition, action);
-  }
-
   private boolean isLocalAssignment() {
     return currentToken().isSubtype(Keyword.LOCAL);
-  }
-
-  private boolean isRepeatStatement() {
-    return currentToken().isSubtype(Keyword.REPEAT);
   }
 
   protected boolean isAssignmentStatement() {
