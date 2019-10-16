@@ -86,6 +86,7 @@ public class Parser {
     register(new IfStatementParser());
     register(new BlockStatementParser());
     register(new WhileStatementParser());
+    register(new BreakStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
@@ -206,6 +207,7 @@ public class Parser {
     return parseCommaSeparatedExpressions(precedence, -1);
   }
 
+  // TODO; remove this horror
   @SuppressWarnings(value = "unchecked")
   private <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence, int max)
       throws IllegalParseException {
@@ -312,8 +314,6 @@ public class Parser {
       return parseAssignment();
     } else if (isForStatement()) {
       return parseForStatement();
-    } else if (isBreakStatement()) {
-      return parseBreakStatement();
     } else if (isRepeatStatement()) {
       return parseRepeatUntilStatement();
     } else {
@@ -454,18 +454,6 @@ public class Parser {
     Statement block = blockParser.parse(this);
 
     return new StatementGenericFor(tok, variables, iterator, state, var, block);
-  }
-
-  private boolean isBreakStatement() {
-    return currentToken().isSubtype(Keyword.BREAK);
-  }
-
-  private StatementBreak parseBreakStatement() throws IllegalParseException {
-    // consume BREAK keyword
-    Token tok = currentToken();
-    consume(Keyword.BREAK);
-
-    return new StatementBreak(tok);
   }
 
   private boolean currentTokenIsValid() {
