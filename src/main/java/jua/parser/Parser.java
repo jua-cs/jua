@@ -88,6 +88,7 @@ public class Parser {
     register(new WhileStatementParser());
     register(new BreakStatementParser());
     register(new RepeatStatementParser());
+    register(new ForStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
@@ -313,8 +314,6 @@ public class Parser {
 
     if (isLocalAssignment()) {
       return parseAssignment();
-    } else if (isForStatement()) {
-      return parseForStatement();
     } else {
       ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
@@ -370,23 +369,7 @@ public class Parser {
     return true;
   }
 
-  private boolean isForStatement() {
-    return currentToken().isSubtype(Keyword.FOR);
-  }
-
-  private StatementFor parseForStatement() throws IllegalParseException {
-    // consume FOR keyword
-    Token tok = currentToken();
-    consume(Keyword.FOR);
-
-    if (isAssignmentStatement()) {
-      return parseNumericForStatement(tok);
-    }
-
-    return parseGenericForStatement(tok);
-  }
-
-  private StatementFor parseNumericForStatement(Token tok) throws IllegalParseException {
+  StatementFor parseNumericForStatement(Token tok) throws IllegalParseException {
     if (!isAssignmentStatement()) {
       throw new IllegalParseException("expected assignment in for loop");
     }
@@ -413,7 +396,7 @@ public class Parser {
     return new StatementNumericFor(tok, variable, var, limit, step, block);
   }
 
-  private StatementFor parseGenericForStatement(Token tok) throws IllegalParseException {
+  StatementFor parseGenericForStatement(Token tok) throws IllegalParseException {
     ArrayList<ExpressionIdentifier> variables = parseCommaSeparatedExpressions(0);
 
     // Check if we are on equal jua.token
