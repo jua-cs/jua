@@ -13,7 +13,7 @@ public class ForStatementParser implements StatementParser {
     Token tok = parser.currentToken();
     parser.consume(Keyword.FOR);
 
-    if (parser.isAssignmentStatement()) {
+    if (AssignmentStatementParser.isAssignmentStatement(parser)) {
       return parseNumericForStatement(parser, tok);
     }
 
@@ -22,10 +22,10 @@ public class ForStatementParser implements StatementParser {
 
   private StatementFor parseNumericForStatement(Parser parser, Token tok)
       throws IllegalParseException {
-    if (!parser.isAssignmentStatement()) {
+    if (!AssignmentStatementParser.isAssignmentStatement(parser)) {
       throw new IllegalParseException("expected assignment in for loop");
     }
-    StatementAssignment assignment = parser.parseAssignment();
+    StatementAssignment assignment = AssignmentStatementParser.parseAssignment(parser);
     ExpressionIdentifier variable = (ExpressionIdentifier) assignment.getLhs().get(0);
     Expression var = assignment.getRhs().get(0);
     Expression limit;

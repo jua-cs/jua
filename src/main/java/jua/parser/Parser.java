@@ -89,6 +89,7 @@ public class Parser {
     register(new BreakStatementParser());
     register(new RepeatStatementParser());
     register(new ForStatementParser());
+    register(new LocalAssignementStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
@@ -108,10 +109,10 @@ public class Parser {
     statementParserList.add(statementParser);
   }
 
-  public Token nextToken(int i, boolean skip) {
+  public Token nextToken(int i, boolean skipNewline) {
     try {
       Token currentTok = tokens.peek();
-      while (skip && currentTok != null && currentTok.isSubtype(Delimiter.NEWLINE)) {
+      while (skipNewline && currentTok != null && currentTok.isSubtype(Delimiter.NEWLINE)) {
         advanceTokens();
         currentTok = tokens.peek();
       }
@@ -178,28 +179,6 @@ public class Parser {
     return (TokenIdentifier) tok;
   }
 
-  StatementAssignment parseAssignment() throws IllegalParseException {
-    return parseAssignment(-1);
-  }
-
-  protected StatementAssignment parseAssignment(int max) throws IllegalParseException {
-    boolean isLocal = false;
-    if (currentToken().isSubtype(Keyword.LOCAL)) {
-      isLocal = true;
-      consume(Keyword.LOCAL);
-    }
-    // At least one identifier
-    ArrayList<Variable> identifiers = parseCommaSeparatedExpressions(0, max);
-
-    // Store the '=' position
-    Token assignTok = currentToken();
-    // Consume '='
-    consume(Operator.ASSIGN);
-
-    ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0, max);
-    return new StatementAssignment(assignTok, identifiers, exprs, isLocal);
-  }
-
   Expression parseExpression() throws IllegalParseException {
     return parseExpression(0);
   }
@@ -211,7 +190,7 @@ public class Parser {
 
   // TODO; remove this horror
   @SuppressWarnings(value = "unchecked")
-  private <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence, int max)
+  <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence, int max)
       throws IllegalParseException {
     ArrayList<T> exprs = new ArrayList<>();
 
@@ -312,61 +291,22 @@ public class Parser {
       }
     }
 
-    if (isLocalAssignment()) {
-      return parseAssignment();
-    } else {
-      ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
+    ArrayList<Expression> exprs = parseCommaSeparatedExpressions(0);
 
-      // Check if we are on an assignment
-      if (currentTokenNoSkip().isSubtype(Operator.ASSIGN)) {
-        // Cast into variables
-        ArrayList<Variable> vars = new ArrayList<>();
-        exprs.forEach(expr -> vars.add((Variable) expr));
+    // Check if we are on an assignment
+    if (currentTokenNoSkip().isSubtype(Operator.ASSIGN)) {
+      // Cast into variables
+      ArrayList<Variable> vars = new ArrayList<>();
+      exprs.forEach(expr -> vars.add((Variable) expr));
 
-        TokenOperator assignTok = (TokenOperator) currentToken();
-        consume(Operator.ASSIGN);
+      TokenOperator assignTok = (TokenOperator) currentToken();
+      consume(Operator.ASSIGN);
 
-        return new StatementAssignment(assignTok, vars, parseCommaSeparatedExpressions(0), false);
-      }
-
-      // Otherwise return a statement expression
-      return new StatementExpression(exprs);
-    }
-  }
-
-  private boolean isLocalAssignment() {
-    return currentToken().isSubtype(Keyword.LOCAL);
-  }
-
-  protected boolean isAssignmentStatement() {
-    int pos = 0;
-
-    if (currentToken().isSubtype(Keyword.LOCAL)) {
-      // TODO local function f()... is valid so we should also check one character ahead
-      return true;
+      return new StatementAssignment(assignTok, vars, parseCommaSeparatedExpressions(0), false);
     }
 
-    do {
-      boolean isIdent = nextToken(pos).isIdentifier();
-
-      if (!isIdent) {
-        return false;
-      }
-
-      // Simple assignment
-      if (nextToken(pos + 1).isSubtype(Operator.ASSIGN)) {
-        return true;
-      }
-
-      // Else check for comma else return
-      if (!nextToken(pos + 1).isSubtype(Delimiter.COMMA)) {
-        return false;
-      }
-
-      pos += 2;
-    } while (!nextToken(pos).isSubtype(Operator.ASSIGN));
-
-    return true;
+    // Otherwise return a statement expression
+    return new StatementExpression(exprs);
   }
 
   private boolean currentTokenIsValid() {
