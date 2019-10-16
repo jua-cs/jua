@@ -178,7 +178,7 @@ public class Parser {
     return (TokenIdentifier) tok;
   }
 
-  private StatementAssignment parseAssignment() throws IllegalParseException {
+  StatementAssignment parseAssignment() throws IllegalParseException {
     return parseAssignment(-1);
   }
 
@@ -367,57 +367,6 @@ public class Parser {
     } while (!nextToken(pos).isSubtype(Operator.ASSIGN));
 
     return true;
-  }
-
-  StatementFor parseNumericForStatement(Token tok) throws IllegalParseException {
-    if (!isAssignmentStatement()) {
-      throw new IllegalParseException("expected assignment in for loop");
-    }
-    StatementAssignment assignment = parseAssignment();
-    ExpressionIdentifier variable = (ExpressionIdentifier) assignment.getLhs().get(0);
-    Expression var = assignment.getRhs().get(0);
-    Expression limit = null;
-    Expression step = null;
-
-    if (assignment.getRhs().size() > 1) {
-      limit = assignment.getRhs().get(1);
-    } else {
-      throw new IllegalParseException("expected limit in for loop");
-    }
-
-    if (assignment.getRhs().size() > 2) {
-      step = assignment.getRhs().get(2);
-    }
-
-    BlockStatementParser blockParser = new BlockStatementParser();
-
-    Statement block = blockParser.parse(this);
-
-    return new StatementNumericFor(tok, variable, var, limit, step, block);
-  }
-
-  StatementFor parseGenericForStatement(Token tok) throws IllegalParseException {
-    ArrayList<ExpressionIdentifier> variables = parseCommaSeparatedExpressions(0);
-
-    // Check if we are on equal jua.token
-    consume(Keyword.IN);
-
-    ArrayList<Expression> explist = parseCommaSeparatedExpressions(0);
-    Expression iterator = explist.get(0);
-    Expression state = null;
-    Expression var = null;
-    if (explist.size() > 1) {
-      state = explist.get(1);
-    }
-    if (explist.size() > 2) {
-      var = explist.get(2);
-    }
-
-    BlockStatementParser blockParser = new BlockStatementParser();
-
-    Statement block = blockParser.parse(this);
-
-    return new StatementGenericFor(tok, variables, iterator, state, var, block);
   }
 
   private boolean currentTokenIsValid() {
