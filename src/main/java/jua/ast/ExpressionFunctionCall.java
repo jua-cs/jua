@@ -60,7 +60,11 @@ public class ExpressionFunctionCall extends Expression {
   }
 
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    LuaFunction function = (LuaFunction) func.evaluate(scope);
+    LuaObject evaluateResult = func.evaluate(scope);
+    if (!(evaluateResult instanceof LuaFunction)) {
+      throw new LuaRuntimeException(String.format("%s is not callable", func));
+    }
+    LuaFunction function = (LuaFunction) evaluateResult;
     return function.evaluateUnwrap(scope, args);
   }
 
