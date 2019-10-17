@@ -75,13 +75,19 @@
             },
             connect: function () {
                 this.ws = new WebSocket(`ws://${url}/api/v1/repl`);
+                this.ws.onopen = this.init;
                 this.ws.onmessage = this.onMessage;
-                this.ws.onclose = this.reset;
+                this.ws.onclose = this.connect;
             },
             reset: function () {
                 this.ws.close();
+            },
+            init: function () {
                 this.cminstance.setValue('');
-                this.connect();
+                this.history = [];
+                this.historyIndex = 0;
+                this.text = "";
+                this.line = 0;
             },
             onMessage: function (message) {
                 let payload = JSON.parse(message.data);
