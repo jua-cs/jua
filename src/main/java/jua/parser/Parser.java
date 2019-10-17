@@ -40,6 +40,10 @@ public class Parser {
     registerParsers();
   }
 
+  // *******************************************************************
+  // Register all the smaller parser which handle each small cases
+  // *******************************************************************
+
   private void registerParsers() {
     this.tokenInfixParserHashMap = new HashMap<>();
     this.tokenPrefixParserHashMap = new HashMap<>();
@@ -108,6 +112,66 @@ public class Parser {
   private void register(StatementParser statementParser) {
     statementParserList.add(statementParser);
   }
+
+  private PrefixParser getPrefix(Token token) {
+    return tokenPrefixParserHashMap.get(new TokenHashMapKey(token));
+  }
+
+  private InfixParser getInfix(Token tok) {
+    return tokenInfixParserHashMap.get(new TokenHashMapKey(tok));
+  }
+
+  private PrefixParser getPrefixParser(Token token) {
+    if (token.isLiteral()) {
+      return getPrefix(literalKey);
+    } else if (token.isIdentifier()) {
+      return getPrefix(identifierKey);
+    } else {
+      return getPrefix(token);
+    }
+  }
+
+  // do not use currentToken() not to consume the new line
+  private int getCurrTokenPrecedence() {
+    Token tok = currentTokenNoSkip();
+    if (tok == null) {
+      return 0;
+    }
+
+    InfixParser parser = getInfix(tok);
+
+    return parser != null ? parser.getPrecedence() : 0;
+  }
+
+  // Used to access the HashMap with Token, with still a functioning equals for Lexer
+  private static class TokenHashMapKey {
+    private final Token token;
+
+    public TokenHashMapKey(Token token) {
+      this.token = token;
+    }
+    // Used to set a "light" equals between tokens, ignoring position and line.
+    @Override
+    public boolean equals(Object o) {
+      if (this == o) return true;
+      if (o == null || getClass() != o.getClass()) return false;
+
+      TokenHashMapKey that = (TokenHashMapKey) o;
+
+      return (token != null)
+          && token.getClass() == that.token.getClass()
+          && token.hashCode() == that.token.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+      return token != null ? token.hashCode() : 0;
+    }
+  }
+
+  // *******************************************************************
+  //  Method to navigate through the stream of Token from the Lexer
+  // *******************************************************************
 
   Token currentToken() {
     return nextToken(0, true);
@@ -179,31 +243,12 @@ public class Parser {
     return (TokenIdentifier) tok;
   }
 
+  // *******************************************************************
+  //  Main parsing functions
+  // *******************************************************************
+
   Expression parseExpression() throws IllegalParseException {
     return parseExpression(0);
-  }
-
-  protected <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence)
-      throws IllegalParseException {
-    return parseCommaSeparatedExpressions(precedence, -1);
-  }
-
-  // TODO; remove this horror
-  @SuppressWarnings(value = "unchecked")
-  <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence, int max)
-      throws IllegalParseException {
-    ArrayList<T> exprs = new ArrayList<>();
-
-    exprs.add((T) parseExpression());
-    int count = 1;
-
-    while (currentTokenNoSkip().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
-      // Consume ','
-      consume(Delimiter.COMMA);
-      exprs.add((T) parseExpression(precedence));
-    }
-
-    return exprs;
   }
 
   protected Expression parseExpression(int precedence) throws IllegalParseException {
@@ -228,61 +273,6 @@ public class Parser {
       lhs = infix.parseInfix(this, tok, lhs);
     }
     return lhs;
-  }
-
-  // do not use currentToken() not to consume the new line
-  private int getCurrTokenPrecedence() {
-    Token tok = currentTokenNoSkip();
-    if (tok == null) {
-      return 0;
-    }
-
-    InfixParser parser = getInfix(tok);
-
-    return parser != null ? parser.getPrecedence() : 0;
-  }
-
-  public StatementList parse() throws IllegalParseException {
-    StatementList statements = new StatementList(currentToken());
-
-    while (currentToken().isValid()) {
-      statements.addChild(parseStatement());
-    }
-
-    return statements;
-  }
-
-  private PrefixParser getPrefix(Token token) {
-    return tokenPrefixParserHashMap.get(new TokenHashMapKey(token));
-  }
-
-  private InfixParser getInfix(Token tok) {
-    return tokenInfixParserHashMap.get(new TokenHashMapKey(tok));
-  }
-
-  private PrefixParser getPrefixParser(Token token) {
-    if (token.isLiteral()) {
-      return getPrefix(literalKey);
-    } else if (token.isIdentifier()) {
-      return getPrefix(identifierKey);
-    } else {
-      return getPrefix(token);
-    }
-  }
-
-  protected StatementList parseListStatement() throws IllegalParseException {
-    StatementList list = new StatementList(currentToken());
-
-    while (currentToken().isValid()
-        && !currentToken().isBlockEnd()
-        && !currentToken().isSubtype(Keyword.UNTIL)) {
-      Statement child = parseStatement();
-      list.addChild(child);
-      if (child instanceof StatementReturn) {
-        break;
-      }
-    }
-    return list;
   }
 
   public Statement parseStatement() throws IllegalParseException {
@@ -311,6 +301,48 @@ public class Parser {
     return new StatementExpression(exprs);
   }
 
+  protected <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence)
+      throws IllegalParseException {
+    return parseCommaSeparatedExpressions(precedence, -1);
+  }
+
+  // TODO; remove this horror
+  @SuppressWarnings(value = "unchecked")
+  <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence, int max)
+      throws IllegalParseException {
+    ArrayList<T> exprs = new ArrayList<>();
+
+    exprs.add((T) parseExpression());
+    int count = 1;
+
+    while (currentTokenNoSkip().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
+      // Consume ','
+      consume(Delimiter.COMMA);
+      exprs.add((T) parseExpression(precedence));
+    }
+
+    return exprs;
+  }
+
+  protected StatementList parseListStatement() throws IllegalParseException {
+    StatementList list = new StatementList(currentToken());
+
+    while (currentToken().isValid()
+        && !currentToken().isBlockEnd()
+        && !currentToken().isSubtype(Keyword.UNTIL)) {
+      Statement child = parseStatement();
+      list.addChild(child);
+      if (child instanceof StatementReturn) {
+        break;
+      }
+    }
+    return list;
+  }
+
+  // *******************************************************************
+  //  Interfaces to use the Parser
+  // *******************************************************************
+
   public void start(boolean isInteractive) throws InterruptedException {
     while (currentToken().isValid()) {
       try {
@@ -332,33 +364,17 @@ public class Parser {
     out.add(new StatementEOP());
   }
 
-  public BufferedChannel<Statement> getOut() {
-    return out;
+  public StatementList parse() throws IllegalParseException {
+    StatementList statements = new StatementList(currentToken());
+
+    while (currentToken().isValid()) {
+      statements.addChild(parseStatement());
+    }
+
+    return statements;
   }
 
-  // Used to access the HashMap with Token, with still a functioning equals for Lexer
-  private static class TokenHashMapKey {
-    private final Token token;
-
-    public TokenHashMapKey(Token token) {
-      this.token = token;
-    }
-    // Used to set a "light" equals between tokens, ignoring position and line.
-    @Override
-    public boolean equals(Object o) {
-      if (this == o) return true;
-      if (o == null || getClass() != o.getClass()) return false;
-
-      TokenHashMapKey that = (TokenHashMapKey) o;
-
-      return (token != null)
-          && token.getClass() == that.token.getClass()
-          && token.hashCode() == that.token.hashCode();
-    }
-
-    @Override
-    public int hashCode() {
-      return token != null ? token.hashCode() : 0;
-    }
+  public BufferedChannel<Statement> getOut() {
+    return out;
   }
 }
