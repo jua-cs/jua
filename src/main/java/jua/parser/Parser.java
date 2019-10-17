@@ -12,8 +12,8 @@ public class Parser {
   private BufferedChannel<Token> tokens;
   private BufferedChannel<Statement> out = new BufferedChannel<>();
 
-  private HashMap<TokenHashmMapKey, PrefixParser> tokenPrefixParserHashMap;
-  private HashMap<TokenHashmMapKey, InfixParser> tokenInfixParserHashMap;
+  private HashMap<TokenHashMapKey, PrefixParser> tokenPrefixParserHashMap;
+  private HashMap<TokenHashMapKey, InfixParser> tokenInfixParserHashMap;
   private ArrayList<StatementParser> statementParserList;
 
   public Parser(BufferedChannel<Token> tokens) {
@@ -94,19 +94,27 @@ public class Parser {
 
   private void registerBinaryOperator(Operator op, int precedence) {
     tokenInfixParserHashMap.put(
-        new TokenHashmMapKey(TokenFactory.create(op)), new OperatorParser(precedence));
+        new TokenHashMapKey(TokenFactory.create(op)), new OperatorParser(precedence));
   }
 
   private void register(Token type, PrefixParser parser) {
-    tokenPrefixParserHashMap.put(new TokenHashmMapKey(type), parser);
+    tokenPrefixParserHashMap.put(new TokenHashMapKey(type), parser);
   }
 
   private void register(Token type, InfixParser parser) {
-    tokenInfixParserHashMap.put(new TokenHashmMapKey(type), parser);
+    tokenInfixParserHashMap.put(new TokenHashMapKey(type), parser);
   }
 
   private void register(StatementParser statementParser) {
     statementParserList.add(statementParser);
+  }
+
+  Token currentToken() {
+    return nextToken(0, true);
+  }
+
+  Token currentTokenNoSkip() {
+    return nextToken(0, false);
   }
 
   public Token nextToken(int i, boolean skipNewline) {
@@ -130,14 +138,6 @@ public class Parser {
 
   Token nextToken() {
     return nextToken(1, true);
-  }
-
-  Token currentToken() {
-    return nextToken(0, true);
-  }
-
-  Token currentTokenNoSkip() {
-    return nextToken(0, false);
   }
 
   void advanceTokens() {
@@ -253,11 +253,11 @@ public class Parser {
   }
 
   private PrefixParser getPrefix(Token token) {
-    return tokenPrefixParserHashMap.get(new TokenHashmMapKey(token));
+    return tokenPrefixParserHashMap.get(new TokenHashMapKey(token));
   }
 
   private InfixParser getInfix(Token tok) {
-    return tokenInfixParserHashMap.get(new TokenHashmMapKey(tok));
+    return tokenInfixParserHashMap.get(new TokenHashMapKey(tok));
   }
 
   private PrefixParser getPrefixParser(Token token) {
@@ -340,11 +340,11 @@ public class Parser {
     return out;
   }
 
-  // Used to access the HasmMap with Token, with still a functioning equals for Lexer
-  private static class TokenHashmMapKey {
+  // Used to access the HashMap with Token, with still a functioning equals for Lexer
+  private static class TokenHashMapKey {
     private final Token token;
 
-    public TokenHashmMapKey(Token token) {
+    public TokenHashMapKey(Token token) {
       this.token = token;
     }
     // Used to set a "light" equals between tokens, ignoring position and line.
@@ -353,7 +353,7 @@ public class Parser {
       if (this == o) return true;
       if (o == null || getClass() != o.getClass()) return false;
 
-      TokenHashmMapKey that = (TokenHashmMapKey) o;
+      TokenHashMapKey that = (TokenHashMapKey) o;
 
       return (token != null)
           && token.getClass() == that.token.getClass()
