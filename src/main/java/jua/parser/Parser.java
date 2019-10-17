@@ -245,7 +245,7 @@ public class Parser {
   public StatementList parse() throws IllegalParseException {
     StatementList statements = new StatementList(currentToken());
 
-    while (currentTokenIsValid()) {
+    while (currentToken().isValid()) {
       statements.addChild(parseStatement());
     }
 
@@ -273,7 +273,7 @@ public class Parser {
   protected StatementList parseListStatement() throws IllegalParseException {
     StatementList list = new StatementList(currentToken());
 
-    while (currentTokenIsValid()
+    while (currentToken().isValid()
         && !currentToken().isBlockEnd()
         && !currentToken().isSubtype(Keyword.UNTIL)) {
       Statement child = parseStatement();
@@ -311,12 +311,8 @@ public class Parser {
     return new StatementExpression(exprs);
   }
 
-  private boolean currentTokenIsValid() {
-    return !(currentToken() instanceof TokenEOF || currentToken() instanceof TokenInvalid);
-  }
-
   public void start(boolean isInteractive) throws InterruptedException {
-    while (currentTokenIsValid()) {
+    while (currentToken().isValid()) {
       try {
 
         Statement statement = parseStatement();
