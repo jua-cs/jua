@@ -76,9 +76,11 @@
             connect: function () {
                 this.ws = new WebSocket(`ws://${url}/api/v1/repl`);
                 this.ws.onmessage = this.onMessage;
+                this.ws.onclose = this.reset;
             },
             reset: function () {
                 this.ws.close();
+                this.cminstance.setValue('');
                 this.connect();
             },
             onMessage: function (message) {
