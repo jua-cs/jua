@@ -163,6 +163,6 @@
 
 <style>
     .redText {
-        color: red;
+        color: red !important;
     }
 </style>
