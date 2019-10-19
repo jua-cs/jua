@@ -26,9 +26,9 @@ public class TableConstructorParser implements PrefixParser {
 
         Tuple<Expression, Expression> tup = new Tuple<>(key, parser.parseExpression(0));
         tuples.add(tup);
-      } else if (parser.isAssignmentStatement()) {
+      } else if (AssignmentStatementParser.isAssignmentStatement(parser)) {
         // name = exp -> use the name as the key
-        StatementAssignment assign = parser.parseAssignment(1);
+        StatementAssignment assign = AssignmentStatementParser.parseAssignment(parser, 1);
         Tuple<Expression, Expression> tup =
             new Tuple<>(
                 // Convert the LHS to a string

@@ -86,6 +86,12 @@ public abstract class Token {
     return (tok.getKeyword() == kw);
   }
 
+  public boolean isBlockEnd() {
+    return this.isSubtype(Keyword.END)
+        || this.isSubtype(Keyword.ELSE)
+        || this.isSubtype(Keyword.ELSEIF);
+  }
+
   public boolean isLiteral() {
     return this instanceof TokenLiteral;
   }
