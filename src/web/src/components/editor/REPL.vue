@@ -140,10 +140,10 @@
             },
 
             print: function (message, className) {
-                let ln = this.line;
+                const ln = this.line;
 
                 message = String(message);
-                let text = this.cminstance.getLine(this.line);
+                const text = this.cminstance.getLine(this.line);
                 message = message.replace(/\n/g, '\r') + '\n';
 
                 let cursor = 0;
