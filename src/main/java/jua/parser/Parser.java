@@ -343,22 +343,21 @@ public class Parser {
   //  Interfaces to use the Parser
   // *******************************************************************
 
-  public void start(boolean isInteractive) throws InterruptedException {
+  public void start(boolean isInteractive) throws InterruptedException, IllegalParseException {
     while (currentToken().isValid()) {
       try {
-
         Statement statement = parseStatement();
         out.add(statement);
       } catch (IllegalParseException e) {
-        e.printStackTrace();
         if (!isInteractive) {
           out.add(new StatementEOP());
-          break;
+        } else {
+          // send a nil to reset the repl
+          out.add(
+              new StatementExpression(
+                  ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
         }
-        // send a nil to reset the repl
-        out.add(
-            new StatementExpression(
-                ExpressionFactory.create(TokenFactory.create(Literal.NIL, "nil"))));
+        throw e;
       }
     }
     out.add(new StatementEOP());

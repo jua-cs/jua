@@ -274,7 +274,7 @@ public class Lexer {
     return out;
   }
 
-  public void start(boolean isInteractive) throws InterruptedException {
+  public void start(boolean isInteractive) throws InterruptedException, IllegalLexingException {
     while (true) {
       try {
         Token token = nextToken();
@@ -283,11 +283,10 @@ public class Lexer {
           break;
         }
       } catch (IllegalLexingException e) {
-        e.printStackTrace();
         if (!isInteractive) {
           out.add(TokenFactory.create(Special.TokenEOF, currentLine, currentPosInLine));
-          break;
         }
+        throw e;
       }
     }
   }
