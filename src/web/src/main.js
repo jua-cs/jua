@@ -5,6 +5,7 @@ import {Button, Icon, Loading, Snackbar, Switch} from 'buefy'
 import 'buefy/dist/buefy.css'
 import Editor from './components/editor/Editor.vue';
 import REPL from './components/editor/REPL.vue';
+import Error from './components/Error';
 
 Vue.use(VueRouter);
 Vue.use(Button);
@@ -21,6 +22,7 @@ const router = new VueRouter({
     routes: [
         {path: '/', component: Editor},
         {path: '/repl', component: REPL},
+        {path: '*', component: Error},
     ]
 });
 
