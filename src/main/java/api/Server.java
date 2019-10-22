@@ -5,13 +5,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.web.servlet.error.ErrorController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
 @SpringBootApplication
 @Controller
-public class Server implements ErrorController {
+public class Server {
 
   Logger logger = LoggerFactory.getLogger(Server.class);
 
@@ -22,15 +21,9 @@ public class Server implements ErrorController {
     app.run(args);
   }
 
-  private static final String PATH = "/error";
-
-  @Override
-  public String getErrorPath() {
-    return PATH;
-  }
-
-  @RequestMapping(value = PATH)
-  public String error() {
-    return "forward:/index.html";
+  // TODO: replace the route selector by something that excludes all the routes starting with /api
+  @RequestMapping(value = "/repl")
+  public String redirect() {
+    return "forward:/";
   }
 }

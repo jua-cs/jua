@@ -29,7 +29,7 @@ public class ForStatementParser implements StatementParser {
     ExpressionIdentifier variable = (ExpressionIdentifier) assignment.getLhs().get(0);
     Expression var = assignment.getRhs().get(0);
     Expression limit;
-    Expression step = null;
+    Expression step;
 
     if (assignment.getRhs().size() > 1) {
       limit = assignment.getRhs().get(1);
@@ -39,6 +39,10 @@ public class ForStatementParser implements StatementParser {
 
     if (assignment.getRhs().size() > 2) {
       step = assignment.getRhs().get(2);
+    } else {
+      throw new IllegalParseException(
+          String.format(
+              "expected a step expression but got only 2 expressions: %s and %s", var, limit));
     }
 
     BlockStatementParser blockParser = new BlockStatementParser();
