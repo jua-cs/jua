@@ -243,7 +243,7 @@ public class LexerTest {
 
   @Test
   void testHexadecimal() {
-    String in = "a = 0xff\nb = 0x0.4\nc = 0xfg";
+    String in = "a = 0xff\nb = 0x0.4\nc = 0xfg\nd = 0x ";
     Lexer lex = new Lexer(in);
 
     ArrayList<Token> list = lex.getNTokens(0);
@@ -253,14 +253,21 @@ public class LexerTest {
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
     expected.add(TokenFactory.create(Literal.HEX_NUMBER, "0xff", 1, 5));
     expected.add(TokenFactory.create(Delimiter.NEWLINE, 1, 9));
+
     expected.add(TokenFactory.create("b", 2, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 2, 3));
     expected.add(TokenFactory.create(Literal.HEX_NUMBER, "0x0.4", 2, 5));
     expected.add(TokenFactory.create(Delimiter.NEWLINE, 2, 10));
+
     expected.add(TokenFactory.create("c", 3, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 3, 3));
     expected.add(TokenFactory.create(Literal.HEX_NUMBER, "0xfg", 3, 5));
-    expected.add(TokenFactory.create(Special.TokenEOF, 3, 9));
+    expected.add(TokenFactory.create(Delimiter.NEWLINE, 3, 9));
+
+    expected.add(TokenFactory.create("d", 4, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 4, 3));
+    expected.add(TokenFactory.create(Literal.HEX_NUMBER, "0x", 4, 5));
+    expected.add(TokenFactory.create(Special.TokenEOF, 4, 8));
 
     assertIterableEquals(expected, list);
   }

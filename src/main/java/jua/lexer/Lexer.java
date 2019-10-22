@@ -267,11 +267,6 @@ public class Lexer {
     readChar();
     number.append(ch); // ch = x
 
-    readChar(); // at the next number
-
-    // we read the following as a number (can include .)
-    number.append(nextNumber());
-
     boolean dotSeen = false;
     char nextChar = peekChar();
     while (Character.isLetterOrDigit(nextChar) || (!dotSeen && nextChar == '.')) {
