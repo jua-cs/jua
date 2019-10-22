@@ -70,6 +70,24 @@ public class ParserTest {
   }
 
   @Test
+  void testHexAssignment() throws IllegalParseException {
+    Parser parser = new Parser((new Lexer("x = (0x40 + 0x64)")).getNTokens(0));
+
+    ArrayList<Statement> statements = parser.parse().getChildren();
+    assertEquals(1, statements.size());
+
+    Statement expected =
+        new StatementAssignment(
+            TokenFactory.create(Operator.ASSIGN),
+            (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("x")),
+            ExpressionFactory.create(
+                TokenFactory.create(Operator.PLUS),
+                ExpressionFactory.create(TokenFactory.create(Literal.HEX_NUMBER, "0x40")),
+                ExpressionFactory.create(TokenFactory.create(Literal.HEX_NUMBER, "0x64"))));
+    assertEquals(expected, statements.get(0));
+  }
+
+  @Test
   void testAdditionAndMultiplicationAssignment() throws IllegalParseException {
     Parser parser = new Parser((new Lexer("x = 1 + 5 * a")).getNTokens(0));
     ArrayList<Statement> statements = parser.parse().getChildren();
