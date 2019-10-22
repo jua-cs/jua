@@ -92,7 +92,10 @@ public class Lexer {
         token = TokenFactory.create(Operator.SLASH, currentLine, currentPos);
         break;
       case '<':
-        if (peekChar() == '=') {
+        if (peekChar() == '<') {
+          token = TokenFactory.create(Operator.LEFT_SHIFT, currentLine, currentPos);
+          readChar();
+        } else if (peekChar() == '=') {
           token = TokenFactory.create(Operator.LTE, currentLine, currentPos);
           readChar();
         } else {
@@ -100,7 +103,10 @@ public class Lexer {
         }
         break;
       case '>':
-        if (peekChar() == '=') {
+        if (peekChar() == '>') {
+          token = TokenFactory.create(Operator.RIGHT_SHIFT, currentLine, currentPos);
+          readChar();
+        } else if (peekChar() == '=') {
           token = TokenFactory.create(Operator.GTE, currentLine, currentPos);
           readChar();
         } else {
@@ -169,12 +175,20 @@ public class Lexer {
           token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
         }
         break;
+      case '&':
+        token = TokenFactory.create(Operator.B_AND, currentLine, currentPos);
+        break;
+      case '|':
+        token = TokenFactory.create(Operator.B_OR, currentLine, currentPos);
+        break;
       case '~':
         if (peekChar() == '=') {
           token = TokenFactory.create(Operator.NOT_EQUAL, currentLine, currentPos);
           readChar();
-          break;
+        } else {
+          token = TokenFactory.create(Operator.B_XOR, currentLine, currentPos);
         }
+        break;
         // fallthrough
       default:
         if (Character.isLetter(ch) || ch == '_') {

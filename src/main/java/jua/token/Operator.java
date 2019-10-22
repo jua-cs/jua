@@ -22,10 +22,16 @@ public enum Operator {
   AND("and"),
   OR("or"),
   INDEX("["),
+  B_AND("&"),
+  B_OR("|"),
+  B_XOR("~"),
+  RIGHT_SHIFT(">>"),
+  LEFT_SHIFT("<<"),
 
   NEGATIVE("-", Arity.UNARY),
   HASH("#", Arity.UNARY),
-  NOT("not", Arity.UNARY);
+  NOT("not", Arity.UNARY),
+  B_NOT("~", Arity.UNARY);
 
   private String repr;
   private Arity arity = Arity.BINARY;

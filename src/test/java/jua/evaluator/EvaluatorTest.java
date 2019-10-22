@@ -121,7 +121,7 @@ class EvaluatorTest {
 
     assertThrows(IllegalTypeException.class, () -> setupEval("0xfgh"));
     assertThrows(IllegalTypeException.class, () -> setupEval("0x"));
-}
+  }
 
   @Test
   void testEqualAndNotEquals() throws IllegalParseException, LuaRuntimeException {
