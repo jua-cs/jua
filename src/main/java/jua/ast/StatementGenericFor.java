@@ -57,9 +57,9 @@ public class StatementGenericFor extends StatementFor {
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     Scope forScope = scope.createChild();
 
-    LuaFunction iteratorValue = LuaFunction.valueOf(iterator.evaluate(scope));
-    LuaObject stateValue = state.evaluate(scope);
-    LuaObject varValue = var.evaluate(scope);
+    LuaFunction iteratorValue = LuaFunction.valueOf(iterator.evaluate(forScope));
+    LuaObject stateValue = state.evaluate(forScope);
+    LuaObject varValue = var.evaluate(forScope);
 
     LuaObject ret = LuaNil.getInstance();
     while (true) {
@@ -72,7 +72,7 @@ public class StatementGenericFor extends StatementFor {
         if (i < values.size()) {
           value = values.get(i);
         }
-        scope.assignLocal(ident, value);
+        forScope.assignLocal(ident, value);
       }
 
       varValue = values.get(0);
@@ -80,7 +80,7 @@ public class StatementGenericFor extends StatementFor {
         return ret;
       }
 
-      ret = block.evaluate(scope);
+      ret = block.evaluate(forScope);
 
       if (ret instanceof LuaReturn) {
         return ret;
