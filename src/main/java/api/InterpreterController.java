@@ -30,10 +30,14 @@ public class InterpreterController {
             interpreter.run();
           } catch (IllegalParseException e) {
             throw new ResponseStatusException(
-                HttpStatus.INTERNAL_SERVER_ERROR, "Error parsing the provided code", e);
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Error parsing the provided code:\n" + e.toString(),
+                e);
           } catch (LuaRuntimeException e) {
             throw new ResponseStatusException(
-                HttpStatus.INTERNAL_SERVER_ERROR, "Error evaluating the provided code", e);
+                HttpStatus.INTERNAL_SERVER_ERROR,
+                "Error evaluating the provided code:\n" + e.toString(),
+                e);
           }
         };
 

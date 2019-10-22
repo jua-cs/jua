@@ -328,7 +328,7 @@ public class ParserTest {
             (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("i")),
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "0")),
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "10")),
-            null,
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
             new StatementBlock(
                 TokenFactory.create(Keyword.DO),
                 new StatementList(
