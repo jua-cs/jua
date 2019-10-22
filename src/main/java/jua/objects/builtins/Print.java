@@ -27,6 +27,6 @@ class Print extends BuiltinFunction {
   }
 
   static void register(Scope scope, OutputStream out) {
-    scope.assign("print", new Print(out));
+    scope.assignLocal("print", new Print(out));
   }
 }

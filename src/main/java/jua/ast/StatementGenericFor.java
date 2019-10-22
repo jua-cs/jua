@@ -72,7 +72,7 @@ public class StatementGenericFor extends StatementFor {
         if (i < values.size()) {
           value = values.get(i);
         }
-        scope.assign(ident, value);
+        scope.assignLocal(ident, value);
       }
 
       varValue = values.get(0);
