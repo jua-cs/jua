@@ -44,6 +44,16 @@ public class ExpressionFactory {
         return new ExpressionAnd(token, lhs, rhs);
       case OR:
         return new ExpressionOr(token, lhs, rhs);
+      case B_AND:
+        return new ExpressionBitwiseAnd(token, lhs, rhs);
+      case B_OR:
+        return new ExpressionBitwiseOr(token, lhs, rhs);
+      case B_XOR:
+        return new ExpressionBitwiseXor(token, lhs, rhs);
+      case LEFT_SHIFT:
+        return new ExpressionLeftShift(token, lhs, rhs);
+      case RIGHT_SHIFT:
+        return new ExpressionRightShift(token, lhs, rhs);
 
         // TODO: exception for those ?
       case NEGATIVE:
@@ -51,6 +61,8 @@ public class ExpressionFactory {
       case HASH:
         break;
       case NOT:
+        break;
+      case B_NOT:
         break;
       default:
         return null;
@@ -67,6 +79,8 @@ public class ExpressionFactory {
         return new ExpressionNot(token, value);
       case MINUS:
         return new ExpressionNegative(token, value);
+      case B_NOT:
+        return new ExpressionBinaryNot(token, value);
       default:
         return null;
     }
