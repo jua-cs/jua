@@ -20,7 +20,7 @@ public class FunctionStatementParser implements StatementParser {
 
     // We don't want to parse the expression call so we set the precedence to just below it
     // it also matches the precedence of the index and access operators
-    Variable funcVar = (Variable) parser.parseExpression(9);
+    Variable funcVar = (Variable) parser.parseExpression(11);
 
     // TODO: support :
     // function x.y:z()

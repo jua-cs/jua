@@ -51,13 +51,13 @@ public class Parser {
 
     // Register the class which implements InfixParser interface
     // TODO: ^ has greater precedence than unary operators, this is not handled at the moment
-    registerBinaryOperator(Operator.PLUS, 4);
-    registerBinaryOperator(Operator.ASTERISK, 6);
-    registerBinaryOperator(Operator.SLASH, 6);
-    registerBinaryOperator(Operator.MINUS, 4);
-    registerBinaryOperator(Operator.CARAT, 7);
-    registerBinaryOperator(Operator.PERCENT, 6);
-    registerBinaryOperator(Operator.CONCAT, 5);
+    registerBinaryOperator(Operator.PLUS, 6);
+    registerBinaryOperator(Operator.ASTERISK, 8);
+    registerBinaryOperator(Operator.SLASH, 8);
+    registerBinaryOperator(Operator.MINUS, 6);
+    registerBinaryOperator(Operator.CARAT, 9);
+    registerBinaryOperator(Operator.PERCENT, 8);
+    registerBinaryOperator(Operator.CONCAT, 7);
 
     registerBinaryOperator(Operator.AND, 2);
     registerBinaryOperator(Operator.OR, 1);
@@ -68,18 +68,26 @@ public class Parser {
     registerBinaryOperator(Operator.GTE, 3);
     registerBinaryOperator(Operator.LT, 3);
     registerBinaryOperator(Operator.LTE, 3);
-    registerBinaryOperator(Operator.DOT, 10);
+    registerBinaryOperator(Operator.DOT, 12);
 
-    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(9));
-    register(TokenFactory.create(Operator.COLON), new MethodCallParser(9));
+    // TODO: put reference for bitwise operators precedence in lua
+    registerBinaryOperator(Operator.B_NOT, 5);
+    registerBinaryOperator(Operator.B_OR, 5);
+    registerBinaryOperator(Operator.B_XOR, 5);
+    registerBinaryOperator(Operator.LEFT_SHIFT, 4);
+    registerBinaryOperator(Operator.RIGHT_SHIFT, 4);
+
+    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(11));
+    register(TokenFactory.create(Operator.COLON), new MethodCallParser(11));
 
     // Register the classes which implements PrefixParser interface
     register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser());
-    register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(8));
-    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(8));
-    register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(8));
-    register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(8));
-    register(TokenFactory.create(Operator.HASH), (PrefixParser) new OperatorParser(8));
+    register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(10));
+    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(10));
+    register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(10));
+    register(TokenFactory.create(Operator.B_NOT), (PrefixParser) new OperatorParser(10));
+    register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(10));
+    register(TokenFactory.create(Operator.HASH), (PrefixParser) new OperatorParser(10));
     register(TokenFactory.create(Keyword.FUNCTION), new FunctionExprParser());
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());
