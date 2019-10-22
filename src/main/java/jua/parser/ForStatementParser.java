@@ -3,7 +3,9 @@ package jua.parser;
 import java.util.ArrayList;
 import jua.ast.*;
 import jua.token.Keyword;
+import jua.token.Literal;
 import jua.token.Token;
+import jua.token.TokenFactory;
 
 public class ForStatementParser implements StatementParser {
   @Override
@@ -40,9 +42,9 @@ public class ForStatementParser implements StatementParser {
     if (assignment.getRhs().size() > 2) {
       step = assignment.getRhs().get(2);
     } else {
-      throw new IllegalParseException(
-          String.format(
-              "expected a step expression but got only 2 expressions: %s and %s", var, limit));
+      step =
+          ExpressionFactory.create(
+              TokenFactory.create(Literal.NUMBER, "1", tok.getLine(), tok.getPosition()));
     }
 
     BlockStatementParser blockParser = new BlockStatementParser();
