@@ -61,7 +61,7 @@ public class StatementNumericFor extends StatementFor {
     while ((stepValue.getValue() > 0 && varValue.getValue() <= limitValue.getValue())
         || (stepValue.getValue() <= 0 && varValue.getValue() >= limitValue.getValue())) {
 
-      forScope.assign(variables.get(0).getIdentifier(), varValue);
+      forScope.assignLocal(variables.get(0).getIdentifier(), varValue);
       ret = block.evaluate(forScope);
       varValue = new LuaNumber(varValue.getValue() + stepValue.getValue());
 

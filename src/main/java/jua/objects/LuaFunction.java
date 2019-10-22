@@ -18,16 +18,16 @@ public class LuaFunction implements LuaObject, Function {
     this.block = block;
   }
 
-  @Override
-  public String repr() {
-    return String.format("function(%s) %s", argNames, block);
-  }
-
   public static LuaFunction valueOf(LuaObject o) throws IllegalCastException {
     if (o instanceof LuaFunction) {
       return (LuaFunction) o;
     }
     throw new IllegalCastException(String.format("%s is not a function", o.repr()));
+  }
+
+  @Override
+  public String repr() {
+    return String.format("function(%s) %s", argNames, block);
   }
 
   public LuaObject evaluateUnwrap(Scope scope, ArrayList<Expression> args)
@@ -52,11 +52,11 @@ public class LuaFunction implements LuaObject, Function {
     Scope funcScope = this.environment.createChild();
 
     // Init args to nil
-    argNames.forEach(arg -> funcScope.assign(arg, LuaNil.getInstance()));
+    argNames.forEach(arg -> funcScope.assignLocal(arg, LuaNil.getInstance()));
 
     // Assign evaluated args to arg names
     for (int i = 0; i < Math.min(argNames.size(), args.size()); i++) {
-      funcScope.assign(argNames.get(i), args.get(i));
+      funcScope.assignLocal(argNames.get(i), args.get(i));
     }
 
     LuaObject ret = block.evaluate(funcScope);
