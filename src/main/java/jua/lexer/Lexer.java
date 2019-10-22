@@ -182,6 +182,12 @@ public class Lexer {
           // return early to avoid readChar below
           return Token.fromString(identifier, currentLine, currentPos);
         } else if (Character.isDigit(ch)) {
+          // check if it's hexadecimal
+          if (ch == '0' && peekChar() == 'x') {
+            // it's an hexadecimal
+            String numberHex = nextHexadecimal();
+            return TokenFactory.create(Literal.HEX_NUMBER, numberHex, currentLine, currentPos);
+          }
           String number = nextNumber();
 
           // return early to avoid readChar below
@@ -246,6 +252,30 @@ public class Lexer {
     boolean dotSeen = false;
     char nextChar = peekChar();
     while (Character.isDigit(nextChar) || (!dotSeen && nextChar == '.')) {
+      number.append(nextChar);
+      dotSeen = nextChar == '.';
+      readChar();
+      nextChar = peekChar();
+    }
+
+    return number.toString();
+  }
+
+  private String nextHexadecimal() {
+    StringBuilder number = new StringBuilder();
+    number.append(ch); // ch = 0
+    readChar();
+    number.append(ch); // ch = x
+
+    readChar(); // at the next number
+
+    // we read the following as a number (can include .)
+    number.append(nextNumber());
+
+    boolean dotSeen = false;
+    char nextChar = peekChar();
+    while (Character.isLetterOrDigit(nextChar) || (!dotSeen && nextChar == '.')) {
+      // invalid hex with g are raised at evaluation
       number.append(nextChar);
       dotSeen = nextChar == '.';
       readChar();
