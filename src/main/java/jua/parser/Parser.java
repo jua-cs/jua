@@ -82,7 +82,7 @@ public class Parser {
     registerBinaryOperator(Operator.PERCENT, 10);
 
     register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(11));
-    register(TokenFactory.create(Operator.B_NOT), (PrefixParser) new OperatorParser(11));
+    register(TokenFactory.create(Operator.B_XOR), (PrefixParser) new OperatorParser(11));
     register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(11));
     register(TokenFactory.create(Operator.HASH), (PrefixParser) new OperatorParser(11));
 

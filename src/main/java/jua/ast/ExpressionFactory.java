@@ -1,10 +1,8 @@
 package jua.ast;
 
 import java.util.ArrayList;
-import jua.token.Token;
-import jua.token.TokenIdentifier;
-import jua.token.TokenLiteral;
-import jua.token.TokenOperator;
+
+import jua.token.*;
 
 public class ExpressionFactory {
   public static ExpressionBinary create(TokenOperator token, Expression lhs, Expression rhs) {
@@ -77,10 +75,10 @@ public class ExpressionFactory {
         return new ExpressionHash(token, value);
       case NOT:
         return new ExpressionNot(token, value);
-      case MINUS:
-        return new ExpressionNegative(token, value);
-      case B_NOT:
-        return new ExpressionBinaryNot(token, value);
+      case MINUS: // Correspond to Operator.NEGATIVE
+        return new ExpressionNegative(TokenFactory.create(Operator.NEGATIVE, token.getLine(), token.getPosition()), value);
+      case B_XOR: // Correspond to Operator.B_NOT
+        return new ExpressionBinaryNot(TokenFactory.create(Operator.B_NOT, token.getLine(), token.getPosition()), value);
       default:
         return null;
     }

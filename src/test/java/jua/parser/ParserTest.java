@@ -126,6 +126,7 @@ public class ParserTest {
     tests.add(new Tuple<>("-(5 + 5)", "(- (5 + 5))"));
     tests.add(new Tuple<>("not(true == true)", "(not (true == true))"));
     tests.add(new Tuple<>("1 & 1 << 1 | 1 >> 1 ~ 1", "((1 & (1 << 1)) | ((1 >> 1) ~ 1))"));
+    tests.add(new Tuple<>("~ xff & 1", "((~ xff) & 1)"));
 
     for (Tuple<String, String> t : tests) {
       Parser parser = new Parser((new Lexer(t.x)).getNTokens(0));
