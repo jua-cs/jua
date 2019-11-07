@@ -1,7 +1,6 @@
 package jua.ast;
 
 import java.util.ArrayList;
-
 import jua.token.*;
 
 public class ExpressionFactory {
@@ -76,9 +75,11 @@ public class ExpressionFactory {
       case NOT:
         return new ExpressionNot(token, value);
       case MINUS: // Correspond to Operator.NEGATIVE
-        return new ExpressionNegative(TokenFactory.create(Operator.NEGATIVE, token.getLine(), token.getPosition()), value);
+        return new ExpressionNegative(
+            TokenFactory.create(Operator.NEGATIVE, token.getLine(), token.getPosition()), value);
       case B_XOR: // Correspond to Operator.B_NOT
-        return new ExpressionBinaryNot(TokenFactory.create(Operator.B_NOT, token.getLine(), token.getPosition()), value);
+        return new ExpressionBinaryNot(
+            TokenFactory.create(Operator.B_NOT, token.getLine(), token.getPosition()), value);
       default:
         return null;
     }

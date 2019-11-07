@@ -99,7 +99,6 @@ public class Parser {
 
     registerBinaryOperator(Operator.DOT, 15);
 
-
     register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser());
     register(TokenFactory.create(Keyword.FUNCTION), new FunctionExprParser());
     register(literalKey, new LiteralParser());

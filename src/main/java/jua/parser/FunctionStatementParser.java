@@ -19,7 +19,8 @@ public class FunctionStatementParser implements StatementParser {
     // function d[e].f[0]() -> ExpressionIndex
 
     // We don't want to parse the expression call so we set the precedence to just below it
-    // it also matches the precedence of the index and access operators (ie same as FunctionCallParser in Parser)
+    // it also matches the precedence of the index and access operators (ie same as
+    // FunctionCallParser in Parser)
     Variable funcVar = (Variable) parser.parseExpression(14);
 
     // TODO: support :
