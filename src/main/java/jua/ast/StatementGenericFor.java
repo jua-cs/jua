@@ -9,21 +9,16 @@ import jua.objects.*;
 import jua.token.Token;
 
 public class StatementGenericFor extends StatementFor {
-  Expression iterator;
-  Expression state;
-  Expression var;
+  // iterator state var
+  ArrayList<Expression> iteratorStateVar;
 
   public StatementGenericFor(
       Token token,
       ArrayList<ExpressionIdentifier> variables,
-      Expression iterator,
-      Expression state,
-      Expression var,
+      ArrayList<Expression> iteratorStateVar,
       Statement block) {
     super(token, variables, block);
-    this.iterator = iterator;
-    this.state = state;
-    this.var = var;
+    this.iteratorStateVar = iteratorStateVar;
   }
 
   @Override
@@ -32,34 +27,38 @@ public class StatementGenericFor extends StatementFor {
     if (o == null || getClass() != o.getClass()) return false;
     if (!super.equals(o)) return false;
     StatementGenericFor that = (StatementGenericFor) o;
-    return Objects.equals(iterator, that.iterator)
-        && Objects.equals(state, that.state)
-        && Objects.equals(var, that.var);
+    return Objects.equals(iteratorStateVar, that.iteratorStateVar);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), iterator, state, var);
+    return Objects.hash(super.hashCode());
   }
 
   @Override
   public String toString() {
     return String.format(
         "for %s in %s, %s, %s do\n %s\nend",
-        variables.stream().map(Object::toString).collect(Collectors.joining(",")),
-        iterator,
-        state,
-        var,
-        block);
+        variables.stream().map(Object::toString).collect(Collectors.joining(",")), block);
   }
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     Scope forScope = scope.createChild();
 
-    LuaFunction iteratorValue = LuaFunction.valueOf(iterator.evaluate(forScope));
-    LuaObject stateValue = state.evaluate(forScope);
-    LuaObject varValue = var.evaluate(forScope);
+    ArrayList<LuaObject> evaluatedIteratorStateVar =
+        util.Util.evaluateExprs(scope, iteratorStateVar);
+
+    LuaFunction iteratorValue = LuaFunction.valueOf(evaluatedIteratorStateVar.get(0));
+
+    LuaObject stateValue = LuaNil.getInstance();
+    if (evaluatedIteratorStateVar.size() >= 2) {
+      stateValue = evaluatedIteratorStateVar.get(1);
+    }
+    LuaObject varValue = LuaNil.getInstance();
+    if (evaluatedIteratorStateVar.size() >= 3) {
+      varValue = evaluatedIteratorStateVar.get(2);
+    }
 
     LuaObject ret = LuaNil.getInstance();
     while (true) {

@@ -318,6 +318,12 @@ public class Parser {
     while (currentTokenNoSkip().isSubtype(Delimiter.COMMA) && (max <= 0 || count < max)) {
       // Consume ','
       consume(Delimiter.COMMA);
+      // ... should be the last value
+      if (currentToken().isSubtype("...")) {
+          exprs.add((T) ExpressionFactory.create(currentToken()));
+          advanceTokens();
+          return  exprs;
+      }
       exprs.add((T) parseExpression(precedence));
     }
 

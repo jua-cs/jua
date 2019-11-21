@@ -2,6 +2,7 @@ package jua.objects;
 
 import java.util.ArrayList;
 import jua.ast.Expression;
+import jua.ast.ExpressionVararg;
 import jua.ast.StatementList;
 import jua.evaluator.IllegalCastException;
 import jua.evaluator.LuaRuntimeException;
@@ -12,8 +13,13 @@ public class LuaFunction implements LuaObject, Function {
   private Scope environment;
   private StatementList block;
   private LuaTable self = null;
+  private boolean variadic;
 
   public LuaFunction(ArrayList<String> argNames, Scope environment, StatementList block) {
+    if (argNames != null && argNames.size() > 0 && argNames.get(argNames.size() - 1) == "...") {
+      this.variadic = true;
+      argNames.remove(argNames.size() - 1);
+    }
     this.argNames = argNames;
     this.environment = environment;
     this.block = block;
@@ -41,12 +47,7 @@ public class LuaFunction implements LuaObject, Function {
 
   public LuaReturn evaluate(Scope scope, ArrayList<Expression> args) throws LuaRuntimeException {
     // Evaluate each arg
-    ArrayList<LuaObject> evaluatedArgs = new ArrayList<>();
-    for (Expression arg : args) {
-      evaluatedArgs.add(arg.evaluate(scope));
-    }
-
-    return evaluate(evaluatedArgs);
+    return evaluate(util.Util.evaluateExprs(scope, args));
   }
 
   public LuaReturn evaluate(ArrayList<LuaObject> args) throws LuaRuntimeException {
@@ -62,6 +63,13 @@ public class LuaFunction implements LuaObject, Function {
     // Assign evaluated args to arg names
     for (int i = 0; i < Math.min(argNames.size(), args.size()); i++) {
       funcScope.assignLocal(argNames.get(i), args.get(i));
+    }
+    if (this.variadic) {
+      LuaTable vararg = new LuaTable();
+      for (int i = Math.min(argNames.size(), args.size()); i < args.size(); i++) {
+        vararg.insertList(args.get(i));
+      }
+      funcScope.assignLocal("...", vararg);
     }
 
     LuaObject ret = block.evaluate(funcScope);

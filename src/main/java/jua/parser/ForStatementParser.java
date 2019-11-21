@@ -62,21 +62,12 @@ public class ForStatementParser implements StatementParser {
     parser.consume(Keyword.IN);
 
     ArrayList<Expression> expressionsList = parser.parseCommaSeparatedExpressions(0);
-    Expression iterator = expressionsList.get(0);
-    Expression state = null;
-    Expression var = null;
-    if (expressionsList.size() > 1) {
-      state = expressionsList.get(1);
-    }
-    if (expressionsList.size() > 2) {
-      var = expressionsList.get(2);
-    }
 
     BlockStatementParser blockParser = new BlockStatementParser();
 
     Statement block = blockParser.parse(parser);
 
-    return new StatementGenericFor(tok, variables, iterator, state, var, block);
+    return new StatementGenericFor(tok, variables, expressionsList, block);
   }
 
   @Override
