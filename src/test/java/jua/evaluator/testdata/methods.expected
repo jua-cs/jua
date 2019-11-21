@@ -1,0 +1,19 @@
+---
+called Mr outer
+Mr outer
+5
+nil
+---
+called Mr inner
+5
+3
+---
+called Mr inner
+Mr inner
+5
+100
+---
+called Mr outer
+200
+100
+---

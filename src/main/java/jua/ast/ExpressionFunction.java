@@ -60,7 +60,7 @@ public class ExpressionFunction extends Expression implements Variable {
   }
 
   @Override
-  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+  public LuaFunction evaluate(Scope scope) throws LuaRuntimeException {
     ArrayList<String> argNames = new ArrayList<>();
     for (ExpressionIdentifier arg : this.args) {
       argNames.add(arg.getIdentifier());

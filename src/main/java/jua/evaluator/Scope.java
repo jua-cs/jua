@@ -8,6 +8,7 @@ import jua.objects.LuaObject;
 import jua.objects.builtins.Builtin;
 
 public class Scope {
+  public static final String SELF = "self";
   private HashMap<String, LuaObject> scope = new HashMap<>();
   private HashSet<String> locals = new HashSet<>();
 
@@ -47,6 +48,10 @@ public class Scope {
     return variable == null ? LuaNil.getInstance() : variable;
   }
 
+  public void assignSelf(LuaObject value) {
+    assignLocal(SELF, value);
+  }
+
   public void assignLocal(String identifier, LuaObject value) {
     scope.put(identifier, value);
     locals.add(identifier);
@@ -63,6 +68,6 @@ public class Scope {
 
   @Override
   public String toString() {
-    return "Scope{" + "scope=" + scope + ", parent=" + parent + '}';
+    return "Scope{" + "scope=" + scope + '}';
   }
 }
