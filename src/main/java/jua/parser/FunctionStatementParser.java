@@ -3,6 +3,7 @@ package jua.parser;
 import java.util.ArrayList;
 import jua.ast.*;
 import jua.token.Keyword;
+import jua.token.Operator;
 import jua.token.Token;
 
 public class FunctionStatementParser implements StatementParser {
@@ -22,8 +23,9 @@ public class FunctionStatementParser implements StatementParser {
     // it also matches the precedence of the index and access operators
     Variable funcVar = (Variable) parser.parseExpression(9);
 
-    // TODO: support :
     // function x.y:z()
+    // Check if the statement is not a method assignment (like function x.y:z())
+    String methodName = parseMethodName(parser);
 
     // Parse args
     ArrayList<ExpressionIdentifier> args = FunctionExprParser.parseFuncArgs(parser);
@@ -31,8 +33,28 @@ public class FunctionStatementParser implements StatementParser {
 
     // consume END of function statement
     parser.consume(Keyword.END);
-    return new StatementFunction(
-        tok, funcVar, ExpressionFactory.createExpressionFunction(tok, args, stmts));
+
+    ExpressionFunction funcExpr = ExpressionFactory.createExpressionFunction(tok, args, stmts);
+
+    if (methodName != null) {
+      return new StatementMethod(tok, funcVar, methodName, funcExpr);
+    }
+
+    return new StatementFunction(tok, funcVar, funcExpr);
+  }
+
+  // parseMethodName should be called before parsing args to check if the current statement is a
+  // method or a regular function
+  private String parseMethodName(Parser parser) {
+    if (!parser.currentToken().isSubtype(Operator.COLON)) {
+      // We are not in a method
+      return null;
+    }
+
+    parser.advanceTokens();
+    Token tok = parser.currentToken();
+    parser.advanceTokens();
+    return tok.getLiteral();
   }
 
   @Override

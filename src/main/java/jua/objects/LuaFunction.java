@@ -11,6 +11,7 @@ public class LuaFunction implements LuaObject, Function {
   private ArrayList<String> argNames;
   private Scope environment;
   private StatementList block;
+  private LuaTable self = null;
 
   public LuaFunction(ArrayList<String> argNames, Scope environment, StatementList block) {
     this.argNames = argNames;
@@ -51,6 +52,10 @@ public class LuaFunction implements LuaObject, Function {
   public LuaReturn evaluate(ArrayList<LuaObject> args) throws LuaRuntimeException {
     Scope funcScope = this.environment.createChild();
 
+    if (self != null) {
+      funcScope.assignSelf(self);
+    }
+
     // Init args to nil
     argNames.forEach(arg -> funcScope.assignLocal(arg, LuaNil.getInstance()));
 
@@ -65,5 +70,17 @@ public class LuaFunction implements LuaObject, Function {
     }
 
     return new LuaReturn(ret);
+  }
+
+  public Scope getEnvironment() {
+    return environment;
+  }
+
+  public void setSelf(LuaTable self) {
+    this.self = self;
+
+    if (!this.argNames.get(0).equals(Scope.SELF)) {
+      this.argNames.add(0, Scope.SELF);
+    }
   }
 }
