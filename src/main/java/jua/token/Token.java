@@ -56,6 +56,14 @@ public abstract class Token {
     return literal;
   }
 
+  public boolean isSubtype(String identifier) {
+    if (!(this instanceof TokenIdentifier)) {
+      return false;
+    }
+    TokenIdentifier tok = (TokenIdentifier) this;
+    return (tok.getLiteral() == identifier);
+  }
+
   public boolean isSubtype(Delimiter delimiter) {
     if (!(this instanceof TokenDelimiter)) {
       return false;

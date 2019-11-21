@@ -163,8 +163,13 @@ public class Lexer {
         return TokenFactory.create(Literal.STRING, readStringLiteral(), currentLine, currentPos);
       case '.':
         if (peekChar() == '.') {
-          token = TokenFactory.create(Operator.CONCAT, currentLine, currentPos);
           readChar();
+          if (peekChar() == '.') {
+            readChar();
+            token = Token.fromString("...", currentLine, currentPos);
+          } else {
+            token = TokenFactory.create(Operator.CONCAT, currentLine, currentPos);
+          }
         } else {
           token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
         }
