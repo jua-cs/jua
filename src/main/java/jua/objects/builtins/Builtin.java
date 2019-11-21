@@ -14,6 +14,7 @@ public class Builtin {
     Print.register(scope, out);
     Tables.register(scope);
     Cast.register(scope);
+    Bits.register(scope);
     return scope;
   }
 
