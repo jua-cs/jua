@@ -166,7 +166,7 @@ public class Lexer {
           readChar();
           if (peekChar() == '.') {
             readChar();
-            token = Token.fromString("...", currentLine, currentPos);
+            token = Token.fromString(TokenIdentifier.VariadicToken, currentLine, currentPos);
           } else {
             token = TokenFactory.create(Operator.CONCAT, currentLine, currentPos);
           }

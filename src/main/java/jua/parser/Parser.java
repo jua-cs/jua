@@ -319,7 +319,7 @@ public class Parser {
       // Consume ','
       consume(Delimiter.COMMA);
       // ... should be the last value
-      if (currentToken().isSubtype("...")) {
+      if (currentToken().isSubtype(TokenIdentifier.VariadicToken)) {
           exprs.add((T) ExpressionFactory.create(currentToken()));
           advanceTokens();
           return  exprs;

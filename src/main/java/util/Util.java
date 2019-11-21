@@ -6,6 +6,7 @@ import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaObject;
 import jua.objects.LuaTable;
+import jua.token.TokenIdentifier;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,7 +33,7 @@ public class Util {
     ArrayList<LuaObject> evaluateExprs = new ArrayList<>();
     for (Expression expr : exprs) {
       if (expr instanceof ExpressionVararg) {
-        LuaObject obj = scope.getVariable("...");
+        LuaObject obj = scope.getVariable(TokenIdentifier.VariadicToken);
         if (!(obj instanceof LuaTable)) {
           throw new LuaRuntimeException(String.format("vararg argument should be a lua table"));
         }
@@ -42,7 +43,7 @@ public class Util {
       }
       evaluateExprs.add(expr.evaluate(scope));
     }
-    
+
     return evaluateExprs;
   }
 

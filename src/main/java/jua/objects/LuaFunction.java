@@ -7,6 +7,7 @@ import jua.ast.StatementList;
 import jua.evaluator.IllegalCastException;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
+import jua.token.TokenIdentifier;
 
 public class LuaFunction implements LuaObject, Function {
   private ArrayList<String> argNames;
@@ -16,7 +17,7 @@ public class LuaFunction implements LuaObject, Function {
   private boolean variadic;
 
   public LuaFunction(ArrayList<String> argNames, Scope environment, StatementList block) {
-    if (argNames != null && argNames.size() > 0 && argNames.get(argNames.size() - 1) == "...") {
+    if (argNames != null && argNames.size() > 0 && argNames.get(argNames.size() - 1) == TokenIdentifier.VariadicToken) {
       this.variadic = true;
       argNames.remove(argNames.size() - 1);
     }
@@ -69,7 +70,7 @@ public class LuaFunction implements LuaObject, Function {
       for (int i = Math.min(argNames.size(), args.size()); i < args.size(); i++) {
         vararg.insertList(args.get(i));
       }
-      funcScope.assignLocal("...", vararg);
+      funcScope.assignLocal(TokenIdentifier.VariadicToken, vararg);
     }
 
     LuaObject ret = block.evaluate(funcScope);
