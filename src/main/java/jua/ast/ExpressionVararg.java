@@ -1,6 +1,7 @@
 package jua.ast;
 
 import jua.evaluator.IllegalCastException;
+import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
@@ -13,8 +14,9 @@ public class ExpressionVararg extends ExpressionIdentifier {
   }
 
   @Override
-  public LuaObject evaluate(Scope scope) throws IllegalCastException {
-    // TODO
-    return LuaNil.getInstance();
+  public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
+
+    // when evaluating an ArrayList<Expression>, use util.Util.evaluateExprs to ensure this method is never called
+    throw new LuaRuntimeException(String.format("evaluate on ... should never be called"));
   }
 }
