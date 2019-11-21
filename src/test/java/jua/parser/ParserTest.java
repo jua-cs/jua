@@ -380,9 +380,7 @@ public class ParserTest {
             TokenFactory.create(Keyword.FOR),
             util.Util.createArrayList(
                 (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("e"))),
-            ExpressionFactory.create(TokenFactory.create("l")),
-            null,
-            null,
+            util.Util.createArrayList(ExpressionFactory.create(TokenFactory.create("l"))),
             new StatementBlock(
                 TokenFactory.create(Keyword.DO),
                 new StatementList(
@@ -402,9 +400,10 @@ public class ParserTest {
         new StatementGenericFor(
             TokenFactory.create(Keyword.FOR),
             util.Util.createArrayList(ExpressionFactory.create(TokenFactory.create("e"))),
-            ExpressionFactory.create(TokenFactory.create("l")),
-            ExpressionFactory.create(TokenFactory.create("s")),
-            ExpressionFactory.create(TokenFactory.create("var")),
+            util.Util.createArrayList(
+                ExpressionFactory.create(TokenFactory.create("l")),
+                ExpressionFactory.create(TokenFactory.create("s")),
+                ExpressionFactory.create(TokenFactory.create("var"))),
             new StatementBlock(
                 TokenFactory.create(Keyword.DO),
                 new StatementList(
