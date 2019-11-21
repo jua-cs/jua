@@ -10,7 +10,7 @@
                     reset
                 </span>
         </b-button>
-        <b-button :disabled="!save" @click="save()" icon-right="share" size="is-medium" type="is-light">
+        <b-button :disabled="!save" @click="save()" icon-right="content-save" size="is-medium" type="is-light">
                 <span class="button-inner">
                     Save
                 </span>
