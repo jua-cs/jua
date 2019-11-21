@@ -41,6 +41,38 @@ public class LuaNumber implements LuaObject {
     return value.intValue();
   }
 
+  public LuaNumber bNot() {
+    Long number = ~this.getValue().longValue();
+    return new LuaNumber(number.doubleValue());
+  }
+
+  public LuaNumber bAnd(LuaNumber x) {
+    Long number = this.getValue().longValue() & x.getValue().longValue();
+    return new LuaNumber(number.doubleValue());
+  }
+
+  public LuaNumber bOr(LuaNumber x) {
+    Long number = this.getValue().longValue() | x.getValue().longValue();
+    return new LuaNumber(number.doubleValue());
+  }
+
+  public LuaNumber bXor(LuaNumber x) {
+    Long number = this.getValue().longValue() ^ x.getValue().longValue();
+    return new LuaNumber(number.doubleValue());
+  }
+
+  public LuaNumber leftShift(LuaNumber x) {
+    Long number = this.getValue().longValue() << x.getValue().longValue();
+    return new LuaNumber(number.doubleValue());
+  }
+
+  public LuaNumber rightShift(LuaNumber x) {
+    Long number =
+        this.getValue().longValue()
+            >>> x.getValue().longValue(); // Unsigned Right shift operator (>>>)
+    return new LuaNumber(number.doubleValue());
+  }
+
   @Override
   public String repr() {
     if (value == Math.floor(value)) {

@@ -14,7 +14,6 @@ public class ExpressionBinaryNot extends ExpressionUnary {
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     // We cast Double to Long as java doesn't support bitwise operations on floating numbers
-    Long number = ~LuaNumber.valueOf(value.evaluate(scope)).getValue().longValue();
-    return new LuaNumber(number.doubleValue());
+    return LuaNumber.valueOf(value.evaluate(scope)).bNot();
   }
 }
