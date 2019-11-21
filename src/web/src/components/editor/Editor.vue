@@ -1,5 +1,5 @@
 <template>
-    <Container :reset="reset" :run="run" :share="share">
+    <Container :reset="reset" :run="run" :save="save">
         <div class="editor">
             <codemirror :options="cmOptions" class="code" v-model="code"></codemirror>
             <div class="result">
@@ -12,6 +12,7 @@
 
 <script>
     import {codemirror} from 'vue-codemirror'
+    import { saveAs } from 'file-saver'
     // Themes
     import 'codemirror/lib/codemirror.css'
     import 'codemirror/theme/mdn-like.css'
@@ -99,11 +100,9 @@ print('Hi from jua ! Factorial of 5 is: ' .. factorial(5))`
                 this.error = false;
                 this.code = startingCode;
             },
-            share: function () {
-                this.$buefy.snackbar.open({
-                    message: "Not available yet !",
-                    type: "is-warning"
-                });
+            save: function () {
+                let blob = new Blob([this.code], {type: "text/plain;charset=utf-8"});
+                saveAs(blob, "code.lua");
             },
             pump: async function (reader) {
                 const {done, value} = await reader.read();

@@ -1,6 +1,6 @@
 <template>
     <div class="editor-container">
-        <Header :reset="reset" :run="run" :share="share"/>
+        <Header :reset="reset" :run="run" :save="save"/>
         <slot></slot>
         <footer>
             <a :href="`https://github.com/jua-cs/jua/commit/${version}`">
@@ -21,7 +21,7 @@
         props: {
             reset: Function,
             run: Function,
-            share: Function
+            save: Function
         },
         data: function () {
             return {

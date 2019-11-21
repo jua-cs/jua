@@ -10,9 +10,9 @@
                     reset
                 </span>
         </b-button>
-        <b-button :disabled="!share" @click="share()" icon-right="share" size="is-medium" type="is-light">
+        <b-button :disabled="!save" @click="save()" icon-right="content-save" size="is-medium" type="is-light">
                 <span class="button-inner">
-                    Share
+                    Save
                 </span>
         </b-button>
         <b-button @click="switchPage('/')" icon-right="code-tags" size="is-medium" type="is-link" v-if="isOnRepl">
@@ -38,7 +38,7 @@
         props: {
             reset: Function,
             run: Function,
-            share: Function,
+            save: Function,
         },
         computed: {
             isOnRepl: function () {
