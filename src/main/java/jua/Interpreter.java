@@ -134,12 +134,15 @@ public class Interpreter {
                   e.printStackTrace();
                   break;
                 } catch (IllegalLexingException e) {
-                  // print the exception and resume the lexer
+                  // print the exception and resume the lexer if in interactive mode
                   try {
                     stderr.write((e.toString() + '\n').getBytes());
                     stderr.flush();
                   } catch (IOException ex) {
                     ex.printStackTrace();
+                  }
+                  if (!isInteractive) {
+                    break;
                   }
                 }
               }
@@ -159,12 +162,15 @@ public class Interpreter {
                   e.printStackTrace();
                   break;
                 } catch (IllegalParseException e) {
-                  // print the exception and resume the parser
+                  // print the exception and resume the parser if in interactive mode
                   try {
                     stderr.write((e.toString() + '\n').getBytes());
                     stderr.flush();
                   } catch (IOException ex) {
                     ex.printStackTrace();
+                  }
+                  if (!isInteractive) {
+                    break;
                   }
                 }
               }
