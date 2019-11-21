@@ -19,9 +19,17 @@
     import 'codemirror/mode/lua/lua.js'
 
     import Container from './Container'
-
-    const startingCode = "print(\"Hello and welcome to Jua !\")";
     import {url} from '../../util';
+
+    const startingCode = `function factorial(n)
+    if (n == 0) then
+        return 1
+    else
+        return n * factorial(n - 1)
+    end
+end
+
+print('Hi from jua ! Factorial of 5 is: ' .. factorial(5))`
 
     export default {
         name: 'Editor',

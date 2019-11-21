@@ -25,9 +25,9 @@ public class ExpressionIdentifier extends Expression implements Variable {
   @Override
   public void assign(Scope scope, LuaObject value, boolean isLocal) {
     if (isLocal) {
-      scope.assign(getLiteral(), value);
+      scope.assignLocal(getLiteral(), value);
     } else {
-      scope.assignGlobal(getLiteral(), value);
+      scope.assign(getLiteral(), value);
     }
   }
 

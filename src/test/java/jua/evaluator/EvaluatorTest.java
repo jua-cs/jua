@@ -41,7 +41,7 @@ class EvaluatorTest {
   void testConcatExpr() throws IllegalParseException, LuaRuntimeException {
 
     Scope scope = new Scope();
-    scope.assign("x", new LuaString("hi"));
+    scope.assignLocal("x", new LuaString("hi"));
 
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
     tests.add(new Tuple<>("'abc' .. 'def'", "abcdef"));
@@ -71,7 +71,7 @@ class EvaluatorTest {
   void testArithmeticExpr() throws IllegalParseException, LuaRuntimeException {
 
     Scope scope = new Scope();
-    scope.assign("x", new LuaNumber(5.0));
+    scope.assignLocal("x", new LuaNumber(5.0));
 
     ArrayList<Tuple<String, String>> tests = new ArrayList<>();
     tests.add(new Tuple<>("x + 9", "14"));
@@ -260,22 +260,22 @@ class EvaluatorTest {
   void testLuaScript() throws IOException, IllegalParseException, LuaRuntimeException {
     Stream<Path> walk = Files.walk(testdata);
     ArrayList<String> filesToIgnore = new ArrayList<>();
-    // TODO: ignore 0 files
-    filesToIgnore.add("scope.lua");
-    // TODO: it's quite important pls fix it
 
     List<Path> files = walk.filter(f -> f.toString().endsWith(".lua")).collect(Collectors.toList());
 
+    int count = 0;
     for (var f : files) {
       if (filesToIgnore.contains(f.getFileName().toString())) {
         System.out.println("! Ignored " + f + " for testLuaScript. Fix it !");
       } else {
         var value = runLuaScript(f);
+        count++;
         String expected =
             new String(Files.readAllBytes(Paths.get(f.toString().replace(".lua", ".expected"))));
         assertEquals(expected.strip(), value.strip(), String.format("File: %s", f));
       }
     }
+    System.out.printf("%d tests ran on lua scripts\n", count);
   }
 
   String runLuaScript(Path file) throws IOException, IllegalParseException, LuaRuntimeException {

@@ -72,6 +72,6 @@ class Tables {
               return new LuaReturn(new LuaString(res));
             }));
 
-    scope.assign(name, builtins);
+    scope.assignLocal(name, builtins);
   }
 }

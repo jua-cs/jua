@@ -317,8 +317,8 @@ public class ParserTest {
             variable,
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "10")));
 
-    StatementList consequence = new StatementList(tok);
-    consequence.addChild(
+    StatementList consequenceList = new StatementList(tok);
+    consequenceList.addChild(
         new StatementAssignment(
             TokenFactory.create(Operator.ASSIGN),
             variable,
@@ -326,6 +326,8 @@ public class ParserTest {
                 TokenFactory.create(Operator.PLUS),
                 variable,
                 ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")))));
+    StatementBlock consequence =
+        new StatementBlock(TokenFactory.create(Keyword.DO), consequenceList);
 
     Statement whileStatement =
         new StatementWhile(TokenFactory.create(Keyword.WHILE), condition, consequence);
@@ -346,10 +348,12 @@ public class ParserTest {
             (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("i")),
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "0")),
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "10")),
-            null,
-            new StatementList(
-                TokenFactory.create(Keyword.BREAK),
-                new StatementBreak(TokenFactory.create(Keyword.BREAK))));
+            ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "1")),
+            new StatementBlock(
+                TokenFactory.create(Keyword.DO),
+                new StatementList(
+                    TokenFactory.create(Keyword.BREAK),
+                    new StatementBreak(TokenFactory.create(Keyword.BREAK)))));
 
     Statement result = parser.parse().getChildren().get(0);
     assertEquals(expected, result);
@@ -367,9 +371,11 @@ public class ParserTest {
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "0")),
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "10")),
             ExpressionFactory.create(TokenFactory.create(Literal.NUMBER, "2")),
-            new StatementList(
-                TokenFactory.create(Keyword.BREAK),
-                new StatementBreak(TokenFactory.create(Keyword.BREAK))));
+            new StatementBlock(
+                TokenFactory.create(Keyword.DO),
+                new StatementList(
+                    TokenFactory.create(Keyword.BREAK),
+                    new StatementBreak(TokenFactory.create(Keyword.BREAK)))));
 
     Statement result = parser.parse().getChildren().get(0);
     assertEquals(expected, result);
@@ -397,9 +403,11 @@ public class ParserTest {
             ExpressionFactory.create(TokenFactory.create("l")),
             null,
             null,
-            new StatementList(
-                TokenFactory.create(Keyword.BREAK),
-                new StatementBreak(TokenFactory.create(Keyword.BREAK))));
+            new StatementBlock(
+                TokenFactory.create(Keyword.DO),
+                new StatementList(
+                    TokenFactory.create(Keyword.BREAK),
+                    new StatementBreak(TokenFactory.create(Keyword.BREAK)))));
 
     Statement result = parser.parse().getChildren().get(0);
     assertEquals(expected, result);
@@ -413,14 +421,15 @@ public class ParserTest {
     StatementGenericFor expected =
         new StatementGenericFor(
             TokenFactory.create(Keyword.FOR),
-            util.Util.createArrayList(
-                (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("e"))),
+            util.Util.createArrayList(ExpressionFactory.create(TokenFactory.create("e"))),
             ExpressionFactory.create(TokenFactory.create("l")),
             ExpressionFactory.create(TokenFactory.create("s")),
             ExpressionFactory.create(TokenFactory.create("var")),
-            new StatementList(
-                TokenFactory.create(Keyword.BREAK),
-                new StatementBreak(TokenFactory.create(Keyword.BREAK))));
+            new StatementBlock(
+                TokenFactory.create(Keyword.DO),
+                new StatementList(
+                    TokenFactory.create(Keyword.BREAK),
+                    new StatementBreak(TokenFactory.create(Keyword.BREAK)))));
 
     Statement result = parser.parse().getChildren().get(0);
     assertEquals(expected, result);

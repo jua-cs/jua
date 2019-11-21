@@ -2,12 +2,14 @@ package jua.evaluator;
 
 import java.io.OutputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import jua.objects.LuaNil;
 import jua.objects.LuaObject;
 import jua.objects.builtins.Builtin;
 
 public class Scope {
   private HashMap<String, LuaObject> scope = new HashMap<>();
+  private HashSet<String> locals = new HashSet<>();
 
   private Scope parent;
 
@@ -45,15 +47,18 @@ public class Scope {
     return variable == null ? LuaNil.getInstance() : variable;
   }
 
-  public void assign(String identifier, LuaObject value) {
+  public void assignLocal(String identifier, LuaObject value) {
     scope.put(identifier, value);
+    locals.add(identifier);
   }
 
-  public void assignGlobal(String identifier, LuaObject value) {
-    if (parent != null) {
-      parent.assignGlobal(identifier, value);
+  public void assign(String identifier, LuaObject value) {
+    // Check if the variable isn't local first
+    if (locals.contains(identifier) || parent == null) {
+      assignLocal(identifier, value);
+    } else {
+      parent.assign(identifier, value);
     }
-    assign(identifier, value);
   }
 
   @Override
