@@ -320,9 +320,9 @@ public class Parser {
       consume(Delimiter.COMMA);
       // ... should be the last value
       if (currentToken().isSubtype(TokenIdentifier.VariadicToken)) {
-          exprs.add((T) ExpressionFactory.create(currentToken()));
-          advanceTokens();
-          return  exprs;
+        exprs.add((T) ExpressionFactory.create(currentToken()));
+        advanceTokens();
+        return exprs;
       }
       exprs.add((T) parseExpression(precedence));
     }

@@ -1,5 +1,9 @@
 package util;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.stream.Collectors;
 import jua.ast.Expression;
 import jua.ast.ExpressionVararg;
 import jua.evaluator.LuaRuntimeException;
@@ -7,11 +11,6 @@ import jua.evaluator.Scope;
 import jua.objects.LuaObject;
 import jua.objects.LuaTable;
 import jua.token.TokenIdentifier;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.stream.Collectors;
 
 public class Util {
 
@@ -28,8 +27,8 @@ public class Util {
         .stream().map(s -> "\t" + s).collect(Collectors.joining("\n"));
   }
 
-
-  public static ArrayList<LuaObject> evaluateExprs(Scope scope, ArrayList<Expression> exprs) throws LuaRuntimeException {
+  public static ArrayList<LuaObject> evaluateExprs(Scope scope, ArrayList<Expression> exprs)
+      throws LuaRuntimeException {
     ArrayList<LuaObject> evaluateExprs = new ArrayList<>();
     for (Expression expr : exprs) {
       if (expr instanceof ExpressionVararg) {
@@ -46,5 +45,4 @@ public class Util {
 
     return evaluateExprs;
   }
-
 }

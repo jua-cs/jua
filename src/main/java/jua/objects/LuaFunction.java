@@ -2,7 +2,6 @@ package jua.objects;
 
 import java.util.ArrayList;
 import jua.ast.Expression;
-import jua.ast.ExpressionVararg;
 import jua.ast.StatementList;
 import jua.evaluator.IllegalCastException;
 import jua.evaluator.LuaRuntimeException;
@@ -17,7 +16,9 @@ public class LuaFunction implements LuaObject, Function {
   private boolean variadic;
 
   public LuaFunction(ArrayList<String> argNames, Scope environment, StatementList block) {
-    if (argNames != null && argNames.size() > 0 && argNames.get(argNames.size() - 1) == TokenIdentifier.VariadicToken) {
+    if (argNames != null
+        && argNames.size() > 0
+        && argNames.get(argNames.size() - 1) == TokenIdentifier.VariadicToken) {
       this.variadic = true;
       argNames.remove(argNames.size() - 1);
     }

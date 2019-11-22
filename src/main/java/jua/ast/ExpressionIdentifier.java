@@ -1,6 +1,5 @@
 package jua.ast;
 
-import jua.evaluator.IllegalCastException;
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
 import jua.objects.LuaObject;
