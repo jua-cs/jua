@@ -15,8 +15,8 @@ class Tables {
         "remove",
         Builtin.createFunction(
             args -> {
-              LuaObject table = args.size() > 0 ? args.get(0) : LuaNil.getInstance();
-              LuaObject key = args.size() > 1 ? args.get(1) : LuaNil.getInstance();
+              LuaObject table = Builtin.arg(args, 0);
+              LuaObject key = Builtin.arg(args, 1);
 
               if (!(table instanceof LuaTable)) {
                 throw new LuaRuntimeException(
@@ -32,8 +32,8 @@ class Tables {
         "insert",
         Builtin.createFunction(
             args -> {
-              LuaObject table = args.size() > 0 ? args.get(0) : LuaNil.getInstance();
-              LuaObject value = args.size() > 1 ? args.get(1) : LuaNil.getInstance();
+              LuaObject table = Builtin.arg(args, 0);
+              LuaObject value = Builtin.arg(args, 1);
 
               if (!(table instanceof LuaTable)) {
                 throw new LuaRuntimeException(
@@ -50,8 +50,8 @@ class Tables {
         "concat",
         Builtin.createFunction(
             args -> {
-              LuaObject table = args.size() > 0 ? args.get(0) : LuaNil.getInstance();
-              LuaObject sep = args.size() > 1 ? args.get(1) : LuaNil.getInstance();
+              LuaObject table = Builtin.arg(args, 0);
+              LuaObject sep = Builtin.arg(args, 1);
 
               if (!(table instanceof LuaTable)) {
                 throw new LuaRuntimeException(
