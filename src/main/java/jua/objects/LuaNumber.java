@@ -44,10 +44,10 @@ public class LuaNumber implements LuaObject {
   @Override
   public String repr() {
     if (value == Math.floor(value)) {
-      return String.format("%d", value.intValue());
+      return String.format("%d", value.longValue());
     }
 
-    return ((Float) ((float) ((double) value))).toString();
+    return value.toString();
   }
 
   @Override
