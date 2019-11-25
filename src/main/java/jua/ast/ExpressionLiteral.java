@@ -21,6 +21,16 @@ public class ExpressionLiteral extends Expression {
         return LuaNil.getInstance();
       case NUMBER:
         return new LuaNumber(Double.valueOf(this.getLiteral()));
+      case HEX_NUMBER:
+        if (this.getLiteral() == "0x") {
+          throw new IllegalTypeException("0x is not a correct hex number.");
+        }
+        try {
+          Long hexAsLong = Long.decode(this.getLiteral());
+          return new LuaNumber(hexAsLong.doubleValue());
+        } catch (NumberFormatException e) {
+          throw new IllegalTypeException(e.getMessage());
+        }
       case STRING:
         return new LuaString(this.getLiteral());
       case BOOLEAN:

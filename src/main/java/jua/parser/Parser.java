@@ -50,17 +50,11 @@ public class Parser {
     this.statementParserList = new ArrayList<>();
 
     // Register the class which implements InfixParser interface
+    // https://en.wikibooks.org/wiki/Lua_Programming/Expressions#Operator_precedence
     // TODO: ^ has greater precedence than unary operators, this is not handled at the moment
-    registerBinaryOperator(Operator.PLUS, 4);
-    registerBinaryOperator(Operator.ASTERISK, 6);
-    registerBinaryOperator(Operator.SLASH, 6);
-    registerBinaryOperator(Operator.MINUS, 4);
-    registerBinaryOperator(Operator.CARAT, 7);
-    registerBinaryOperator(Operator.PERCENT, 6);
-    registerBinaryOperator(Operator.CONCAT, 5);
+    registerBinaryOperator(Operator.OR, 1);
 
     registerBinaryOperator(Operator.AND, 2);
-    registerBinaryOperator(Operator.OR, 1);
 
     registerBinaryOperator(Operator.EQUALS, 3);
     registerBinaryOperator(Operator.NOT_EQUAL, 3);
@@ -68,18 +62,45 @@ public class Parser {
     registerBinaryOperator(Operator.GTE, 3);
     registerBinaryOperator(Operator.LT, 3);
     registerBinaryOperator(Operator.LTE, 3);
-    registerBinaryOperator(Operator.DOT, 10);
 
-    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(9));
-    register(TokenFactory.create(Operator.COLON), new MethodCallParser(9));
-    register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(9));
+    registerBinaryOperator(Operator.B_OR, 4);
 
-    // Register the classes which implements PrefixParser interface
+    registerBinaryOperator(Operator.B_XOR, 5);
+
+    registerBinaryOperator(Operator.B_AND, 6);
+
+    registerBinaryOperator(Operator.LEFT_SHIFT, 7);
+    registerBinaryOperator(Operator.RIGHT_SHIFT, 7);
+
+    registerBinaryOperator(Operator.CONCAT, 8);
+
+    registerBinaryOperator(Operator.PLUS, 9);
+    registerBinaryOperator(Operator.MINUS, 9);
+
+    registerBinaryOperator(Operator.ASTERISK, 10);
+    registerBinaryOperator(Operator.SLASH, 10);
+    registerBinaryOperator(Operator.PERCENT, 10);
+
+    register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(11));
+    register(TokenFactory.create(Operator.B_XOR), (PrefixParser) new OperatorParser(11));
+    register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(11));
+    register(TokenFactory.create(Operator.HASH), (PrefixParser) new OperatorParser(11));
+
+    registerBinaryOperator(Operator.CARAT, 12);
+
+    // TODO: explain why we need these next precedences
+
+    register(TokenFactory.create(Delimiter.LBRACK), new BracketParser(13));
+    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(13));
+
+    // Change precedence in FunctionStatementParser
+    register(TokenFactory.create(Delimiter.LPAREN), new FunctionCallParser(14));
+    register(TokenFactory.create(Operator.COLON), new MethodCallParser(14));
+
+    registerBinaryOperator(Operator.DOT, 15);
+
     register(TokenFactory.create(Delimiter.LBRACE), new TableConstructorParser());
-    register(TokenFactory.create(Delimiter.LPAREN), new ParenthesisParser(8));
-    register(TokenFactory.create(Operator.NOT), (PrefixParser) new OperatorParser(8));
-    register(TokenFactory.create(Operator.MINUS), (PrefixParser) new OperatorParser(8));
-    register(TokenFactory.create(Operator.HASH), (PrefixParser) new OperatorParser(8));
+
     register(TokenFactory.create(Keyword.FUNCTION), new FunctionExprParser());
     register(literalKey, new LiteralParser());
     register(identifierKey, new IdentifierParser());

@@ -92,7 +92,10 @@ public class Lexer {
         token = TokenFactory.create(Operator.SLASH, currentLine, currentPos);
         break;
       case '<':
-        if (peekChar() == '=') {
+        if (peekChar() == '<') {
+          token = TokenFactory.create(Operator.LEFT_SHIFT, currentLine, currentPos);
+          readChar();
+        } else if (peekChar() == '=') {
           token = TokenFactory.create(Operator.LTE, currentLine, currentPos);
           readChar();
         } else {
@@ -100,7 +103,10 @@ public class Lexer {
         }
         break;
       case '>':
-        if (peekChar() == '=') {
+        if (peekChar() == '>') {
+          token = TokenFactory.create(Operator.RIGHT_SHIFT, currentLine, currentPos);
+          readChar();
+        } else if (peekChar() == '=') {
           token = TokenFactory.create(Operator.GTE, currentLine, currentPos);
           readChar();
         } else {
@@ -174,12 +180,20 @@ public class Lexer {
           token = TokenFactory.create(Operator.DOT, currentLine, currentPos);
         }
         break;
+      case '&':
+        token = TokenFactory.create(Operator.B_AND, currentLine, currentPos);
+        break;
+      case '|':
+        token = TokenFactory.create(Operator.B_OR, currentLine, currentPos);
+        break;
       case '~':
         if (peekChar() == '=') {
           token = TokenFactory.create(Operator.NOT_EQUAL, currentLine, currentPos);
           readChar();
-          break;
+        } else {
+          token = TokenFactory.create(Operator.B_XOR, currentLine, currentPos);
         }
+        break;
         // fallthrough
       default:
         if (Character.isLetter(ch) || ch == '_') {
@@ -187,6 +201,12 @@ public class Lexer {
           // return early to avoid readChar below
           return Token.fromString(identifier, currentLine, currentPos);
         } else if (Character.isDigit(ch)) {
+          // check if it's hexadecimal
+          if (ch == '0' && peekChar() == 'x') {
+            // it's an hexadecimal
+            String numberHex = nextHexadecimal();
+            return TokenFactory.create(Literal.HEX_NUMBER, numberHex, currentLine, currentPos);
+          }
           String number = nextNumber();
 
           // return early to avoid readChar below
@@ -251,6 +271,25 @@ public class Lexer {
     boolean dotSeen = false;
     char nextChar = peekChar();
     while (Character.isDigit(nextChar) || (!dotSeen && nextChar == '.')) {
+      number.append(nextChar);
+      dotSeen = nextChar == '.';
+      readChar();
+      nextChar = peekChar();
+    }
+
+    return number.toString();
+  }
+
+  private String nextHexadecimal() {
+    StringBuilder number = new StringBuilder();
+    number.append(ch); // ch = 0
+    readChar();
+    number.append(ch); // ch = x
+
+    boolean dotSeen = false;
+    char nextChar = peekChar();
+    while (Character.isLetterOrDigit(nextChar) || (!dotSeen && nextChar == '.')) {
+      // invalid hex with g are raised at evaluation
       number.append(nextChar);
       dotSeen = nextChar == '.';
       readChar();

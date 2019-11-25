@@ -1,10 +1,7 @@
 package jua.ast;
 
 import java.util.ArrayList;
-import jua.token.Token;
-import jua.token.TokenIdentifier;
-import jua.token.TokenLiteral;
-import jua.token.TokenOperator;
+import jua.token.*;
 
 public class ExpressionFactory {
   public static ExpressionBinary create(TokenOperator token, Expression lhs, Expression rhs) {
@@ -44,6 +41,16 @@ public class ExpressionFactory {
         return new ExpressionAnd(token, lhs, rhs);
       case OR:
         return new ExpressionOr(token, lhs, rhs);
+      case B_AND:
+        return new ExpressionBitwiseAnd(token, lhs, rhs);
+      case B_OR:
+        return new ExpressionBitwiseOr(token, lhs, rhs);
+      case B_XOR:
+        return new ExpressionBitwiseXor(token, lhs, rhs);
+      case LEFT_SHIFT:
+        return new ExpressionLeftShift(token, lhs, rhs);
+      case RIGHT_SHIFT:
+        return new ExpressionRightShift(token, lhs, rhs);
 
         // TODO: exception for those ?
       case NEGATIVE:
@@ -51,6 +58,8 @@ public class ExpressionFactory {
       case HASH:
         break;
       case NOT:
+        break;
+      case B_NOT:
         break;
       default:
         return null;
@@ -65,8 +74,12 @@ public class ExpressionFactory {
         return new ExpressionHash(token, value);
       case NOT:
         return new ExpressionNot(token, value);
-      case MINUS:
-        return new ExpressionNegative(token, value);
+      case MINUS: // Correspond to Operator.NEGATIVE
+        return new ExpressionNegative(
+            TokenFactory.create(Operator.NEGATIVE, token.getLine(), token.getPosition()), value);
+      case B_XOR: // Correspond to Operator.B_NOT
+        return new ExpressionBinaryNot(
+            TokenFactory.create(Operator.B_NOT, token.getLine(), token.getPosition()), value);
       default:
         return null;
     }

@@ -105,6 +105,25 @@ class EvaluatorTest {
   }
 
   @Test
+  void testHexExpr() throws IllegalParseException, LuaRuntimeException {
+
+    Scope scope = new Scope();
+    scope.assign("x", new LuaNumber(5.0));
+
+    ArrayList<Tuple<String, String>> tests = new ArrayList<>();
+    tests.add(new Tuple<>("x + 0x9", "14"));
+    tests.add(new Tuple<>("0xff", "255"));
+
+    for (Tuple<String, String> t : tests) {
+      var obj = setupEval(t.x, scope);
+      assertEquals(t.y, obj.repr());
+    }
+
+    assertThrows(IllegalTypeException.class, () -> setupEval("0xfgh"));
+    assertThrows(IllegalTypeException.class, () -> setupEval("0x"));
+  }
+
+  @Test
   void testEqualAndNotEquals() throws IllegalParseException, LuaRuntimeException {
     ArrayList<Tuple<String, Boolean>> tests = new ArrayList<>();
     tests.add(new Tuple<>("'abc' == 'def'", false));
