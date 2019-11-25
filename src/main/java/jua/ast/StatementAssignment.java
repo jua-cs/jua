@@ -66,10 +66,7 @@ public class StatementAssignment extends Statement {
     if (rhs.size() == 1 && rhs.get(0) instanceof ExpressionFunctionCall) {
       values = ((ExpressionFunctionCall) rhs.get(0)).evaluateNoUnwrap(scope).getValues();
     } else {
-      values = new ArrayList<>();
-      for (Expression expr : rhs) {
-        values.add(expr.evaluate(scope));
-      }
+      values = util.Util.evaluateExprs(scope, rhs);
     }
 
     for (int i = 0; i < lhs.size(); i++) {

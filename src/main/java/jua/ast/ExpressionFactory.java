@@ -76,6 +76,9 @@ public class ExpressionFactory {
     if (token instanceof TokenLiteral) {
       return new ExpressionLiteral(token);
     }
+    if (token.getLiteral() == TokenIdentifier.VariadicToken) {
+      return new ExpressionVararg(token);
+    }
     return new ExpressionIdentifier(token);
   }
 

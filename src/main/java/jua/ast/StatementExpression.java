@@ -51,10 +51,7 @@ public class StatementExpression extends Statement {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    ArrayList<LuaObject> objects = new ArrayList<>();
-    for (Expression expr : exprs) {
-      objects.add(expr.evaluate(scope));
-    }
+    ArrayList<LuaObject> objects = util.Util.evaluateExprs(scope, exprs);
 
     // TODO: fixme we should support multiple LuaObjects
     return objects.get(0);
