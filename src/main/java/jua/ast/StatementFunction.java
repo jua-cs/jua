@@ -8,13 +8,15 @@ import jua.objects.LuaObject;
 import jua.token.Token;
 
 public class StatementFunction extends Statement {
+  private boolean isLocal;
   private Variable funcVar;
   private ExpressionFunction func;
 
-  public StatementFunction(Token token, Variable funcVar, ExpressionFunction func) {
+  public StatementFunction(Token token, Variable funcVar, ExpressionFunction func, boolean isLocal) {
     super(token);
     this.funcVar = funcVar;
     this.func = func;
+    this.isLocal = isLocal;
   }
 
   @Override
@@ -48,7 +50,7 @@ public class StatementFunction extends Statement {
 
   @Override
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
-    funcVar.assign(scope, func.evaluate(scope), false);
+    funcVar.assign(scope, func.evaluate(scope), isLocal);
 
     return LuaNil.getInstance();
   }

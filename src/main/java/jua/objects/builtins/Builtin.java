@@ -24,6 +24,8 @@ public class Builtin {
     Bits.register(scope);
     Next.register(scope);
     Strings.register(scope);
+    Select.register(scope);
+    Type.register(scope);
     return scope;
   }
 

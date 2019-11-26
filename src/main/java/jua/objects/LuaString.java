@@ -32,6 +32,11 @@ public class LuaString implements LuaObject {
   }
 
   @Override
+  public String getTypeName() {
+    return "string";
+  }
+
+  @Override
   public String toString() {
     return "LuaString{" + "value='" + value + '\'' + '}';
   }

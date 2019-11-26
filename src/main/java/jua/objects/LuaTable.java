@@ -20,6 +20,11 @@ public class LuaTable implements LuaObject {
     return String.format("table: @%d", this.hashCode());
   }
 
+  @Override
+  public String getTypeName() {
+    return "table";
+  }
+
   public LuaObject getList(int idx) {
     if (idx < list.size()) {
       var res = list.get(idx);

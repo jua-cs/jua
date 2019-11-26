@@ -115,6 +115,7 @@ public class Parser {
     register(new RepeatStatementParser());
     register(new ForStatementParser());
     register(new LocalAssignementStatementParser());
+    register(new LocalFunctionStatementParser());
   }
 
   private void registerBinaryOperator(Operator op, int precedence) {
