@@ -125,3 +125,12 @@ Let's take an if statement as example:
 - to know if the next *statement* is an if we simply compare the next token with the keyword 'if'.
 - an if statement is composed of condition *expression*, and two substatements, the consequence and the alternative, with the alternative being facultative.
 When parsing an if *statement* we have to parse recursively the *expression* and the *statements*, taking care of the separators: `if expression then consequence else alternative end`.
+### Testing
+
+[`src/test/java/jua/{evaluator, lexer, parser}`](./src/test/java/jua/)
+
+We have done a lot of tests trough the development of the application. Since we first developed the Lexer, then the Parser followed by the Evaluator, we wrote tests for each steps of this process which can assure that each part of the application does its jobs correctly.
+
+After the first working version, we had to add some new features like a new *keyword* or *bitwise operators*, for which a change in the three services were necessary. In this case, all these tests permit to develop without worrying about what have been done before.
+
+To implement more tests in a simple way, we also use a directory with some [lua scripts](./src/test/java/jua/evaluator/testdata/). A test function in `EvaluatorTest.java` compares all the `myTestFile.lua` to the corresponding expected results in `myTestFile.expected`. Add new test is therefore very easy, just write a new `script.lua` and generate the output `lua script.lua > script.expected`.
