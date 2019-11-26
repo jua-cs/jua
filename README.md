@@ -4,7 +4,7 @@ Jua is a lua interpreter implemented in java.
 
 It features a CLI (repl + interpreter for files) and a web application.
 
-You can access the web application [here](http://jua.herokuapp.com).
+You can access the web application [here](http://jua.herokuapp.com)  (disclaimer it won't work in https because it's using heroku's free tier).
 
 ## Installation
 
@@ -86,8 +86,6 @@ A *TokenFactory*, which follows the **Factory Pattern**, is used to instantiate 
 By looking *character by character*, the **Lexer** returns a stream of Tokens. With a simple *switch statement*, it can determinate the correct token. If we found a `(`, it returns a `TokenDelimiter("(")` .
 
  Sometimes, for example for `*<=*`, it needs to look ahead for the next characters. Therefore, when it finds a `<`, it *peeks* the next characters, to distinguish `<<` , `<=` or just `<`.
-
-
 
 
 
