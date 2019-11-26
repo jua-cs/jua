@@ -62,7 +62,8 @@ There is also a class diagram available [here](./docs/jua_classes.png).
 ### Lexer
 
 [`/src/main/java/jua/lexer`](./src/main/java/jua/lexer)
-=======
+
+
 ![lexer](./docs/lexer.png)
 
 
@@ -96,6 +97,8 @@ Then, it handles others tokens like literals and identifiers.
 
 ### Parser
 
+![parser](./docs/parser.png)
+
 The job of **Parser** transforms the stream of Tokens from the **Lexer** into an **Abstract Syntax Tree** (AST).
 
 From [Wikipedia](https://en.wikipedia.org/wiki/Abstract_syntax_tree):
@@ -125,17 +128,6 @@ Let's take an if statement as example:
 - to know if the next *statement* is an if we simply compare the next token with the keyword 'if'.
 - an if statement is composed of condition *expression*, and two substatements, the consequence and the alternative, with the alternative being facultative.
 When parsing an if *statement* we have to parse recursively the *expression* and the *statements*, taking care of the separators: `if expression then consequence else alternative end`.
-
-### Evaluator
-
-The [jua evaluator] is a tree walking evaluator, it simply visits each node of the AST and evaluate them.
-
-This is possible because each AST node implement the [Evaluable](./src/main/java/jua/evaluator/Evaluable.java) interface.
-
-This works for both Expressions and Statements.
-
-An example of AST evaluations can be found [here for the multiplication](./src/main/java/jua/ast/ExpressionMultiplication.java)
-
 ### Testing
 
 [`src/test/java/jua/{evaluator, lexer, parser}`](./src/test/java/jua/)
@@ -145,14 +137,3 @@ We have done a lot of tests trough the development of the application. Since we 
 After the first working version, we had to add some new features like a new *keyword* or *bitwise operators*, for which a change in the three services were necessary. In this case, all these tests permit to develop without worrying about what have been done before.
 
 To implement more tests in a simple way, we also use a directory with some [lua scripts](./src/test/java/jua/evaluator/testdata/). A test function in `EvaluatorTest.java` compares all the `myTestFile.lua` to the corresponding expected results in `myTestFile.expected`. Add new test is therefore very easy, just write a new `script.lua` and generate the output `lua script.lua > script.expected`.
-
-### Possible Improvements
-
-- Add support for unicode
-- Better stack traces
-- Implement [coroutines](https://www.lua.org/pil/9.1.html)
-- Implement `require` to be able to import libraries
-- Implement the remaining builtins, and the missing features
-- Improve performances (10x difference for fibonacci computation compared to the [official lua implementation](https://github.com/lua/lua))
-- Add a code formatter (it could use the AST to do that)
-- Allow to share lua snippets in the web UI
