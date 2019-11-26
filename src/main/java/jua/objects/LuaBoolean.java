@@ -60,4 +60,9 @@ public class LuaBoolean implements LuaObject {
 
     return "false";
   }
+
+  @Override
+  public String getTypeName() {
+    return "boolean";
+  }
 }

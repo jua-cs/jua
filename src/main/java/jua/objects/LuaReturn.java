@@ -26,4 +26,9 @@ public class LuaReturn implements LuaObject {
   public String repr() {
     return values.stream().map(LuaObject::repr).collect(Collectors.joining(","));
   }
+
+  @Override
+  public String getTypeName() {
+    return "return";
+  }
 }

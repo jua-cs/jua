@@ -252,10 +252,23 @@ public class Lexer {
     StringBuilder str = new StringBuilder();
 
     while (nextChar != sep && nextChar != 0) {
-      str.append(nextChar);
       readChar();
+      // Check for escaped quotes
+      if (nextChar == '\\') {
+        if (peekChar() == sep) {
+          str.append(sep);
+          readChar();
+        } else {
+          str.append(nextChar);
+          str.append(peekChar());
+          readChar();
+        }
+      } else {
+        str.append(nextChar);
+      }
       nextChar = peekChar();
     }
+
     if (nextChar == '\0') {
       throw new IllegalLexingException(String.format("unexpected end of file in string literal"));
     }

@@ -10,6 +10,12 @@ public class FunctionStatementParser implements StatementParser {
 
   @Override
   public Statement parse(Parser parser) throws IllegalParseException {
+    boolean isLocal = false;
+    if (parser.currentToken().isSubtype(Keyword.LOCAL)) {
+      isLocal = true;
+      parser.consume(Keyword.LOCAL);
+    }
+
     // Next jua.token should be an identifier
     Token tok = parser.currentToken();
     parser.consume(Keyword.FUNCTION);
@@ -41,7 +47,7 @@ public class FunctionStatementParser implements StatementParser {
       return new StatementMethod(tok, funcVar, methodName, funcExpr);
     }
 
-    return new StatementFunction(tok, funcVar, funcExpr);
+    return new StatementFunction(tok, funcVar, funcExpr, isLocal);
   }
 
   // parseMethodName should be called before parsing args to check if the current statement is a

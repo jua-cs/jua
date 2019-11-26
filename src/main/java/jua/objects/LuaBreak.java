@@ -5,4 +5,9 @@ public class LuaBreak implements LuaObject {
   public String repr() {
     return "break";
   }
+
+  @Override
+  public String getTypeName() {
+    return "break";
+  }
 }

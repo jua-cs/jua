@@ -16,6 +16,11 @@ public class LuaNil implements LuaObject {
   }
 
   @Override
+  public String getTypeName() {
+    return "nil";
+  }
+
+  @Override
   public String toString() {
     return "LuaNil{}";
   }

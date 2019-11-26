@@ -39,6 +39,11 @@ public class LuaFunction implements LuaObject, Function {
     return String.format("function(%s) %s", argNames, block);
   }
 
+  @Override
+  public String getTypeName() {
+    return "function";
+  }
+
   public LuaObject evaluateUnwrap(Scope scope, ArrayList<Expression> args)
       throws LuaRuntimeException {
     LuaReturn ret = evaluate(scope, args);

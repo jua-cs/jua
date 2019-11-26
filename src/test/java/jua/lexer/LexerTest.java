@@ -1,9 +1,9 @@
 package jua.lexer;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertIterableEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.ArrayList;
-import java.util.concurrent.*;
 import jua.evaluator.IllegalLexingException;
 import jua.token.*;
 import org.junit.jupiter.api.Test;
@@ -177,6 +177,20 @@ public class LexerTest {
     expected.add(TokenFactory.create("x", 1, 1));
     expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
     expected.add(TokenFactory.create(Literal.STRING, "hello \"nested\"", 1, 5));
+
+    assertIterableEquals(expected, list);
+  }
+
+  @Test
+  void testEscapedQuotes() {
+    Lexer lex = new Lexer("x = 'escaped \\' \\''");
+
+    ArrayList<Token> list = lex.getNTokens(3);
+
+    ArrayList<Token> expected = new ArrayList<Token>();
+    expected.add(TokenFactory.create("x", 1, 1));
+    expected.add(TokenFactory.create(Operator.ASSIGN, 1, 3));
+    expected.add(TokenFactory.create(Literal.STRING, "escaped \' \'", 1, 5));
 
     assertIterableEquals(expected, list);
   }

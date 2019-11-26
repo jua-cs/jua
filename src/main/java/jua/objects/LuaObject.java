@@ -28,4 +28,6 @@ public interface LuaObject {
   // TODO casting functions
 
   String repr();
+
+  String getTypeName();
 }

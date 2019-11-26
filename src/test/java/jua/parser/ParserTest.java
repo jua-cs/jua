@@ -191,7 +191,8 @@ public class ParserTest {
             TokenFactory.create(Keyword.FUNCTION),
             (ExpressionIdentifier) ExpressionFactory.create(TokenFactory.create("identity")),
             ExpressionFactory.createExpressionFunction(
-                TokenFactory.create(Keyword.FUNCTION), args, statementList));
+                TokenFactory.create(Keyword.FUNCTION), args, statementList),
+            false);
     assertEquals(expected, statements.get(0));
   }
 
