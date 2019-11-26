@@ -323,14 +323,12 @@ public class Parser {
     return new StatementExpression(exprs);
   }
 
-  protected <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence)
+  protected <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(int precedence)
       throws IllegalParseException {
     return parseCommaSeparatedExpressions(precedence, -1);
   }
 
-  // TODO; remove this horror
-  @SuppressWarnings(value = "unchecked")
-  <T> ArrayList<T> parseCommaSeparatedExpressions(int precedence, int max)
+  <T extends Expression> ArrayList<T> parseCommaSeparatedExpressions(int precedence, int max)
       throws IllegalParseException {
     ArrayList<T> exprs = new ArrayList<>();
 
