@@ -13,7 +13,7 @@ You can access the web application [here](http://jua.herokuapp.com).
 - Java 11 or later
 - Gradle 5 or later
 
-[SDKman](https://sdkman.io/) is a good solution to install and manage Gradle, Java SDK, etc...
+[**SDKMAN!**](https://sdkman.io/) is a good solution to install and manage Gradle, Java SDK, etc...
 
 ### Setup
 
@@ -59,10 +59,15 @@ Let's describe the architecture of the project. We'll start by the first parts w
 
 ### Lexer
 
+`src/main/java/jua/lexer` 
+
 The job of the *Lexer* is to transform the input (a stream of strings) into a stream of *Tokens*.
+
+#### Tokens
 
 *Tokens* are the first abstraction around the text input. Basically, it separates words and punctuation, and try to give them some meaning.
 We have several types of Tokens :
+
 - **Operator**: these are all the symbols which operate on arguments: *+*, *-*, */*,etc...
 - **Keyword**: Reserved names for the language like *if*, *for*, *end*, etc...
 - **Separator**: Punctuation characters, delimiters like : *(*, *}*, *,*, etc...
@@ -70,7 +75,17 @@ We have several types of Tokens :
 - **Identifier**: name chosen by the programmer for a variable, function: *x*, *myFunction*
 - **Special**: invalid token, end of line
 
-By looking character by character, the **Lexer** returns a stream of Tokens. Sometimes, for example for *<=*, it needs to look ahead for the next characters. With a simple *switch statement*, it can determinate the correct token.
+The tokens for the *jua* language are defined in `src/main/java/jua/token`. There is a main **abstract** class `Token.java` from which all the the other tokens (*TokenOperator*, *TokenKeyword*, etc...) inherit. The base attributes a Token has are : line, position on this line and literal, which is the explicit *string* from the code.
+
+*Enumerations* are used to list all the explicit tokens we expect to encounter.
+
+A *TokenFactory*, which follows the **Factory Pattern**, is used to instantiate all the Tokens.
+
+#### How does the Lexer works ?
+
+By looking *character by character*, the **Lexer** returns a stream of Tokens. With a simple *switch statement*, it can determinate the correct token. If we found a `(`, it returns a `TokenDelimiter("(")` .
+
+ Sometimes, for example for `*<=*`, it needs to look ahead for the next characters. Therefore, when it finds a `<`, it *peeks* the next characters, to distinguish `<<` , `<=` or just `<`.
 
 
 
@@ -87,4 +102,4 @@ From [Wikipedia](https://en.wikipedia.org/wiki/Abstract_syntax_tree):
 
 The AST is composed of two types of elements : *Expressions* and *Statements*.
 
-A *statement* is the base of the program, something to execute. A lua program is list of *statements*: variable definition of assignements, function definition or procedure execution. A statement is composed of several others statements and expressions. *Expressions* returns a result
+A *statement* is the base of the program, something to execute. A lua program is list of *statements*: variable definition of assignements, function definition or procedure execution. A statement is composed of several others statements and expressions. *Expressions* returns a result from the computation of the 
