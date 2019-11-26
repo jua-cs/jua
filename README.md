@@ -158,6 +158,17 @@ Let's take an if statement as example:
 - to know if the next *statement* is an if we simply compare the next token with the keyword 'if'.
 - an if statement is composed of condition *expression*, and two substatements, the consequence and the alternative, with the alternative being facultative.
 When parsing an if *statement* we have to parse recursively the *expression* and the *statements*, taking care of the separators: `if expression then consequence else alternative end`.
+
+### Evaluator
+
+The [jua evaluator] is a tree walking evaluator, it simply visits each node of the AST and evaluate them.
+
+This is possible because each AST node implement the [Evaluable](./src/main/java/jua/evaluator/Evaluable.java) interface.
+
+This works for both Expressions and Statements.
+
+An example of AST evaluations can be found [here for the multiplication](./src/main/java/jua/ast/ExpressionMultiplication.java)
+
 ### Testing
 
 [`src/test/java/jua/{evaluator, lexer, parser}`](./src/test/java/jua/)
