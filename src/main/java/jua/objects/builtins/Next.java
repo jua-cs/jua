@@ -13,7 +13,6 @@ public class Next {
         name,
         Builtin.createFunction(
             args -> {
-              System.out.println("builtin args = " + args);
               LuaObject table = Builtin.arg(args, 0);
               LuaObject idx = Builtin.arg(args, 1);
 
