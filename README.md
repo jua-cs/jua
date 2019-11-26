@@ -1,5 +1,8 @@
 # jua
 
+
+![Build Status](https://github.com/jua-cs/jua/workflows/Java%20CI/badge.svg?branch=master)
+
 Jua is a lua interpreter implemented in java.
 
 It features a CLI (repl + interpreter for files) and a web application.
