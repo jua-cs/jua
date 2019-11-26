@@ -57,6 +57,8 @@ Let's describe the architecture of the project. We'll start by the first parts w
 
 ![architecture](./docs/jua.png)
 
+There is also a class diagram available [here](./docs/jua_classes.png).
+
 ### Lexer
 
 [`/src/main/java/jua/lexer`](./src/main/java/jua/lexer)
