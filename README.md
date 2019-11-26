@@ -134,3 +134,14 @@ We have done a lot of tests trough the development of the application. Since we 
 After the first working version, we had to add some new features like a new *keyword* or *bitwise operators*, for which a change in the three services were necessary. In this case, all these tests permit to develop without worrying about what have been done before.
 
 To implement more tests in a simple way, we also use a directory with some [lua scripts](./src/test/java/jua/evaluator/testdata/). A test function in `EvaluatorTest.java` compares all the `myTestFile.lua` to the corresponding expected results in `myTestFile.expected`. Add new test is therefore very easy, just write a new `script.lua` and generate the output `lua script.lua > script.expected`.
+
+### Possible Improvements
+
+- Add support for unicode
+- Better stack traces
+- Implement [coroutines](https://www.lua.org/pil/9.1.html)
+- Implement `require` to be able to import libraries
+- Implement the remaining builtins, and the missing features
+- Improve performances (10x difference for fibonacci computation compared to the [official lua implementation](https://github.com/lua/lua))
+- Add a code formatter (it could use the AST to do that)
+- Allow to share lua snippets in the web UI
