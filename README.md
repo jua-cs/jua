@@ -115,5 +115,13 @@ We'll have this AST:
 
 The AST is composed of two types of elements : *Expressions* and *Statements*.
 
-A *statement* is the base of the program, something to execute. A lua program is list of *statements*: variable definition of assignements, function definition or procedure execution. A statement is composed of several others statements and expressions. *Expressions* returns a result from the computation of the inside.
+A *statement* is the base of the program, something to execute. A lua program is list of *statements*: variable definition of assignements, function definition or procedure execution. A statement is composed of several others statements and expressions.
+An *expression* is an arithmetic combination of operator and function calls that returns a result, we parse them with the [Pratt algorithm](https://en.wikipedia.org/wiki/Recursive_descent_parser).
 
+We have a StatementParser interface implemented for each type of statement that operates on the token stream to look up the type of the next statement and parse it.
+Similarly we have expression parsers interfaces, InfixParser and PrefixParser implemented for each type of expression and used in the Pratt algorithm.
+
+Let's take an if statement as example:
+- to know if the next *statement* is an if we simply compare the next token with the keyword 'if'.
+- an if statement is composed of condition *expression*, and two substatements, the consequence and the alternative, with the alternative being facultative.
+When parsing an if *statement* we have to parse recursively the *expression* and the *statements*, taking care of the separators: `if expression then consequence else alternative end`.
