@@ -13,6 +13,10 @@ You can access the web application [here](http://jua.herokuapp.com)  (disclaimer
 - Java 11 or later
 - Gradle 5 or later
 
+OR
+
+- [docker](#Docker)
+
 [**SDKMAN!**](https://sdkman.io/) is a good solution to install and manage Gradle, Java SDK, etc...
 
 ### Setup
@@ -35,6 +39,30 @@ that you can run doing:
 
 `java -jar ./build/libs/jua-0.0.0.jar --help` (this will prompt you the help of the Jua CLI)
 
+### REPL
+
+To launch a lua REPL you can just do: `java -jar build/libs/jua-0.0.0.jar`
+
+It will prompt you with a REPL where you can write lua code and it will be lexed, parsed and evaluated on the fly.
+
+### File execution
+
+To execute a specific file you can do: `java -jar build/libs/jua-0.0.0.jar <my_file.lua>`, for instance: `java -jar build/libs/jua-0.0.0.jar ./src/test/java/jua/evaluator/testdata/bool.lua`
+
+This will execute the given lua file directly and exit shortly after.
+
+### Execution API
+
+To launch the web server only you can do: `java -jar build/libs/jua-0.0.0.jar --server`, this will start it on port `3000` by default (you can configure it using the `PORT` env variable).
+
+You can then try it with: `curl -XPOST -H 'Content-Type: application/json' -d '{"code": "print(100 * 5)"}' http://localhost:3000/api/v1/interpreter`.
+
+If you have [yarn](https://yarnpkg.com/lang/en/) and [nodejs](https://nodejs.org/en/) installed you can also run the web UI (or access it [here](http://jua.herokuapp.com)) to access this API by execution the `start-front-dev` script located in the `scripts` directory.
+
+### Debug
+
+There is also a `-d`, `--debug` flag that allows you to log what's happening during the different steps (lexing, parsing and evaluation)
+
 ## Tooling
 
 To setup the pre-commit hooks (checks for linting of both the backend and the frontend) you can run:
@@ -44,6 +72,8 @@ To setup the pre-commit hooks (checks for linting of both the backend and the fr
 You can also use the scripts in `./scripts`
 
 - `start-front-dev` starts the frontend in development mode
+
+### Docker
 
 You can also run the whole stack using [docker](https://www.docker.com/) or [podman](https://podman.io/):
 
