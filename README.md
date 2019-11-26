@@ -59,7 +59,7 @@ Let's describe the architecture of the project. We'll start by the first parts w
 
 ### Lexer
 
-`src/main/java/jua/lexer` 
+[Lexer package](./src/main/java/jua/lexer)
 
 The job of the *Lexer* is to transform the input (a stream of strings) into a stream of *Tokens*.
 
