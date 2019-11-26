@@ -1,10 +1,7 @@
 package jua.parser;
 
 import java.util.ArrayList;
-import jua.ast.Expression;
-import jua.ast.Statement;
-import jua.ast.StatementAssignment;
-import jua.ast.Variable;
+import jua.ast.*;
 import jua.token.Delimiter;
 import jua.token.Keyword;
 import jua.token.Operator;
@@ -40,7 +37,9 @@ public class AssignmentStatementParser implements StatementParser {
       parser.consume(Keyword.LOCAL);
     }
     // At least one identifier
-    ArrayList<Variable> identifiers = parser.parseCommaSeparatedExpressions(0, max);
+    ArrayList<ExpressionIdentifier> identifiers = parser.parseCommaSeparatedExpressions(0, max);
+    ArrayList<Variable> variables =
+        util.Util.createArrayList(identifiers.toArray(new Variable[identifiers.size()]));
 
     // Store the '=' position
     Token assignTok = parser.currentToken();
@@ -48,7 +47,7 @@ public class AssignmentStatementParser implements StatementParser {
     parser.consume(Operator.ASSIGN);
 
     ArrayList<Expression> exprs = parser.parseCommaSeparatedExpressions(0, max);
-    return new StatementAssignment(assignTok, identifiers, exprs, isLocal);
+    return new StatementAssignment(assignTok, variables, exprs, isLocal);
   }
 
   @Override
