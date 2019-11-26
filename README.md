@@ -75,19 +75,17 @@ We have several types of Tokens :
 - **Identifier**: name chosen by the programmer for a variable, function: *x*, *myFunction*
 - **Special**: invalid token, end of line
 
-The tokens for the *jua* language are defined in `src/main/java/jua/token`. There is a main **abstract** class `Token.java` from which all the the other tokens (*TokenOperator*, *TokenKeyword*, etc...) inherit. The base attributes a Token has are : line, position on this line and literal, which is the explicit *string* from the code.
+The tokens for the *jua* language are defined in [src/main/java/jua/token](./src/main/java/jua/token). There is a main **abstract** class [Token](./src/main/java/jua/token/Token.java) from which all the the other tokens ([*TokenOperator*](./src/main/java/jua/token/TokenOperator.java), [*TokenKeyword*](./src/main/java/jua/token/TokenKeyword.java), etc...) inherit. The base attributes a Token has are : line, position on this line and literal, which is the explicit *string* from the code.
 
-*Enumerations* are used to list all the explicit tokens we expect to encounter.
+*Enumerations* are used to list all the explicit tokens we expect to encounter inside a given token type.
 
-A *TokenFactory*, which follows the **Factory Pattern**, is used to instantiate all the Tokens.
+A [*TokenFactory*](./src/main/java/jua/token/TokenFactory.java), which follows the **Factory Pattern**, is used to instantiate all the Tokens.
 
 #### How does the Lexer works ?
 
 By looking *character by character*, the **Lexer** returns a stream of Tokens. With a simple *switch statement*, it can determinate the correct token. If we found a `(`, it returns a `TokenDelimiter("(")` .
 
- Sometimes, for example for `*<=*`, it needs to look ahead for the next characters. Therefore, when it finds a `<`, it *peeks* the next characters, to distinguish `<<` , `<=` or just `<`.
-
-
+ Sometimes, for example for `*<=*`, it needs to look ahead for the next characters. Therefore, when it finds a `<`, it *peeks* the next characters, to distinguish `<<` from `<=` or just `<`.
 
 ### Parser
 
