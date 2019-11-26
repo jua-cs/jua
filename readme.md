@@ -13,7 +13,7 @@ You can access the web application [here](http://jua.herokuapp.com).
 - Java 11 or later
 - Gradle 5 or later
 
-(**SDKMAN!)[https://sdkman.io/] is a good solution to install and manage Gradle, Java SDK, etc...
+[SDKman](https://sdkman.io/) is a good solution to install and manage Gradle, Java SDK, etc...
 
 ### Setup
 
@@ -55,6 +55,8 @@ Then just launch your favorite browser and head to `http://localhost:3000/` to e
 
 Let's describe the architecture of the project. We'll start by the first parts which have been built. It explains how a given string, representing some *lua* code, is processed and interpreted.
 
+![architecture](./docs/jua.png)
+
 ### Lexer
 
 The job of the *Lexer* is to transform the input (a stream of strings) into a stream of *Tokens*.
@@ -63,12 +65,16 @@ The job of the *Lexer* is to transform the input (a stream of strings) into a st
 We have several types of Tokens :
 - **Operator**: these are all the symbols which operate on arguments: *+*, *-*, */*,etc...
 - **Keyword**: Reserved names for the language like *if*, *for*, *end*, etc...
-- **Separator**: Punctuation characters, delimites like : *(*, *}*, *,*, etc...
+- **Separator**: Punctuation characters, delimiters like : *(*, *}*, *,*, etc...
 - **Literal**: explicit number, textual, data: *3.4*, *0xff*, *"hello"*
 - **Identifier**: name chosen by the programmer for a variable, function: *x*, *myFunction*
 - **Special**: invalid token, end of line
 
 By looking character by character, the **Lexer** returns a stream of Tokens. Sometimes, for example for *<=*, it needs to look ahead for the next characters. With a simple *switch statement*, it can determinate the correct token.
+
+
+
+
 
 ### Parser
 
