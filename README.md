@@ -161,7 +161,7 @@ When parsing an if *statement* we have to parse recursively the *expression* and
 
 ### Evaluator
 
-The [jua evaluator] is a tree walking evaluator, it simply visits each node of the AST and evaluate them.
+The jua evaluator is a tree walking evaluator, it simply visits each node of the AST and evaluate them.
 
 This is possible because each AST node implement the [Evaluable](./src/main/java/jua/evaluator/Evaluable.java) interface.
 
