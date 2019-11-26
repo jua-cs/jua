@@ -46,10 +46,10 @@ public class StatementGenericFor extends StatementFor {
   public LuaObject evaluate(Scope scope) throws LuaRuntimeException {
     Scope forScope = scope.createChild();
 
-
     ArrayList<LuaObject> evaluatedIteratorStateVar;
     if (iteratorStateVar.size() == 1 && iteratorStateVar.get(0) instanceof ExpressionFunctionCall) {
-      evaluatedIteratorStateVar = ((ExpressionFunctionCall) iteratorStateVar.get(0)).evaluateNoUnwrap(scope).getValues();
+      evaluatedIteratorStateVar =
+          ((ExpressionFunctionCall) iteratorStateVar.get(0)).evaluateNoUnwrap(scope).getValues();
     } else {
       evaluatedIteratorStateVar = util.Util.evaluateExprs(scope, iteratorStateVar);
     }

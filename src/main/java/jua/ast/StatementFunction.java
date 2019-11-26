@@ -12,7 +12,8 @@ public class StatementFunction extends Statement {
   private Variable funcVar;
   private ExpressionFunction func;
 
-  public StatementFunction(Token token, Variable funcVar, ExpressionFunction func, boolean isLocal) {
+  public StatementFunction(
+      Token token, Variable funcVar, ExpressionFunction func, boolean isLocal) {
     super(token);
     this.funcVar = funcVar;
     this.func = func;

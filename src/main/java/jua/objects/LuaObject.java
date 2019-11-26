@@ -25,9 +25,9 @@ public interface LuaObject {
     return (LuaTable) table;
   }
 
-
   // TODO casting functions
 
   String repr();
+
   String getTypeName();
 }

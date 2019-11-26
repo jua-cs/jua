@@ -2,12 +2,8 @@ package jua.objects.builtins;
 
 import jua.evaluator.LuaRuntimeException;
 import jua.evaluator.Scope;
-import jua.objects.LuaNumber;
-import jua.objects.LuaObject;
 import jua.objects.LuaReturn;
 import jua.objects.LuaString;
-
-import java.util.ArrayList;
 
 public class Type {
   private static final String name = "type";
