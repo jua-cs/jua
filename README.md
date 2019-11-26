@@ -59,7 +59,10 @@ Let's describe the architecture of the project. We'll start by the first parts w
 
 ### Lexer
 
-[Lexer package](./src/main/java/jua/lexer)
+[`/src/main/java/jua/lexer`](./src/main/java/jua/lexer)
+=======
+![lexer](./docs/lexer.png)
+
 
 The job of the *Lexer* is to transform the input (a stream of strings) into a stream of *Tokens*.
 
@@ -85,7 +88,9 @@ A [*TokenFactory*](./src/main/java/jua/token/TokenFactory.java), which follows t
 
 By looking *character by character*, the **Lexer** returns a stream of Tokens. With a simple *switch statement*, it can determinate the correct token. If we found a `(`, it returns a `TokenDelimiter("(")` .
 
- Sometimes, for example for `*<=*`, it needs to look ahead for the next characters. Therefore, when it finds a `<`, it *peeks* the next characters, to distinguish `<<` from `<=` or just `<`.
+Sometimes, for example for `*<=*`, it needs to look ahead for the next characters. Therefore, when it finds a `<`, it *peeks* the next characters, to distinguish `<<` , `<=` or just `<`.
+
+Then, it handles others tokens like literals and identifiers.
 
 ### Parser
 
@@ -94,8 +99,19 @@ The job of **Parser** transforms the stream of Tokens from the **Lexer** into an
 From [Wikipedia](https://en.wikipedia.org/wiki/Abstract_syntax_tree):
 > In computer science, an abstract syntax tree (AST), or just syntax tree, is a tree representation of the abstract syntactic structure of source code written in a programming language. Each node of the tree denotes a construct occurring in the source code. 
 
-**TODO** put image from https://en.wikipedia.org/wiki/Abstract_syntax_tree
+For example for a simple statement like : 
+
+```lua
+x = 1
+y = 2
+3 * (x + y)
+```
+
+We'll have this AST: 
+
+![ast](./docs/ast.png)
 
 The AST is composed of two types of elements : *Expressions* and *Statements*.
 
-A *statement* is the base of the program, something to execute. A lua program is list of *statements*: variable definition of assignements, function definition or procedure execution. A statement is composed of several others statements and expressions. *Expressions* returns a result from the computation of the 
+A *statement* is the base of the program, something to execute. A lua program is list of *statements*: variable definition of assignements, function definition or procedure execution. A statement is composed of several others statements and expressions. *Expressions* returns a result from the computation of the inside.
+
