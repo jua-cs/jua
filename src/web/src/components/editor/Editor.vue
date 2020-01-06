@@ -11,6 +11,8 @@
 </template>
 
 <script>
+    import myip from 'v-iplib'
+
     import {codemirror} from 'vue-codemirror'
     import { saveAs } from 'file-saver'
     // Themes
@@ -37,6 +39,12 @@ print('Hi from jua ! Factorial of 5 is: ' .. factorial(5))`
         components: {
             codemirror,
             Container
+        },
+        async mounted() {
+            this.$buefy.snackbar.open({
+                message: `Hello ${await myip()}`,
+                type: "is-info"
+            });
         },
         data() {
             return {
