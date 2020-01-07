@@ -7948,10 +7948,10 @@ uuid@^3.0.1, uuid@^3.3.2:
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
 
-v-iplib@^2.1.0:
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/v-iplib/-/v-iplib-2.1.0.tgz#c219d4f917931bb4164fd2ab87deb99a6d927242"
-  integrity sha512-LtcNIhQAZHoGkW7x7aNyXuud8upWt5E+7JZ/5B3fvGZaRG4xv1sVL1M8OkqjsEERf7N9lFGS0Jk31Ck4IRDMCA==
+v-iplib@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/v-iplib/-/v-iplib-4.0.0.tgz#eb70ca0a654da682e3afb00b870936cddd8b04bc"
+  integrity sha512-KNL1BrrVxX/j34cn7Z/akT509oSlS4JSRjh/iU3c9j2GKBxwUZ9jTs5dLrOdPAdSOwbA4drrnz5vzJFTIzEWdg==
 
 validate-npm-package-license@^3.0.1:
   version "3.0.4"
